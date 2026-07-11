@@ -39,8 +39,8 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
   {
     grp: 'collection', title: 'The Collection', f: 'tier',
     opts: [
-      { v: 'Reserve', label: <>Reserve ◆<span className="desc">Considered, characterful chalets with full concierge before your stay.</span></> },
-      { v: 'Privé', label: <>Privé ◆◆<span className="desc">Our most exceptional homes, with a dedicated host and in-resort team.</span></> },
+      { v: 'Reserve', label: <span>Reserve ◆<span className="desc">Considered, characterful chalets with full concierge before your stay.</span></span> },
+      { v: 'Privé', label: <span>Privé ◆◆<span className="desc">Our most exceptional homes, with a dedicated host and in-resort team.</span></span> },
     ],
   },
   { title: 'Resort country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) },
@@ -71,14 +71,22 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
 
 export function DestinationExplorer({
   resortName,
+  initialCountry = null,
+  guideTabLabel = 'Resort Guide',
+  chaletsHead,
   chalets,
   overview,
   guide,
   after,
 }: {
-  // null = full-catalogue mode (/chalets): no resort scope, no tabs/overview/
-  // guide sections — searchbar + filterbar + results only, as the prototype.
+  // Scopes (HANDOFF 05 §4 + 08): resort page = resortName; country page =
+  // initialCountry + guideTabLabel "Resorts"; inspiration collection =
+  // no scope + guideTabLabel null (tab hidden); /chalets catalogue = no
+  // scope and no overview (tabs hidden entirely).
   resortName: string | null
+  initialCountry?: string | null
+  guideTabLabel?: string | null
+  chaletsHead?: { title: string; sub: string }
   chalets: CatalogueChalet[]
   overview?: React.ReactNode
   guide?: React.ReactNode
@@ -86,7 +94,7 @@ export function DestinationExplorer({
 }) {
   const [s, setS] = useState<FilterState>({
     tier: [], country: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '',
-    destCountry: null, destResort: resortName, arr: null, dep: null, flex: true, adults: 0, children: 0,
+    destCountry: initialCountry, destResort: resortName, arr: null, dep: null, flex: true, adults: 0, children: 0,
   })
   const [pop, setPop] = useState<PopName>(null)
   const [popPos, setPopPos] = useState({ left: 0, top: 0 })
@@ -311,11 +319,11 @@ export function DestinationExplorer({
 
       {/* ── Breadcrumb + sticky tabs ── */}
       {after}
-      {resortName && (
+      {overview != null && (
         <div className="dtabs"><div className="in">
           <button className={`dtab${activeTab === 'overview' ? ' act' : ''}`} onClick={() => scrollToId('overview')}>Overview</button>
           <button className={`dtab${activeTab === 'chalets' ? ' act' : ''}`} onClick={() => scrollToId('chalets')}>Luxury Chalets</button>
-          <button className={`dtab${activeTab === 'guide' ? ' act' : ''}`} onClick={() => scrollToId('guide')}>Resort Guide</button>
+          {guideTabLabel && <button className={`dtab${activeTab === 'guide' ? ' act' : ''}`} onClick={() => scrollToId('guide')}>{guideTabLabel}</button>}
         </div></div>
       )}
 
@@ -323,10 +331,10 @@ export function DestinationExplorer({
 
       {/* ── Luxury chalets: filter bar + results + map ── */}
       <section id="chalets" className="chsec">
-        {resortName && (
+        {(chaletsHead || resortName) && (
           <div className="chhead">
-            <h2>Luxury chalets in {resortName}</h2>
-            <p>From ski-in, ski-out flagships to quieter corners above the village; filter by size, budget, service level and features.</p>
+            <h2>{chaletsHead?.title ?? `Luxury chalets in ${resortName}`}</h2>
+            <p>{chaletsHead?.sub ?? 'From ski-in, ski-out flagships to quieter corners above the village; filter by size, budget, service level and features.'}</p>
           </div>
         )}
 
@@ -359,8 +367,8 @@ export function DestinationExplorer({
             <div className="rgrid">
               {list.length
                 ? list.map(chaletCard)
-                : <div className="rempty">{resortName
-                  ? <>We are finalising the Vertige collection in {resortName} for the coming season. Share your dates and party size and our team will send a hand-picked shortlist within a day.</>
+                : <div className="rempty">{resortName || initialCountry
+                  ? <>We are finalising the Vertige collection in {resortName ?? initialCountry} for the coming season. Share your dates and party size and our team will send a hand-picked shortlist within a day.</>
                   : <>No chalets match these filters yet. Try widening your search, or let our team curate a bespoke selection for you.</>}</div>}
             </div>
           </div>

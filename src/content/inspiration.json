@@ -1,0 +1,58 @@
+[
+ {
+  "slug": "where-to-ski-this-season",
+  "name": "Where to ski this season",
+  "hero": "images/destinations/_ski-france.jpg",
+  "sub": "Our advisors' picks for the current winter — where the snow is best, which chalets have space, and the weeks worth booking now.",
+  "ov1": "Every winter is different, and the best week is rarely the one you booked last year. This is our team's live view of the season: the resorts on form right now, the chalets with the right space at the right time, and the conditions worth chasing across France, Switzerland, Austria and Italy.",
+  "ov2": "It changes as the winter does — early-season snow-sure altitude, deep mid-winter powder, long sunny spring days. Tell us roughly when you can travel and how your group skis, and we'll point you to where the season is best and match you to the chalet to enjoy it from."
+ },
+ {
+  "slug": "ski-in-ski-out",
+  "name": "Ski-in, ski-out chalets",
+  "hero": "images/chalets/ext-05.webp",
+  "sub": "Click in at your door and ski home to tea — the chalets with the mountain quite literally on the doorstep.",
+  "ov1": "There is no luxury on a ski holiday quite like ski-in, ski-out: no boots across the village, no bus, no wet walk home — just clip in at the door in the morning and ski back to a warm chalet in the afternoon. It is the single feature families and serious skiers ask us for most.",
+  "ov2": "Our ski-in, ski-out collection spans the Alps, from the high purpose-built stations of the Tarentaise to the slopes above Zermatt and Verbier. Positions vary from true door-to-piste to a few steps from the lift, so tell us how close you need to be and we'll match the chalet to the group."
+ },
+ {
+  "slug": "pool-and-spa",
+  "name": "Chalets with a pool & spa",
+  "hero": "images/chalets/well-01.webp",
+  "sub": "Private pools, spas, hammams and treatment rooms — the chalets built for the hours after the lifts stop.",
+  "ov1": "A hard day on the mountain deserves a proper recovery. The chalets in this collection are built for it: private indoor pools, spas and saunas, hammams and steam rooms, and treatment rooms where a therapist can come to you. The wellness side of the week becomes as much of a draw as the skiing.",
+  "ov2": "Facilities vary from a compact spa and hot tub to a full private pool and wellness suite with a resident masseuse. Tell us what matters most to your group and we'll match you to the right chalet, and arrange the treatments, the trainer or the yoga to go with it."
+ },
+ {
+  "slug": "large-groups",
+  "name": "Best for large groups",
+  "hero": "images/chalets/liv-24.webp",
+  "sub": "The largest chalets in our collection — for milestone trips, multi-generational weeks and groups of friends.",
+  "ov1": "Some weeks call for space: a landmark birthday, a family gathering across three generations, a group of friends who ski together every year. The chalets in this collection are built to hold everyone comfortably, with generous living space, multiple large bedroom suites, and the staff to look after a full house.",
+  "ov2": "They sleep twelve, sixteen, twenty and more, and many can be combined with a neighbouring chalet for even larger parties. Tell us the numbers, the ages and how you like to gather, and we'll find the house — and plan the catering, childcare and logistics that make a big group week effortless."
+ },
+ {
+  "slug": "new-to-the-collection",
+  "name": "New to the collection",
+  "hero": "images/chalets/ext-01.webp",
+  "sub": "The latest chalets to join Vertige — freshly visited, vetted and ready to book.",
+  "ov1": "We add to the collection carefully, and only ever a chalet we have visited and would happily stay in ourselves. This is where the newest arrivals land: recently signed properties across the Alps, from ski-in flagships to quiet design-led boltholes, each just added to our portfolio.",
+  "ov2": "Being new, they are often the ones with the best availability for the season ahead. Browse the latest additions, and if something catches your eye, our team can tell you everything we know about it first-hand and hold it while you decide."
+ },
+ {
+  "slug": "remarkable-architecture",
+  "name": "Remarkable architecture",
+  "hero": "images/chalets/ext-13.webp",
+  "sub": "Chalets that are destinations in themselves — design-led interiors and architecture worth travelling for.",
+  "ov1": "A great chalet can be as memorable as the mountain it sits on. The properties in this collection are architectural in their own right: bold contemporary builds of glass and larch, beautifully restored old farmhouses, and design-led interiors by names worth knowing. For those who care about where they stay as much as where they ski.",
+  "ov2": "Some make the most of a single framed view of a great peak; others are quiet studies in craft and materials. Tell us the kind of space that moves you and we'll match you to a chalet that is a pleasure to come home to at the end of the day."
+ },
+ {
+  "slug": "late-season-snow",
+  "name": "Late-season snow",
+  "hero": "images/destinations/_ski-switzerland.jpg",
+  "sub": "High and glacier resorts that hold their snow into spring — long, sunny days and quieter slopes.",
+  "ov1": "Some of the best skiing of the year comes late. As the days lengthen and the sun comes out, the high and glacier resorts keep their snow in excellent order while the crowds thin and the terraces fill. March and April can offer the finest combination of the whole season: reliable cover up high and warm, bright days.",
+  "ov2": "This collection focuses on the resorts that deliver it — the high Tarentaise, Val Thorens and Tignes, Zermatt and Saas-Fee, Obergurgl and the Austrian glaciers — and the chalets to enjoy them from. Tell us your dates and we'll steer you to where the late-season snow is most dependable."
+ }
+]

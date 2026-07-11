@@ -142,7 +142,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
             {subtop(c.slug)}
             <div className="nvbody">
               <div className="nvtitle">{c.name}</div>
-              <Link className="nv-seeall" href={`/chalets?country=${c.slug}`} onClick={closeNav}>
+              <Link className="nv-seeall" href={`/${c.slug}`} onClick={closeNav}>
                 {c.name}: see all chalets →
               </Link>
               <div className="nv-reg">
@@ -161,20 +161,20 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
           </div>
         ))}
 
-        {/* Inspiration (collection pages pending — HANDOFF 07) */}
+        {/* Inspiration collections (HANDOFF 08 §3) */}
         <div className={`nv${panels.includes('insp') ? ' on' : ''}`}>
           {subtop('insp')}
           <div className="nvbody">
             <div className="nvtitle">Inspiration</div>
             <div className="nv-list">
-              <a href="#">Where to ski this season</a>
-              <a href="#">Ski-in / ski-out chalets</a>
-              <a href="#">Chalets with a pool &amp; spa</a>
-              <a href="#">Best for large groups</a>
-              <a href="#">New to the collection</a>
+              <Link href="/inspiration/where-to-ski-this-season" onClick={closeNav}>Where to ski this season</Link>
+              <Link href="/inspiration/ski-in-ski-out" onClick={closeNav}>Ski-in / ski-out chalets</Link>
+              <Link href="/inspiration/pool-and-spa" onClick={closeNav}>Chalets with a pool &amp; spa</Link>
+              <Link href="/inspiration/large-groups" onClick={closeNav}>Best for large groups</Link>
+              <Link href="/inspiration/new-to-the-collection" onClick={closeNav}>New to the collection</Link>
               <Link href="/journal" onClick={closeNav}>Seen in the press</Link>
-              <a href="#">Remarkable architecture</a>
-              <a href="#">Late-season snow</a>
+              <Link href="/inspiration/remarkable-architecture" onClick={closeNav}>Remarkable architecture</Link>
+              <Link href="/inspiration/late-season-snow" onClick={closeNav}>Late-season snow</Link>
             </div>
           </div>
         </div>

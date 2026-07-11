@@ -1,0 +1,294 @@
+[
+ {
+  "slug": "france",
+  "name": "France",
+  "cc": "French Alps",
+  "sub": "The greatest concentration of high-altitude, lift-linked skiing on earth — from the Three Valleys to the Espace Killy and the foot of Mont Blanc.",
+  "ov1": "France holds the largest linked ski areas in the world, and a lifetime of skiing within a few valleys of one another. The Three Valleys, Paradiski, the Espace Killy and the Portes du Soleil string together hundreds of kilometres of piste at altitudes that hold their snow, while the Mont Blanc massif gives Chamonix some of the most serious terrain in the Alps. It is the natural home of the luxury chalet, and the standard of property is as high as anywhere on earth.",
+  "ov2": "Our French collection runs from the glamour of Courchevel and Val d'Isère to the chalet-village charm of Méribel and Megève and the mountaineering pedigree of Chamonix. Every chalet is visited and vetted, and we work only with owners and local teams we trust. Tell us how your group skis and we will match you to the right resort and the right house.",
+  "g_intro": "France is, for many, the centre of the skiing world. It has the largest linked lift networks ever built, the deepest concentration of luxury chalets in the Alps, and a range that runs from gentle, tree-lined family resorts to the serious high-mountain terrain of the Mont Blanc massif. From the purpose-built ski-in, ski-out stations of the Tarentaise to handsome old market towns like Megève, France offers a version of the alpine winter for every kind of group — and does the long lunch and the grand chalet better than anywhere.",
+  "g_skiing": "French skiing is defined by scale. The Three Valleys alone links more than 600km of piste across Courchevel, Méribel and Val Thorens; the Espace Killy joins Val d'Isère and Tignes across high, snow-sure terrain; Paradiski connects Les Arcs and La Plagne; and the Portes du Soleil sprawls across the Franco-Swiss border. Most of the great French resorts sit high, so the snow holds from December to late April, and the glacier resorts run longer still. There is world-class off-piste for the committed — nowhere more so than Chamonix and the Vallée Blanche — alongside vast, forgiving blue terrain that makes France the finest place in the Alps to bring a mixed-ability group.",
+  "g_town": "France offers every kind of base. The purpose-built stations of the Tarentaise — Courchevel 1850, Val Thorens, Les Arcs — put you on the snow at your door, while traditional towns like Megève and Chamonix trade a little convenience for real village life, cobbled streets and late tables. The standard of chalet is exceptional across the board, from ski-in, ski-out flagships with pools and staff to quieter boltholes in the woods. Where you base yourself shapes the week as much as the resort itself, which is why we match the property to the group rather than the other way round.",
+  "g_when": "The French season runs broadly from mid December to late April, and the high Tarentaise and glacier resorts hold their snow at both ends of that window. The school holidays — Christmas, February half-term and Easter — bring the busiest, liveliest weeks and should be booked well ahead. The depth of winter offers the coldest, most reliable snow up high, while the longer, brighter days of spring are made for long lunches on sunny terraces. Rather than single out a week, we would rather understand your group and match the timing to it.",
+  "g_getting": "France is exceptionally well connected. Geneva is the gateway for the Tarentaise and the Mont Blanc resorts, most within two to three hours by road; Chambéry, Lyon and Grenoble serve the Alps directly and are often quicker. The TGV runs to Moûtiers, Bourg-Saint-Maurice and Aime at the foot of the big valleys, with a winter Eurostar making a car-free trip genuinely feasible, and Courchevel even has its own mountain altiport. We arrange every transfer, private and door to door, including helicopter legs from the valley when time is short.",
+  "g_beyond": "Off the snow, France gives non-skiers and rest days a great deal: the designer boutiques and Michelin dining of Courchevel and Megève, the mountaineering theatre of Chamonix and the Aiguille du Midi, spas of real quality, and the sheer scenery from every cable car. There is tobogganing, winter walking, paragliding and, in the grander resorts, a social calendar that carries the evenings. It is a place where the shopping, the eating and the setting are as much the point as the vertical.",
+  "g_eating": "Nowhere eats better than the French Alps. The great resorts carry a remarkable concentration of Michelin stars, and even the humblest mountain restaurant takes its long, sunny lunch seriously, from Savoyard classics — fondue, raclette, tartiflette — to genuinely ambitious dining rooms. Après runs the full range, from a quiet glass in the last of the sun to the legendary slope-side bars of Val d'Isère. We keep our specific recommendations current through the concierge team rather than in print, and book the tables that are otherwise impossible to get.",
+  "g_pick": "France rewards a group that wants scale and polish in equal measure. Base yourself in the Three Valleys or the Espace Killy for the sheer size of the skiing, keep one long lunch on the mountain and one great table in the village, and leave the transfers and the impossible reservations to us.",
+  "resorts": [
+   {
+    "slug": "courchevel",
+    "name": "Courchevel"
+   },
+   {
+    "slug": "val-disere",
+    "name": "Val d'Isère"
+   },
+   {
+    "slug": "meribel",
+    "name": "Méribel"
+   },
+   {
+    "slug": "chamonix",
+    "name": "Chamonix"
+   },
+   {
+    "slug": "megeve",
+    "name": "Megève"
+   },
+   {
+    "slug": "tignes",
+    "name": "Tignes"
+   },
+   {
+    "slug": "val-thorens",
+    "name": "Val Thorens"
+   },
+   {
+    "slug": "les-arcs",
+    "name": "Les Arcs"
+   },
+   {
+    "slug": "la-plagne",
+    "name": "La Plagne"
+   },
+   {
+    "slug": "argentiere",
+    "name": "Argentière"
+   },
+   {
+    "slug": "les-gets",
+    "name": "Les Gets"
+   },
+   {
+    "slug": "chatel",
+    "name": "Châtel"
+   },
+   {
+    "slug": "samoens",
+    "name": "Samoëns"
+   },
+   {
+    "slug": "saint-martin-de-belleville",
+    "name": "Saint-Martin-de-Belleville"
+   },
+   {
+    "slug": "serre-chevalier",
+    "name": "Serre Chevalier"
+   },
+   {
+    "slug": "la-clusaz",
+    "name": "La Clusaz"
+   },
+   {
+    "slug": "le-grand-bornand",
+    "name": "Le Grand-Bornand"
+   }
+  ]
+ },
+ {
+  "slug": "switzerland",
+  "name": "Switzerland",
+  "cc": "Swiss Alps",
+  "sub": "Precision, altitude and some of the most beautiful mountain towns in the world — Verbier, Zermatt, St. Moritz and beyond.",
+  "ov1": "Swiss skiing is high, snow-sure and impeccably run, set against some of the most beautiful mountains on earth — the Matterhorn, the Eiger, the peaks of the Valais. Car-free villages, glacier skiing that runs almost year-round and a standard of service that is entirely its own make Switzerland the choice for those who want the mountains at their most refined. It is not the cheapest skiing in the Alps, and it does not pretend to be; what it offers is quality, reliability and a sense of occasion.",
+  "ov2": "Our Swiss collection spans Verbier's celebrated off-piste, Zermatt's altitude beneath the Matterhorn, the glamour of St. Moritz and the quiet discretion of Gstaad. Every chalet is visited and vetted, and our people on the mountain look after each stay. Tell us the week you have in mind and we will match you to the right resort and the right house.",
+  "g_intro": "Switzerland offers the Alps at their most refined. The skiing is high and snow-sure, the villages are among the most beautiful in the world, and the service — from the trains that run to the minute to the grand hotels and the mountain restaurants — sets a standard nowhere else quite matches. From the freeride terrain of Verbier to the car-free calm of Zermatt beneath the Matterhorn and the glamour of St. Moritz, Switzerland is where skiing feels most like an occasion.",
+  "g_skiing": "Swiss terrain is defined by altitude and quality rather than by the sheer linked size of the French domains. Zermatt climbs to the highest lift-served point in the Alps and links over the border to Italy; Verbier anchors the vast 4 Vallées and some of the best lift-served off-piste anywhere; St. Moritz, Davos-Klosters and the Jungfrau region offer high, sunny, snow-sure skiing with glacier terrain for security. The result is a country that holds its snow superbly at both ends of the season and rewards confident intermediates and experts especially well, while still looking after families on immaculately groomed pistes.",
+  "g_town": "Switzerland's villages are much of its appeal. Zermatt and Wengen are car-free, reached by mountain railway, with the Matterhorn or the Eiger at the end of the street; Verbier is a real, lively town; St. Moritz and Gstaad wear their glamour and their discretion respectively. The chalet standard is among the highest in the Alps, and the best properties frame the great peaks from the window. Where you stay shapes the week — the buzz of a resort town versus the calm of a car-free village — so we match the address to the group.",
+  "g_when": "The Swiss season runs from late November to early May, and the high, glaciated resorts — Zermatt, Verbier, Saas-Fee — hold their snow at both ends, making them dependable for early- and late-season trips. The depth of winter brings the coldest, most reliable snow and the fullest villages; St. Moritz's frozen-lake events light up January and February; and the long spring days bring sun to the terraces and superb conditions up high. Rather than single out a week, we would rather understand your group and match the timing to it.",
+  "g_getting": "Switzerland is a pleasure to reach. Geneva serves the Valais resorts — Verbier around two hours, Zermatt a little more; Zurich serves the east, St. Moritz and Davos within a scenic two to three hours. The Swiss rail network is superb and part of the experience — the Glacier and Bernina Express climb to St. Moritz, and Zermatt and Wengen are reached by mountain train — so a car-free trip is genuinely easy. We arrange every transfer, by road, rail or helicopter.",
+  "g_beyond": "Off the snow, Switzerland is extraordinary. Simply strolling the car-free lanes of Zermatt with the Matterhorn ahead, or riding the Jungfrau railway to the highest station in Europe, is unforgettable; St. Moritz hosts polo and racing on its frozen lake; and the grand-hotel spas are the antidote to a hard day's skiing. There is winter walking, tobogganing and glacier excursions everywhere, and a sense of occasion — the shopping, the dining, the scenery — that carries the quieter days.",
+  "g_eating": "Swiss mountain dining is a destination in itself, from characterful huts with astonishing wine cellars to the polished dining rooms of the grand hotels. The classics — fondue, raclette, rösti — are done to perfection, and a long lunch on a sunny terrace with a great peak in view is a highlight of any week. Après tends more to style than spectacle, though Verbier does the full, loud legend when you want it. We keep our recommendations current through the concierge team and book the tables that matter.",
+  "g_pick": "Switzerland rewards those who take it slowly and value quality over sheer size. Ski high and snow-sure beneath the great peaks, take the train where you can, and give the evenings to a car-free village or a grand-hotel table. The transfers and the reservations, we will handle.",
+  "resorts": [
+   {
+    "slug": "verbier",
+    "name": "Verbier"
+   },
+   {
+    "slug": "zermatt",
+    "name": "Zermatt"
+   },
+   {
+    "slug": "st-moritz",
+    "name": "St. Moritz"
+   },
+   {
+    "slug": "gstaad",
+    "name": "Gstaad"
+   },
+   {
+    "slug": "davos",
+    "name": "Davos"
+   },
+   {
+    "slug": "grindelwald",
+    "name": "Grindelwald"
+   },
+   {
+    "slug": "klosters",
+    "name": "Klosters"
+   },
+   {
+    "slug": "crans-montana",
+    "name": "Crans-Montana"
+   },
+   {
+    "slug": "wengen",
+    "name": "Wengen"
+   },
+   {
+    "slug": "adelboden",
+    "name": "Adelboden"
+   },
+   {
+    "slug": "andermatt",
+    "name": "Andermatt"
+   },
+   {
+    "slug": "laax",
+    "name": "Laax"
+   },
+   {
+    "slug": "arosa",
+    "name": "Arosa"
+   },
+   {
+    "slug": "engelberg",
+    "name": "Engelberg"
+   },
+   {
+    "slug": "villars",
+    "name": "Villars"
+   }
+  ]
+ },
+ {
+  "slug": "austria",
+  "name": "Austria",
+  "cc": "Tyrol & the Arlberg",
+  "sub": "The spiritual home of alpine skiing — deep, reliable snow, storybook villages and the liveliest après in the Alps.",
+  "ov1": "Austria is where alpine skiing began, and it still does the whole experience with a warmth few places match. The Arlberg has some of the most reliable snow in the Alps, the Tyrolean villages are storybook-pretty, and the après-ski is the stuff of legend. It pairs serious mountains — St. Anton, Lech, the high glaciers of Sölden and Ischgl — with a genuine welcome and a sociable, good-natured spirit that keeps groups coming back.",
+  "ov2": "Our Austrian collection runs from the refined snow-sure villages of Lech and Zürs to the medieval glamour of Kitzbühel and the lively, high-altitude energy of Ischgl and Sölden. Every chalet is visited and vetted, and our team plans the week around it. Tell us how your group likes to ski — and how hard you like to celebrate — and we will match you to the right resort.",
+  "g_intro": "Austria is the spiritual home of alpine skiing, and it remains the warmest, most sociable corner of the Alps. It pairs some of the most reliable snow anywhere — the Arlberg, around St. Anton and Lech — with beautiful Tyrolean villages, excellent value by alpine standards, and an après-ski culture that is genuinely part of the experience. From the serious off-piste of the Valluga to the storybook streets of Kitzbühel and the high glaciers of Sölden, Austria offers big skiing and a big welcome in equal measure.",
+  "g_skiing": "Austrian skiing ranges from the snow-sure, challenging Arlberg — St. Anton, Lech and Zürs share one of the great linked areas, famous for deep snow and vast off-piste — to the high glacier resorts of Sölden, Ischgl and Hintertux, which guarantee cover at both ends of the season. Lower down, the beautiful landscapes of Kitzbühel and the SkiWelt offer gentler, immaculately maintained cruising and some of the best snowmaking in the world. It is a country that rewards the strong skier chasing powder and the mixed group wanting scenic, confidence-building pistes alike.",
+  "g_town": "Austria's villages are storybook-pretty and full of character, from the walled medieval centre of Kitzbühel to the snowy, upmarket calm of Lech and the lively energy of St. Anton and Ischgl. The chalet and residence standard is high, and the welcome is warm and unfussy. Where you stay sets the tone of the week — refined and quiet, or lively and sociable — so we match the base to the group, whether you want a peaceful bolthole or a house on tap for the après.",
+  "g_when": "The Austrian season runs from early December to late April, and the Arlberg and the high glacier resorts hold their snow superbly — Sölden and Hintertux open from autumn. The depth of winter brings the deepest snow and the fullest, most spirited villages, with the Hahnenkamm weekend in Kitzbühel a January highlight; the longer spring days suit the sunny terraces and the open, high terrain. Rather than single out a week, we would rather understand your group and match the timing to it.",
+  "g_getting": "Austria is quick and easy to reach. Innsbruck sits in the heart of the Tyrol, an hour or so from St. Anton, Lech, Kitzbühel, Sölden and Ischgl; Salzburg and Munich serve the eastern resorts; and Zurich is a straightforward run to the Arlberg. Many resorts, St. Anton and Kitzbühel among them, sit directly on the railway, so a car-free trip is genuinely easy. We arrange every transfer, private and door to door.",
+  "g_beyond": "Off the snow, Austria's villages are a pleasure in themselves — the boutiques and cafés of Kitzbühel, the spas of Lech, the famous slope-side bars of St. Anton and Ischgl. There is tobogganing, winter walking, thermal bathing and, in the bigger resorts, open-air concerts and a nightlife that needs no persuading. It is a place where the good-natured, sociable spirit off the mountain is as much a draw as the skiing on it.",
+  "g_eating": "Austrian mountain huts serve generous, hearty cooking — Tyrolean classics, Kaiserschmarrn, schnitzel — and the descent home often passes the slope-side bars where the day's skiing gives way to the evening's dancing. The refined villages, Lech especially, carry a surprising concentration of excellent restaurants for quieter, grander evenings. We keep our recommendations current through the concierge team and book both the calm tables and the legendary ones.",
+  "g_pick": "Austria rewards the group that wants deep snow and a good time. Ski the Arlberg hard while the powder lasts, brace for the slope-side après on the way home, and let a warm Tyrolean village carry the evening. The transfers and the tables, we will handle.",
+  "resorts": [
+   {
+    "slug": "st-anton",
+    "name": "St. Anton"
+   },
+   {
+    "slug": "lech",
+    "name": "Lech"
+   },
+   {
+    "slug": "kitzbuhel",
+    "name": "Kitzbühel"
+   },
+   {
+    "slug": "ischgl",
+    "name": "Ischgl"
+   },
+   {
+    "slug": "solden",
+    "name": "Sölden"
+   },
+   {
+    "slug": "saalbach-hinterglemm",
+    "name": "Saalbach-Hinterglemm"
+   },
+   {
+    "slug": "zurs",
+    "name": "Zürs"
+   },
+   {
+    "slug": "mayrhofen",
+    "name": "Mayrhofen"
+   },
+   {
+    "slug": "schladming",
+    "name": "Schladming"
+   },
+   {
+    "slug": "obertauern",
+    "name": "Obertauern"
+   },
+   {
+    "slug": "bad-gastein",
+    "name": "Bad Gastein"
+   },
+   {
+    "slug": "skiwelt",
+    "name": "SkiWelt"
+   },
+   {
+    "slug": "hintertux",
+    "name": "Hintertux"
+   }
+  ]
+ },
+ {
+  "slug": "italy",
+  "name": "Italy",
+  "cc": "Dolomites & the Italian Alps",
+  "sub": "Long, sunny cruising, the rose-lit Dolomites, and the best mountain lunches in the Alps.",
+  "ov1": "Italian skiing is sunny, scenic and gloriously unhurried. The Dolomiti Superski network — the largest linked lift system in the world — winds through the rose-tinted towers of the Dolomites, while Courmayeur and Cervinia sit beneath Mont Blanc and the Matterhorn on the Italian side. It is skiing to be savoured rather than conquered, and it comes with the best mountain lunches in the Alps and a style all of its own.",
+  "ov2": "Our Italian collection spans the glamour of Cortina d'Ampezzo, the off-piste of Courmayeur, the Ladin cuisine of Alta Badia and the long, sunny runs of Cervinia. Every chalet is visited and vetted, and our team plans the week around it. Tell us how your group skis and we will match you to the right corner of the Italian Alps.",
+  "g_intro": "Italy offers the sunniest, most relaxed skiing in the Alps, wrapped in some of its most extraordinary scenery. The Dolomiti Superski network links twelve valleys and more than a thousand kilometres of piste through the rose-lit towers of the Dolomites, while Courmayeur and Cervinia give big-mountain skiing beneath Mont Blanc and the Matterhorn. But Italy's real signature is the long, unhurried lunch — the mountain rifugio, the aperitivo, the passeggiata — which makes a week here as much about the pleasure as the vertical.",
+  "g_skiing": "Italian skiing is mostly sunny, scenic and gentle-to-intermediate, ideal for cruisers and mixed groups. The Dolomiti Superski pass opens an almost limitless spread of beautifully groomed terrain, with the Sella Ronda circuit — a full day's tour around the Sella massif — its signature. For stronger skiers, Courmayeur offers world-class off-piste on the Italian side of Mont Blanc, and Cervinia links high over the ridge to Zermatt. The snow can be less reliable at lower altitudes, but excellent snowmaking and the height of the Dolomites and the Aosta valley keep the pistes in good order.",
+  "g_town": "Italy's resorts range from the handsome, glamorous town of Cortina d'Ampezzo to the quiet Ladin villages of Alta Badia and the medieval streets of Courmayeur beneath Mont Blanc. The style is elegant but relaxed, and the chalet and residence standard is high. Where you stay shapes the week — the buzz of Cortina's Corso, the food-focused calm of Alta Badia — so we match the base to the group and to how they intend to ski.",
+  "g_when": "The Italian season runs from early December to mid April. The Dolomites enjoy a famously sunny, dry climate, so bright, blue days are common, backed by some of the best snowmaking in the world; the high Aosta valley resorts, Cervinia and Courmayeur, hold their snow longest. The depth of winter brings the fullest, most fashionable weeks, while the long spring days are made for sunny terraces and unhurried lunches. Rather than single out a week, we would rather understand your group and match the timing to it.",
+  "g_getting": "Italy's resorts are reached through a spread of gateways. Venice and Treviso serve the Dolomites — Cortina around two hours by road; Verona and Innsbruck reach the western Dolomites and Alta Badia; and Turin, Geneva and Milan serve the Aosta valley, with Courmayeur just through the Mont Blanc tunnel from Chamonix. There is no railway into the Dolomite resorts themselves, so the final approach is a scenic drive. We arrange every transfer, private and door to door, including a helicopter leg where it makes sense.",
+  "g_beyond": "Off the snow, Italy rewards the non-skier and the rest day richly. Cortina is made for wandering — the boutiques, the galleries, the evening passeggiata along the Corso — and the Dolomite scenery from every cable car is on a scale few places match. There are thermal baths, spas, the drama of the Skyway cable car at Courmayeur, and the Olympic heritage of Cortina, host again in 2026. It is a place where doing very little, and doing it beautifully, is a pleasure in itself.",
+  "g_eating": "Italy takes its food as seriously as its skiing — arguably more so. The mountain rifugi serve proper Italian cooking with a Dolomite view, and Alta Badia alone carries several Michelin-recognised kitchens; a long lunch on the mountain is the centre of the day rather than an interruption to it. Evenings tend to open with an aperitivo rather than end on the dance floor. We keep our recommendations current through the concierge team and book the tables — and the rifugi — worth planning the day around.",
+  "g_pick": "Italy rewards those who ski to enjoy rather than to conquer. Cruise the sunny Dolomiti Superski pistes, build the day around a long lunch at a mountain rifugio, and give the evenings to an aperitivo and the passeggiata. The transfers and the tables, we will handle.",
+  "resorts": [
+   {
+    "slug": "cortina-dampezzo",
+    "name": "Cortina d'Ampezzo"
+   },
+   {
+    "slug": "courmayeur",
+    "name": "Courmayeur"
+   },
+   {
+    "slug": "alta-badia",
+    "name": "Alta Badia"
+   },
+   {
+    "slug": "madonna-di-campiglio",
+    "name": "Madonna di Campiglio"
+   },
+   {
+    "slug": "cervinia",
+    "name": "Cervinia"
+   },
+   {
+    "slug": "val-gardena",
+    "name": "Val Gardena"
+   },
+   {
+    "slug": "livigno",
+    "name": "Livigno"
+   },
+   {
+    "slug": "bormio",
+    "name": "Bormio"
+   },
+   {
+    "slug": "sestriere",
+    "name": "Sestriere"
+   },
+   {
+    "slug": "kronplatz",
+    "name": "Kronplatz"
+   }
+  ]
+ }
+]

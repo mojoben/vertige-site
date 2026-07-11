@@ -80,6 +80,26 @@ function hashPos(name: string): [number, number] {
   return [0.3 + (h % 47) / 100, 0.15 + ((h >> 5) % 60) / 100]
 }
 
+/** Portal features are human-readable labels ("Ski-in / ski-out", "Spa &
+ *  sauna"); the search filters and Inspiration collections match on the
+ *  prototype's attr keys — derive them by keyword. */
+const ATTR_PATTERNS: [string, RegExp][] = [
+  ['ski-in', /ski-in/i],
+  ['indoor-pool', /pool/i],
+  ['spa', /spa|sauna|steam|hammam|wellness/i],
+  ['hot-tub', /hot tub/i],
+  ['chef', /chef/i],
+  ['cinema', /cinema/i],
+  ['fireplace', /fire/i],
+  ['gym', /gym/i],
+  ['cellar', /cellar/i],
+  ['ski-room', /ski room|boot/i],
+  ['near-lifts', /near lift/i],
+]
+function toAttrs(features: string[]): string[] {
+  return ATTR_PATTERNS.filter(([, re]) => features.some((f) => re.test(f))).map(([k]) => k)
+}
+
 export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; slug: string } {
   const [mx, my] = hashPos(p.name)
   return {
@@ -99,7 +119,7 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     // grows a per-day model (the portal keeps the true changeover day).
     co: p.changeoverDay === 'sun' ? 'Sun' : 'Sat',
     chips: p.features.slice(0, 2),
-    attrs: [],
+    attrs: toAttrs(p.features),
     mx,
     my,
     priceSymbol: sym(p.currency),

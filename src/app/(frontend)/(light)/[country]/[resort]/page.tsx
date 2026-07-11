@@ -101,7 +101,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ co
         after={
           <nav className="crumb">
             <Link href="/">Home</Link><span className="sep">›</span>
-            <Link href={`/chalets?country=${country.slug}`}>{country.name}</Link><span className="sep">›</span>
+            <Link href={`/${country.slug}`}>{country.name}</Link><span className="sep">›</span>
             {resort.name}
           </nav>
         }
