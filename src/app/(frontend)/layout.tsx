@@ -1,5 +1,4 @@
 import React from 'react'
-import { Chrome } from '@/components/Chrome'
 import { Footer } from '@/components/Footer'
 import './globals.css'
 
@@ -24,8 +23,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         />
       </head>
       <body>
-        <Chrome />
-        <main>{children}</main>
+        {/* Chrome (header/nav/search) is rendered by the route-group layouts:
+            (overlay) = fixed transparent-over-hero; (light) = sticky white
+            (destination/listing pages, so tabs/filterbar can stack beneath). */}
+        {children}
         <Footer />
       </body>
     </html>

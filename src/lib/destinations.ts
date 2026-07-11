@@ -1,8 +1,10 @@
 // The canonical 55 destinations (HANDOFF/02 §4, confirmed by Ben 2026-06-15,
-// matching the res-platform DB). NOTE: ../VERTIGE_DESTINATIONS.json is stale —
-// it lists 54 and is missing Courchevel (re-added to France Tier 1); this
-// module is the site's source of truth until the Payload `Destinations`
-// collection is seeded from it.
+// matching the res-platform DB and the 55 built prototype pages). NOTE:
+// ../VERTIGE_DESTINATIONS.json is stale — it lists 54 (missing Courchevel,
+// re-added to France Tier 1) and four of its slugs drifted from the built
+// page set (canonical: kitzbuhel, solden, zurs, cortina-dampezzo). This module
+// is the site's source of truth until the Payload `Destinations` collection
+// is seeded from it.
 //
 // Tiers are internal grouping only. Public-facing labels are ALWAYS
 // "Signature resorts" (tier 1) and "More in {country}" (tier 2) — never
@@ -75,11 +77,11 @@ export const COUNTRIES: Country[] = [
     resorts: [
       { name: 'St. Anton', slug: 'st-anton', tier: 1 },
       { name: 'Lech', slug: 'lech', tier: 1 },
-      { name: 'Kitzbühel', slug: 'kitzbuehel', tier: 1 },
+      { name: 'Kitzbühel', slug: 'kitzbuhel', tier: 1 },
       { name: 'Ischgl', slug: 'ischgl', tier: 1 },
-      { name: 'Sölden', slug: 'soelden', tier: 1 },
+      { name: 'Sölden', slug: 'solden', tier: 1 },
       { name: 'Saalbach-Hinterglemm', slug: 'saalbach-hinterglemm', tier: 1 },
-      { name: 'Zürs', slug: 'zuers', tier: 2 },
+      { name: 'Zürs', slug: 'zurs', tier: 2 },
       { name: 'Mayrhofen', slug: 'mayrhofen', tier: 2 },
       { name: 'Schladming', slug: 'schladming', tier: 2 },
       { name: 'Obertauern', slug: 'obertauern', tier: 2 },
@@ -92,7 +94,7 @@ export const COUNTRIES: Country[] = [
     name: 'Italy', slug: 'italy', code: 'it', dial: '+39', currency: 'EUR',
     navImage: '/images/destinations/_ski-italy.jpg',
     resorts: [
-      { name: "Cortina d'Ampezzo", slug: 'cortina', tier: 1 },
+      { name: "Cortina d'Ampezzo", slug: 'cortina-dampezzo', tier: 1 },
       { name: 'Courmayeur', slug: 'courmayeur', tier: 1 },
       { name: 'Alta Badia', slug: 'alta-badia', tier: 1 },
       { name: 'Madonna di Campiglio', slug: 'madonna-di-campiglio', tier: 1 },

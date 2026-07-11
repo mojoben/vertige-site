@@ -10,7 +10,11 @@ import { useEffect, useState } from 'react'
 import { COUNTRIES, ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { SITE } from '@/lib/site'
 
-type Variant = 'overlay' | 'solid'
+// overlay: fixed, transparent over the hero → solid past it (flagship pages).
+// solid:   fixed, always solid (pages with no hero).
+// light:   sticky, always white — the destination/listing-page header; sits in
+//          flow so the sticky tabs/filterbar can stack beneath it (top: 80px).
+type Variant = 'overlay' | 'solid' | 'light'
 
 // Mock search dataset (resorts are real; chalets placeholder until the portal
 // adapter lands — HANDOFF 07 "Site search").
@@ -33,13 +37,13 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
   const [navOpen, setNavOpen] = useState(false)
   const [panels, setPanels] = useState<string[]>([]) // stack of open sub-panels
   const [searchOpen, setSearchOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(variant === 'solid')
+  const [scrolled, setScrolled] = useState(variant !== 'overlay')
   const [query, setQuery] = useState('')
 
   // Header: transparent over the hero → solid past it (threshold from the
   // prototype: innerHeight*0.72 - 140). Solid pages are always "scrolled".
   useEffect(() => {
-    if (variant === 'solid') return
+    if (variant !== 'overlay') return
     // Clamp the threshold so a not-yet-measured viewport (innerHeight 0) can
     // never yield a negative threshold and lock the header solid at top.
     const onScroll = () =>
@@ -188,7 +192,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
       </nav>
 
       {/* ── Header ── */}
-      <header className={`hdr${scrolled ? ' scrolled' : ''}`}>
+      <header className={`hdr${scrolled ? ' scrolled' : ''}${variant === 'light' ? ' light' : ''}`}>
         <div className="wrap">
           <button className="menu" onClick={() => setNavOpen(true)}>
             <span className="bars"><i /><i /><i /></span> Menu
