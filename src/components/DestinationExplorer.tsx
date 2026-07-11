@@ -332,7 +332,7 @@ export function DestinationExplorer({
             </button>
             <button className="fbtn" onClick={() => setFiltersOpen(true)}>☰ All filters</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="rooms"]')?.scrollIntoView({ block: 'start' }), 200) }}>Rooms</button>
-            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>Budget</button>
+            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>Price</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="collection"]')?.scrollIntoView({ block: 'start' }), 200) }}>Collections</button>
           </div>
           <div className="fmeta"><span><b>{list.length}</b> chalets</span><span className="sort">Sort by: Recommended ⌄</span></div>
@@ -410,7 +410,7 @@ export function DestinationExplorer({
             ))}
           </div>
           <div className="fgrp" data-grp="budget">
-            <h4>Budget per week (£)</h4>
+            <h4>Price per week (£)</h4>
             <div className="budget">
               <div><label>From</label><input type="number" value={s.bfrom} placeholder="0" onChange={(e) => set({ bfrom: e.target.value })} /></div>
               <div><label>To</label><input type="number" value={s.bto} placeholder="Any" onChange={(e) => set({ bto: e.target.value })} /></div>

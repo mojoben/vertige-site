@@ -13,15 +13,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* Cormorant Garamond = Ivy Mode fallback + <em> italic; Inter = body fallback */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+      {/* All fonts self-hosted via @font-face in globals.css (HANDOFF 01 §2) —
+          no runtime dependency on Google Fonts. */}
       <body>
         {/* Chrome (header/nav/search) is rendered by the route-group layouts:
             (overlay) = fixed transparent-over-hero; (light) = sticky white
