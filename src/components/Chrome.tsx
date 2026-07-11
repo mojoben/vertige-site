@@ -14,7 +14,9 @@ import { SITE } from '@/lib/site'
 // solid:   fixed, always solid (pages with no hero).
 // light:   sticky, always white — the destination/listing-page header; sits in
 //          flow so the sticky tabs/filterbar can stack beneath it (top: 80px).
-type Variant = 'overlay' | 'solid' | 'light'
+// static:  absolute, transparent over the hero and scrolls away with it — the
+//          chalet-detail header (its sticky subnav takes over at top: 0).
+type Variant = 'overlay' | 'solid' | 'light' | 'static'
 
 // Mock search dataset (resorts are real; chalets placeholder until the portal
 // adapter lands — HANDOFF 07 "Site search").
@@ -37,7 +39,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
   const [navOpen, setNavOpen] = useState(false)
   const [panels, setPanels] = useState<string[]>([]) // stack of open sub-panels
   const [searchOpen, setSearchOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(variant !== 'overlay')
+  const [scrolled, setScrolled] = useState(variant === 'solid' || variant === 'light')
   const [query, setQuery] = useState('')
 
   // Header: transparent over the hero → solid past it (threshold from the
@@ -192,7 +194,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
       </nav>
 
       {/* ── Header ── */}
-      <header className={`hdr${scrolled ? ' scrolled' : ''}${variant === 'light' ? ' light' : ''}`}>
+      <header className={`hdr${scrolled ? ' scrolled' : ''}${variant === 'light' ? ' light' : ''}${variant === 'static' ? ' static' : ''}`}>
         <div className="wrap">
           <button className="menu" onClick={() => setNavOpen(true)}>
             <span className="bars"><i /><i /><i /></span> Menu
