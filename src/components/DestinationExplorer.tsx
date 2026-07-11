@@ -76,10 +76,12 @@ export function DestinationExplorer({
   guide,
   after,
 }: {
-  resortName: string
+  // null = full-catalogue mode (/chalets): no resort scope, no tabs/overview/
+  // guide sections — searchbar + filterbar + results only, as the prototype.
+  resortName: string | null
   chalets: CatalogueChalet[]
-  overview: React.ReactNode
-  guide: React.ReactNode
+  overview?: React.ReactNode
+  guide?: React.ReactNode
   after?: React.ReactNode
 }) {
   const [s, setS] = useState<FilterState>({
@@ -231,13 +233,13 @@ export function DestinationExplorer({
     set({ [f]: on ? [...s[f], v] : s[f].filter((x) => x !== v) } as Partial<FilterState>)
 
   const chaletCard = (c: CatalogueChalet) => (
-    <Link key={c.name} className="pc" href="/chalets">
+    <Link key={c.name} className="pc" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'}>
       <div className="im" style={{ backgroundImage: `url(${c.img})` }}><div className="heart">♡</div></div>
       <h3>{c.name}</h3>
       <div className="loc">{c.resort}, {c.country}</div>
       <div className="meta">{c.guests} guests · {c.beds} bedrooms · {c.baths} bathrooms</div>
       <div className="chips">{c.chips.map((x) => <span key={x} className="chip">{x}</span>)}</div>
-      <div className="price">From {price(c, c.from)} to {price(c, c.to)} per week</div>
+      <div className="price">{c.from > 0 ? <>From {price(c, c.from)} to {price(c, c.to)} per week</> : 'Price on request'}</div>
       <div className="tier">{c.tier} Collection {c.tier === 'Privé' ? '◆◆' : '◆'}</div>
     </Link>
   )
@@ -309,20 +311,24 @@ export function DestinationExplorer({
 
       {/* ── Breadcrumb + sticky tabs ── */}
       {after}
-      <div className="dtabs"><div className="in">
-        <button className={`dtab${activeTab === 'overview' ? ' act' : ''}`} onClick={() => scrollToId('overview')}>Overview</button>
-        <button className={`dtab${activeTab === 'chalets' ? ' act' : ''}`} onClick={() => scrollToId('chalets')}>Luxury Chalets</button>
-        <button className={`dtab${activeTab === 'guide' ? ' act' : ''}`} onClick={() => scrollToId('guide')}>Resort Guide</button>
-      </div></div>
+      {resortName && (
+        <div className="dtabs"><div className="in">
+          <button className={`dtab${activeTab === 'overview' ? ' act' : ''}`} onClick={() => scrollToId('overview')}>Overview</button>
+          <button className={`dtab${activeTab === 'chalets' ? ' act' : ''}`} onClick={() => scrollToId('chalets')}>Luxury Chalets</button>
+          <button className={`dtab${activeTab === 'guide' ? ' act' : ''}`} onClick={() => scrollToId('guide')}>Resort Guide</button>
+        </div></div>
+      )}
 
       {overview}
 
       {/* ── Luxury chalets: filter bar + results + map ── */}
       <section id="chalets" className="chsec">
-        <div className="chhead">
-          <h2>Luxury chalets in {resortName}</h2>
-          <p>From ski-in, ski-out flagships to quieter corners above the village; filter by size, budget, service level and features.</p>
-        </div>
+        {resortName && (
+          <div className="chhead">
+            <h2>Luxury chalets in {resortName}</h2>
+            <p>From ski-in, ski-out flagships to quieter corners above the village; filter by size, budget, service level and features.</p>
+          </div>
+        )}
 
         <div className="filterbar"><div className="in">
           <div className="fbtns">
@@ -353,7 +359,9 @@ export function DestinationExplorer({
             <div className="rgrid">
               {list.length
                 ? list.map(chaletCard)
-                : <div className="rempty">We are finalising the Vertige collection in {resortName} for the coming season. Share your dates and party size and our team will send a hand-picked shortlist within a day.</div>}
+                : <div className="rempty">{resortName
+                  ? <>We are finalising the Vertige collection in {resortName} for the coming season. Share your dates and party size and our team will send a hand-picked shortlist within a day.</>
+                  : <>No chalets match these filters yet. Try widening your search, or let our team curate a bespoke selection for you.</>}</div>}
             </div>
           </div>
           <div className="mapcol">
@@ -363,7 +371,7 @@ export function DestinationExplorer({
                   const i = chalets.indexOf(c)
                   return (
                     <button key={c.name} className={`mpin${activePin === i ? ' act' : ''}`} style={{ left: `${c.mx * 100}%`, top: `${c.my * 100}%` }} onClick={(e) => { e.stopPropagation(); setActivePin(i) }}>
-                      <span className="dot">{price(c, c.from)}</span>
+                      <span className="dot">{c.from > 0 ? price(c, c.from) : '—'}</span>
                     </button>
                   )
                 })}
@@ -372,9 +380,9 @@ export function DestinationExplorer({
                   return (
                     <div className={`mpop${c.my < 0.42 ? ' below' : ''}`} style={{ left: `${c.mx * 100}%`, top: `${c.my * 100}%` }} onClick={stopAll}>
                       <button className="cx" onClick={() => setActivePin(null)}>×</button>
-                      <Link className="lk" href="/chalets" target="_blank" rel="noopener">
+                      <Link className="lk" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'} target="_blank" rel="noopener">
                         <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
-                        <div className="b"><h4>{c.name}</h4><div className="r">{c.resort}, {c.country}</div><div className="pr">From {price(c, c.from)} / week</div><span className="view">View chalet ↗</span></div>
+                        <div className="b"><h4>{c.name}</h4><div className="r">{c.resort}, {c.country}</div><div className="pr">{c.from > 0 ? `From ${price(c, c.from)} / week` : 'Price on request'}</div><span className="view">View chalet ↗</span></div>
                       </Link>
                     </div>
                   )
