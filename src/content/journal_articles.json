@@ -904,5 +904,51 @@
    "att": "The Vertige Pick"
   },
   "pickAfter": 1
+ },
+ {
+  "slug": "journal-where-to-eat-in-verbier",
+  "cat": "Dining",
+  "title": "Where to Eat in Verbier",
+  "dek": "Where to eat in Verbier, from forest-hidden mountain huts to a Michelin-starred dining room. Our honest guide to the best restaurants, lunches and apres.",
+  "hero": "ext-01",
+  "read": 3,
+  "h1": "Where to Eat in Verbier",
+  "sub": "Where to eat in Verbier, from forest-hidden mountain huts to a Michelin-starred dining room. Our honest guide to the best restaurants, lunches and apres.",
+  "lead": "Knowing where to eat in Verbier is one of the more agreeable problems of a week in the resort. This is a town that takes its long lunches and its late nights equally seriously, offering everything from a forest-hidden mountain hut to a Michelin-starred dining room within a short ski, or a shorter walk. What follows is an honest shortlist, on the mountain and in the village, with a note on the tables worth booking well in advance.",
+  "sections": [
+   {
+    "id": "s1",
+    "title": "Where to eat in Verbier: the long mountain lunch",
+    "paras": [
+     "The mountain lunch is a Verbier institution, and the best of them are worth planning your morning around. Chez Dany sits alone in the forest at Clambin, a ten-minute ski from Les Ruinettes or a twenty-minute walk, and rewards the detour with unfussy cooking a long way from the crowds. Nearer the pistes, La Marmotte serves the traditional dishes of the Val de Bagnes; the roestis, the fondues and the generous cheese boards, with a kitchen that stays open through the afternoon for anyone who arrives late. Le Carrefour is the address most regulars name first, celebrated for its hot-stone meats and a menu with a whole section given over to cheese; it runs two lunch sittings, at noon and at two, so booking is wise. For something sunnier and livelier, Bar 1936 and its yurts sit just below Les Ruinettes on the Mayentzet piste, with a terrace made for spring afternoons and the odd live set."
+    ],
+    "figure": null
+   },
+   {
+    "id": "s2",
+    "title": "The serious tables in the village",
+    "paras": [],
+    "figure": null
+   },
+   {
+    "id": "s3",
+    "title": "Apres, and the hours in between",
+    "paras": [
+     "Few resorts blur lunch, apres and dinner as happily as Verbier. Le Rouge has done exactly that since 1971, a place where a long lunch on the terrace slides into an afternoon of resident DJs, with a guest list that has run from royalty to ski bums and an old-school glamour to match. The Pub Mont Fort remains the classic first stop off the slopes, its wide terrace looking down the valley and its crowd stylish but relaxed. And for the full, loud Verbier legend there is the Farinet, whose sliding roof opens over the main square for an apres-ski that involves rather more singing, and dancing on the bar, than sitting down; its adjoining Lounge answers the quieter mood with a serious gin and cocktail list."
+    ],
+    "figure": null
+   },
+   {
+    "id": "s4",
+    "title": "Let us book the table",
+    "paras": [],
+    "figure": null
+   }
+  ],
+  "pick": {
+   "text": "Book one long lunch at Chez Dany early in the week, skiing down to Clambin before the terraces fill; hold a table at La Table d'Adrien for the evening you want to remember; and leave one afternoon entirely unplanned for the Pub Mont Fort, because in Verbier the best nights tend to begin there by accident.",
+   "att": "The Vertige Pick"
+  },
+  "pickAfter": 1
  }
 ]

@@ -12,7 +12,11 @@ export const metadata = { title: 'The Journal — Vertige' }
 interface A { slug: string; cat: string; title: string; dek: string; hero: string; read: number }
 
 export default function JournalIndexPage() {
-  const all = articles as A[]
+  // The index grid is the prototype's 15 cards — articles whose category has
+  // a filter tab. (Where to Eat in Verbier is Dining: linked from the
+  // sitemap and related rails, not in this grid, as the prototype.)
+  const TAB_CATS = new Set(['Comparison', 'The Local’s Guide', 'The Mountain Life', 'Planning', 'When To Go', 'Families & Groups', 'Vertige'])
+  const all = (articles as A[]).filter((a) => TAB_CATS.has(a.cat))
   const featured = all.find((a) => a.slug === 'journal-the-journey')
   const cards = all.map(({ slug, cat, title, dek, hero }) => ({ slug, cat, title, dek, hero }))
   const reads = Object.fromEntries(all.map((a) => [a.slug, a.read]))
