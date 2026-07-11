@@ -170,6 +170,26 @@ button{font-family:inherit}
 .hero .sub{color:#eef0f2;font-size:clamp(.95rem,1.3vw,1.1rem);max-width:52ch;margin-top:1.1rem;font-weight:300}
 .hero .hcta{display:flex;gap:1rem;margin-top:1.8rem;flex-wrap:wrap}
 
+/* ── Fact chips (icon-linked practicalities strip) ─────────────────────── */
+/* Icons: line/outline only — stroke currentColor, no fill (brand icon rule). */
+.factstrip .fs-eye{font-family:'Proxima Nova','Inter';font-size:.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1.2rem}
+.fs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px}
+.fs-chip{display:flex;gap:.95rem;align-items:flex-start;background:var(--paper);padding:1.15rem 1.25rem;outline:1px solid var(--line)}
+.fs-chip svg{width:26px;height:26px;color:var(--plum);flex:0 0 auto;margin-top:.1rem}
+.fs-chip .fs-label{font-family:'Proxima Nova','Inter';font-size:.56rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.3rem}
+.fs-chip .fs-value{font-family:'Proxima Nova','Inter';font-size:.92rem;color:var(--plum);line-height:1.45}
+
+/* ── Destination page ──────────────────────────────────────────────────── */
+.dest-intro{max-width:64ch}
+.dest-intro p{color:#5c5560;font-size:1.02rem;line-height:1.72;margin-bottom:1.2rem}
+.gblock{display:grid;grid-template-columns:minmax(260px,1fr) 1.6fr;gap:clamp(2rem,4vw,4rem);padding:clamp(2rem,3.5vw,3rem) 0;border-top:1px solid var(--line)}
+@media(max-width:820px){.gblock{grid-template-columns:1fr}}
+.gblock h3{font-size:clamp(1.4rem,2.4vw,1.9rem);margin-bottom:.8rem}
+.gblock .intro{color:var(--muted);font-size:.95rem;line-height:1.6}
+.gblock .gr p{color:#5c5560;font-size:1rem;line-height:1.7;margin-bottom:1rem}
+.gblock .more{font-family:'Proxima Nova','Inter';font-size:.64rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--plum);font-weight:500}
+.gblock .more:hover{color:var(--rose)}
+
 /* ── Shared editorial bits ─────────────────────────────────────────────── */
 .eyebrow{font-family:'Proxima Nova','Inter';font-size:.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--rose);font-weight:500}
 .section{padding:clamp(3rem,6vw,5.4rem) 0}
