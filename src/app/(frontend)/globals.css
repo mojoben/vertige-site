@@ -11,7 +11,12 @@
    depends on Google Fonts at runtime. */
 @font-face{font-family:'Proxima Nova';src:url('/fonts/proxima-nova-light.ttf') format('truetype');font-weight:300;font-display:swap}
 @font-face{font-family:'Proxima Nova';src:url('/fonts/proxima-nova-regular.otf') format('opentype');font-weight:400;font-display:swap}
-@font-face{font-family:'Ivy Mode';src:url('/fonts/ivy-mode-regular.ttf') format('truetype');font-weight:400;font-display:swap}
+/* Ivy Mode is deliberately NOT loaded: the prototype folder never contained
+   the file (see prototype/fonts/HOW-TO-ADD-FONTS.md), so every cowork page
+   Ben approved rendered headings in the Cormorant Garamond fallback — the
+   font-family stacks keep 'Ivy Mode' first so dropping in ivy-mode-regular
+   (from the res-platform fonts/ folder) upgrades headings site-wide the
+   moment Ben chooses true Ivy Mode. */
 @font-face{font-family:'Cormorant Garamond';src:url('/fonts/cormorant-garamond-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'Cormorant Garamond';src:url('/fonts/cormorant-garamond-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:'Cormorant Garamond';src:url('/fonts/cormorant-garamond-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
