@@ -6,6 +6,7 @@ import { getDestContent } from '@/lib/dest-content'
 import { RESORT_FACTS } from '@/lib/facts-data'
 import { FactStrip } from '@/components/FactStrip'
 import { DestinationExplorer } from '@/components/DestinationExplorer'
+import { getCatalogue } from '@/lib/portal-client'
 
 // Destination landing page — faithful port of vertige-proto-dest-{slug}.html
 // (the visual source of truth; 02 §1 "do not redesign"): SEO hero + floating
@@ -27,6 +28,8 @@ export default async function DestinationPage({ params }: { params: Promise<{ co
 
   const content = getDestContent(resort.slug, resort.name)
   const hero = `/images/destinations/${resort.slug}-hero.jpg`
+  // Live chalets from the res portal (mock fallback when unreachable — 03 §2).
+  const { chalets } = await getCatalogue()
 
   const overview = (
     <section className="dsec" id="overview">
@@ -92,6 +95,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ co
 
       <DestinationExplorer
         resortName={resort.name}
+        chalets={chalets}
         overview={overview}
         guide={guide}
         after={

@@ -6,12 +6,19 @@
 // popovers, the Sat/Sun flexible-changeover calendar (05 §2 — don't lose this
 // rule), sticky scrollspy tabs, filter bar + slide-out filter panel, results
 // grid, and the placeholder map with pins + popups (real Google Maps later).
-// Chalet data is the prototype mock set until the res-portal adapter lands.
+// Chalet data comes from the res-portal adapter (getCatalogue), with the
+// prototype mock set as the dev fallback when the portal is unreachable.
 
 import Link from 'next/link'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { COUNTRIES } from '@/lib/destinations'
-import { MOCK_CHALETS, gbp, type MockChalet } from '@/lib/mock-chalets'
+import { gbp, type MockChalet } from '@/lib/mock-chalets'
+
+// Card shape = the prototype contract; portal-fed cards add their currency
+// symbol + slug (see lib/portal-client.ts toCard).
+export type CatalogueChalet = MockChalet & { priceSymbol?: string; slug?: string }
+const price = (c: CatalogueChalet, n: number) =>
+  c.priceSymbol ? `${c.priceSymbol}${n >= 1000 ? (n / 1000).toFixed(0) + 'k' : n}` : gbp(n)
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -64,11 +71,13 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
 
 export function DestinationExplorer({
   resortName,
+  chalets,
   overview,
   guide,
   after,
 }: {
   resortName: string
+  chalets: CatalogueChalet[]
   overview: React.ReactNode
   guide: React.ReactNode
   after?: React.ReactNode
@@ -100,7 +109,7 @@ export function DestinationExplorer({
     if (s.flex) return true
     return (c.co === 'Sat' ? 6 : 0) === s.arr.getDay()
   }
-  const list = useMemo(() => MOCK_CHALETS.filter((c) => {
+  const list = useMemo(() => chalets.filter((c) => {
     if (s.tier.length && !s.tier.includes(c.tier)) return false
     if (s.country.length && !s.country.includes(c.country)) return false
     if (s.destCountry && c.country !== s.destCountry) return false
@@ -221,14 +230,14 @@ export function DestinationExplorer({
   const toggleF = (f: 'tier' | 'country' | 'ptype' | 'attr', v: string, on: boolean) =>
     set({ [f]: on ? [...s[f], v] : s[f].filter((x) => x !== v) } as Partial<FilterState>)
 
-  const chaletCard = (c: MockChalet) => (
+  const chaletCard = (c: CatalogueChalet) => (
     <Link key={c.name} className="pc" href="/chalets">
       <div className="im" style={{ backgroundImage: `url(${c.img})` }}><div className="heart">♡</div></div>
       <h3>{c.name}</h3>
       <div className="loc">{c.resort}, {c.country}</div>
       <div className="meta">{c.guests} guests · {c.beds} bedrooms · {c.baths} bathrooms</div>
       <div className="chips">{c.chips.map((x) => <span key={x} className="chip">{x}</span>)}</div>
-      <div className="price">From {gbp(c.from)} to {gbp(c.to)} per week</div>
+      <div className="price">From {price(c, c.from)} to {price(c, c.to)} per week</div>
       <div className="tier">{c.tier} Collection {c.tier === 'Privé' ? '◆◆' : '◆'}</div>
     </Link>
   )
@@ -351,21 +360,21 @@ export function DestinationExplorer({
             <div id="map">
               <div id="mapPins" onClick={() => setActivePin(null)}>
                 {list.map((c) => {
-                  const i = MOCK_CHALETS.indexOf(c)
+                  const i = chalets.indexOf(c)
                   return (
                     <button key={c.name} className={`mpin${activePin === i ? ' act' : ''}`} style={{ left: `${c.mx * 100}%`, top: `${c.my * 100}%` }} onClick={(e) => { e.stopPropagation(); setActivePin(i) }}>
-                      <span className="dot">{gbp(c.from)}</span>
+                      <span className="dot">{price(c, c.from)}</span>
                     </button>
                   )
                 })}
                 {activePin != null && (() => {
-                  const c = MOCK_CHALETS[activePin]
+                  const c = chalets[activePin]
                   return (
                     <div className={`mpop${c.my < 0.42 ? ' below' : ''}`} style={{ left: `${c.mx * 100}%`, top: `${c.my * 100}%` }} onClick={stopAll}>
                       <button className="cx" onClick={() => setActivePin(null)}>×</button>
                       <Link className="lk" href="/chalets" target="_blank" rel="noopener">
                         <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
-                        <div className="b"><h4>{c.name}</h4><div className="r">{c.resort}, {c.country}</div><div className="pr">From {gbp(c.from)} / week</div><span className="view">View chalet ↗</span></div>
+                        <div className="b"><h4>{c.name}</h4><div className="r">{c.resort}, {c.country}</div><div className="pr">From {price(c, c.from)} / week</div><span className="view">View chalet ↗</span></div>
                       </Link>
                     </div>
                   )
