@@ -310,21 +310,18 @@ button{font-family:inherit}
 /* ── Fact chips (icon-linked practicalities strip) ─────────────────────── */
 /* Icons: line/outline only — stroke currentColor, no fill (brand icon rule). */
 .factstrip .fs-eye{font-family:'Proxima Nova','Inter';font-size:.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1.2rem}
-/* One row on desktop (Ben 2026-07-11): chips share the row with consistent
-   padding; values split into logical parts (.fs-part) that never break
-   mid-phrase — a wrap can only happen between parts. Labels use the
-   prototype's search-field micro-label style (.srch .f label — rose, 0.08em),
-   not an invented one. Below 1100px the chips stack naturally. */
+/* Layout rules (Ben, 2026-07-11):
+   - CONTAINED: a chip grows to share the row but never shrinks below its
+     content, so text can never spill over the border;
+   - values split on " · " into parts (.fs-part) that never break mid-phrase;
+   - if the row truly can't fit, a WHOLE chip wraps to the next line;
+   - labels use the prototype's search-field micro-label style (rose, 0.08em). */
 .fs-grid{display:flex;flex-wrap:wrap;gap:1px}
-.fs-chip{display:flex;gap:.85rem;align-items:flex-start;background:var(--paper);padding:1.05rem 1.25rem;outline:1px solid var(--line);flex:1 1 260px;min-width:0}
-@media(min-width:1100px){
-  .fs-grid{flex-wrap:nowrap}
-  .fs-chip{flex:1 1 0}
-}
+.fs-chip{display:flex;gap:.85rem;align-items:flex-start;background:var(--paper);padding:1.05rem 1.25rem;outline:1px solid var(--line);flex:1 0 auto}
 .fs-chip svg{width:26px;height:26px;color:var(--plum);flex:0 0 auto;margin-top:.1rem}
 .fs-chip .fs-label{font-family:'Proxima Nova','Inter';font-size:.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.25rem;white-space:nowrap}
 .fs-chip .fs-value{font-family:'Proxima Nova','Inter';font-size:.9rem;color:var(--plum);line-height:1.5}
-.fs-chip .fs-part{white-space:nowrap}
+.fs-chip .fs-part{display:block;white-space:nowrap}
 
 /* ── Destination landing page (ported from vertige-proto-dest-*.html) ──── */
 .hdr.light{position:sticky;background:#fff}
