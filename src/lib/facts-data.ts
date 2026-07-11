@@ -7,29 +7,31 @@ import type { Fact } from './facts'
 // approximations pending research — all copy is first-draft placeholder per
 // the handoff.
 export const RESORT_FACTS: Record<string, Fact[]> = {
+  // Values use " · " as the ONLY permitted line-break point (see FactStrip) —
+  // keep each part short enough to stand on its own line.
   verbier: [
-    { key: 'airport', value: 'Sion · 50 min (Geneva ~2 h)', source: 'manual', verified: true },
+    { key: 'airport', value: 'Sion 50 min · Geneva ~2 h', source: 'manual', verified: true },
     { key: 'altitude', value: '1,500 m · skiing to 3,330 m', source: 'manual', verified: true },
     { key: 'skiArea', value: '412 km · 4 Vallées', source: 'manual', verified: true },
     { key: 'lifts', value: '~93', source: 'manual', verified: true },
     { key: 'season', value: 'Late Nov – late Apr', source: 'manual', verified: true },
-    { key: 'town', value: 'Walk-everywhere village centre', source: 'manual', verified: true },
+    { key: 'town', value: 'Walk-everywhere centre', source: 'manual', verified: true },
     // Example of the review-queue contract: an AI-proposed fact that has NOT
     // been approved yet — it must never render on the site.
     { key: 'skiInOut', value: 'Selected chalets ski-in/ski-out via Médran', source: 'ai', verified: false },
   ],
   chamonix: [
-    { key: 'airport', value: 'Geneva · 1 h 15', source: 'manual', verified: true },
+    { key: 'airport', value: 'Geneva 1 h 15', source: 'manual', verified: true },
     { key: 'altitude', value: '1,035 m · skiing to 3,842 m', source: 'manual', verified: true },
     { key: 'skiArea', value: 'Vallée de Chamonix · Mont Blanc', source: 'manual', verified: true },
-    { key: 'season', value: 'Dec – Apr (glacier into May)', source: 'manual', verified: true },
-    { key: 'town', value: 'A working alpine town, not a purpose-built resort', source: 'manual', verified: true },
+    { key: 'season', value: 'Dec – Apr · glacier into May', source: 'manual', verified: true },
+    { key: 'town', value: 'A working alpine town', source: 'manual', verified: true },
   ],
   courchevel: [
     { key: 'airport', value: 'Geneva ~2 h 15 · Chambéry 1 h 45', source: 'manual', verified: true },
     { key: 'altitude', value: '1,850 m · skiing to 3,230 m', source: 'manual', verified: true },
     { key: 'skiArea', value: '600 km · Les 3 Vallées', source: 'manual', verified: true },
     { key: 'season', value: 'Early Dec – mid Apr', source: 'manual', verified: true },
-    { key: 'skiInOut', value: 'Ski-in/ski-out across much of 1850', source: 'manual', verified: true },
+    { key: 'skiInOut', value: 'Ski-in/ski-out · much of 1850', source: 'manual', verified: true },
   ],
 }

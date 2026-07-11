@@ -1,3 +1,4 @@
+import React from 'react'
 import type { Fact, FactKey } from '@/lib/facts'
 import { FACT_META, visibleFacts } from '@/lib/facts'
 
@@ -61,15 +62,28 @@ export function FactStrip({ facts, title = 'Practicalities' }: { facts: Fact[]; 
     <div className="factstrip" id="practicalities">
       <div className="fs-eye">{title}</div>
       <div className="fs-grid">
-        {shown.map((f) => (
-          <div key={f.key} className="fs-chip">
-            <svg viewBox="0 0 24 24" aria-hidden {...STROKE}>{ICONS[FACT_META[f.key].icon]}</svg>
-            <div>
-              <div className="fs-label">{FACT_META[f.key].label}</div>
-              <div className="fs-value">{f.value}</div>
+        {shown.map((f) => {
+          // Consistent line-breaking: values split on " · " into logical parts
+          // that never break internally — a break can only happen between
+          // parts, so "412 km · 4 Vallées" wraps as whole phrases or not at all.
+          const parts = f.value.split(' · ')
+          return (
+            <div key={f.key} className="fs-chip">
+              <svg viewBox="0 0 24 24" aria-hidden {...STROKE}>{ICONS[FACT_META[f.key].icon]}</svg>
+              <div>
+                <div className="fs-label">{FACT_META[f.key].label}</div>
+                <div className="fs-value">
+                  {parts.map((p, i) => (
+                    <React.Fragment key={i}>
+                      <span className="fs-part">{p}</span>
+                      {i < parts.length - 1 && <span className="fs-sep"> · </span>}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -305,18 +305,21 @@ button{font-family:inherit}
 /* ── Fact chips (icon-linked practicalities strip) ─────────────────────── */
 /* Icons: line/outline only — stroke currentColor, no fill (brand icon rule). */
 .factstrip .fs-eye{font-family:'Proxima Nova','Inter';font-size:.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1.2rem}
-/* One row on desktop (Ben 2026-07-11): chips size to their content and shrink
-   individually — long values wrap inside their chip rather than breaking the
-   row. Below 1100px they stack naturally. */
+/* One row on desktop (Ben 2026-07-11): chips share the row with consistent
+   padding; values split into logical parts (.fs-part) that never break
+   mid-phrase — a wrap can only happen between parts. Labels use the
+   prototype's search-field micro-label style (.srch .f label — rose, 0.08em),
+   not an invented one. Below 1100px the chips stack naturally. */
 .fs-grid{display:flex;flex-wrap:wrap;gap:1px}
-.fs-chip{display:flex;gap:.8rem;align-items:flex-start;background:var(--paper);padding:1rem 1.15rem;outline:1px solid var(--line);flex:1 1 auto;min-width:0}
+.fs-chip{display:flex;gap:.85rem;align-items:flex-start;background:var(--paper);padding:1.05rem 1.25rem;outline:1px solid var(--line);flex:1 1 260px;min-width:0}
 @media(min-width:1100px){
   .fs-grid{flex-wrap:nowrap}
-  .fs-chip{flex:0 1 auto}
+  .fs-chip{flex:1 1 0}
 }
 .fs-chip svg{width:26px;height:26px;color:var(--plum);flex:0 0 auto;margin-top:.1rem}
-.fs-chip .fs-label{font-family:'Proxima Nova','Inter';font-size:.56rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.3rem}
-.fs-chip .fs-value{font-family:'Proxima Nova','Inter';font-size:.92rem;color:var(--plum);line-height:1.45}
+.fs-chip .fs-label{font-family:'Proxima Nova','Inter';font-size:.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.25rem;white-space:nowrap}
+.fs-chip .fs-value{font-family:'Proxima Nova','Inter';font-size:.9rem;color:var(--plum);line-height:1.5}
+.fs-chip .fs-part{white-space:nowrap}
 
 /* ── Destination landing page (ported from vertige-proto-dest-*.html) ──── */
 .hdr.light{position:sticky;background:#fff}
