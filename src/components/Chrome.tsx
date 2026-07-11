@@ -1,0 +1,241 @@
+'use client'
+
+// Global chrome: fixed/overlay header + multi-level slide-out nav + search
+// overlay. Ported from the flagship prototype (vertige-proto-journal-article.html)
+// per HANDOFF/01 §3/§7 and 02 §2–§3. One client component so the three share
+// open/close state; the page body stays server-rendered.
+
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { COUNTRIES, ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
+import { SITE } from '@/lib/site'
+
+type Variant = 'overlay' | 'solid'
+
+// Mock search dataset (resorts are real; chalets placeholder until the portal
+// adapter lands — HANDOFF 07 "Site search").
+const SEARCH_DATA = [
+  ...ALL_DESTINATIONS.map((d) => ({
+    n: d.name,
+    s: d.country,
+    h: destinationPath(d.countrySlug, d.slug),
+  })),
+  { n: 'Chalet Aiguille', s: 'Verbier · Switzerland', h: '/chalets' },
+  { n: 'Chalet Bellevarde', s: "Val d'Isère · France", h: '/chalets' },
+  { n: 'Chalet Cervin', s: 'Zermatt · Switzerland', h: '/chalets' },
+]
+
+const BackIcon = () => (
+  <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+)
+
+export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
+  const [navOpen, setNavOpen] = useState(false)
+  const [panels, setPanels] = useState<string[]>([]) // stack of open sub-panels
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(variant === 'solid')
+  const [query, setQuery] = useState('')
+
+  // Header: transparent over the hero → solid past it (threshold from the
+  // prototype: innerHeight*0.72 - 140). Solid pages are always "scrolled".
+  useEffect(() => {
+    if (variant === 'solid') return
+    // Clamp the threshold so a not-yet-measured viewport (innerHeight 0) can
+    // never yield a negative threshold and lock the header solid at top.
+    const onScroll = () =>
+      setScrolled(window.scrollY > Math.max(window.innerHeight * 0.72 - 140, 60))
+    onScroll()
+    addEventListener('scroll', onScroll, { passive: true })
+    addEventListener('resize', onScroll, { passive: true })
+    return () => {
+      removeEventListener('scroll', onScroll)
+      removeEventListener('resize', onScroll)
+    }
+  }, [variant])
+
+  // Lock body scroll while an overlay is open; Escape closes.
+  useEffect(() => {
+    document.body.style.overflow = navOpen || searchOpen ? 'hidden' : ''
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { closeNav(); setSearchOpen(false) }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navOpen, searchOpen])
+
+  function closeNav() {
+    setNavOpen(false)
+    setTimeout(() => setPanels([]), 350) // reset sub-views after the slide-out
+  }
+  const showPanel = (id: string) => setPanels((p) => [...p, id])
+  const backPanel = (id: string) => setPanels((p) => p.filter((x) => x !== id))
+  const openSearch = () => { setSearchOpen(true); setQuery('') }
+
+  const results = SEARCH_DATA.filter(
+    (d) => !query.trim()
+      || d.n.toLowerCase().includes(query.trim().toLowerCase())
+      || d.s.toLowerCase().includes(query.trim().toLowerCase()),
+  )
+
+  const subtop = (id: string) => (
+    <div className="subtop">
+      <button className="back" onClick={() => backPanel(id)}><BackIcon /> Back</button>
+      <button className="navx" onClick={closeNav} aria-label="Close menu">×</button>
+    </div>
+  )
+
+  return (
+    <>
+      {/* ── Slide-out nav ── */}
+      <div className={`navov${navOpen ? ' on' : ''}`} onClick={closeNav} />
+      <nav className={`navpanel${navOpen ? ' on' : ''}`} aria-label="Main menu">
+        <div className="nv nv-main">
+          <div className="navtop"><button className="navx" onClick={closeNav} aria-label="Close menu">×</button></div>
+          <div className="navlinks">
+            <button className="nvlink" onClick={() => showPanel('dest')}>Destinations</button>
+            <button className="nvlink" onClick={() => showPanel('insp')}>Inspiration</button>
+            <button className="nvlink" onClick={() => showPanel('about')}>About us</button>
+            <Link className="nvlink" href="/concierge" onClick={closeNav}>Concierge</Link>
+            <Link className="nvlink" href="/approach" onClick={closeNav}>The Approach</Link>
+            <Link className="nvlink" href="/journal" onClick={closeNav}>The Journal</Link>
+            <Link className="nvlink" href="/owners" onClick={closeNav}>Join the portfolio</Link>
+          </div>
+          <div className="navfoot">
+            <div className="nf-row">
+              <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2z" /></svg>
+              <div className="t">Our advisors can be reached on <b>{SITE.phone}</b><span>{SITE.phoneHours}</span></div>
+            </div>
+            <div className="nf-row"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg><Link href="/contact" onClick={closeNav}>Contact us</Link></div>
+            <div className="nf-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M9.1 9a3 3 0 1 1 4.5 2.6c-.9.5-1.6 1.2-1.6 2.4" /><path d="M12 17h.01" /></svg><Link href="/faq" onClick={closeNav}>FAQ &amp; help</Link></div>
+            <div className="nf-row"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="14" y2="18" /></svg><Link href="/sitemap" onClick={closeNav}>Sitemap</Link></div>
+            <div className="nf-lang"><a href="#">English · GBP</a></div>
+          </div>
+        </div>
+
+        {/* Destinations → country cards */}
+        <div className={`nv${panels.includes('dest') ? ' on' : ''}`}>
+          {subtop('dest')}
+          <div className="nvbody">
+            <div className="nvtitle">Destinations</div>
+            <div className="nv-grid">
+              {COUNTRIES.map((c) => (
+                <button key={c.slug} className="nv-country" onClick={() => showPanel(c.slug)}>
+                  <div className="im" style={{ backgroundImage: `url(${c.navImage})` }} />
+                  <h4>{c.name}</h4>
+                  <div className="c">{c.resorts.length} resorts</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Country → resort lists (Signature / More — never "Tier") */}
+        {COUNTRIES.map((c) => (
+          <div key={c.slug} className={`nv${panels.includes(c.slug) ? ' on' : ''}`}>
+            {subtop(c.slug)}
+            <div className="nvbody">
+              <div className="nvtitle">{c.name}</div>
+              <Link className="nv-seeall" href={`/chalets?country=${c.slug}`} onClick={closeNav}>
+                {c.name}: see all chalets →
+              </Link>
+              <div className="nv-reg">
+                <div className="rh">Signature resorts</div>
+                {c.resorts.filter((r) => r.tier === 1).map((r) => (
+                  <Link key={r.slug} href={destinationPath(c.slug, r.slug)} onClick={closeNav}>{r.name}</Link>
+                ))}
+              </div>
+              <div className="nv-reg">
+                <div className="rh">More in {c.name}</div>
+                {c.resorts.filter((r) => r.tier === 2).map((r) => (
+                  <Link key={r.slug} href={destinationPath(c.slug, r.slug)} onClick={closeNav}>{r.name}</Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Inspiration (collection pages pending — HANDOFF 07) */}
+        <div className={`nv${panels.includes('insp') ? ' on' : ''}`}>
+          {subtop('insp')}
+          <div className="nvbody">
+            <div className="nvtitle">Inspiration</div>
+            <div className="nv-list">
+              <a href="#">Where to ski this season</a>
+              <a href="#">Ski-in / ski-out chalets</a>
+              <a href="#">Chalets with a pool &amp; spa</a>
+              <a href="#">Best for large groups</a>
+              <a href="#">New to the collection</a>
+              <Link href="/journal" onClick={closeNav}>Seen in the press</Link>
+              <a href="#">Remarkable architecture</a>
+              <a href="#">Late-season snow</a>
+            </div>
+          </div>
+        </div>
+
+        {/* About us */}
+        <div className={`nv${panels.includes('about') ? ' on' : ''}`}>
+          {subtop('about')}
+          <div className="nvbody">
+            <div className="nvtitle">About us</div>
+            <div className="nv-list">
+              <Link href="/about" onClick={closeNav}>Our story</Link>
+              <Link href="/approach" onClick={closeNav}>What makes us different</Link>
+              <Link href="/about" onClick={closeNav}>Meet the founders</Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Header ── */}
+      <header className={`hdr${scrolled ? ' scrolled' : ''}`}>
+        <div className="wrap">
+          <button className="menu" onClick={() => setNavOpen(true)}>
+            <span className="bars"><i /><i /><i /></span> Menu
+          </button>
+          <Link className="brand" href="/">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="logo-white" src="/images/vertige-logo-white.png" alt="Vertige" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="logo-dark" src="/images/vertige-logo.png" alt="Vertige" />
+          </Link>
+          <div className="right">
+            <span className="ph">☏ {SITE.phone}</span>
+            <button className="hicon" onClick={openSearch} aria-label="Search">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+            </button>
+            <a className="hicon wish" href="#" aria-label="Wishlist">
+              <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8.2 2.6 4.7 6 4.7c2 0 3.2 1.3 4 2.4.8-1.1 2-2.4 4-2.4 3.4 0 4.8 3.5 3.3 6.6C19 15.6 12 20 12 20z" /></svg>
+            </a>
+            <Link className="book" href="/contact">Book your stay</Link>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Search overlay ── */}
+      <div className={`srchbg${searchOpen ? ' on' : ''}`} onClick={() => setSearchOpen(false)} />
+      <div className={`srchov${searchOpen ? ' on' : ''}`}>
+        <div className="srchbar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+          <input
+            placeholder="Search a resort or chalet…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoComplete="off"
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={searchOpen}
+          />
+          <button className="x" onClick={() => setSearchOpen(false)} aria-label="Close">×</button>
+        </div>
+        <div className="srchres">
+          {results.length === 0 && <div className="none">No matches — try a resort or chalet name.</div>}
+          {results.map((d) => (
+            <Link key={`${d.n}-${d.h}`} href={d.h} onClick={() => setSearchOpen(false)}>
+              <span className="nm">{d.n}</span><span className="sub">{d.s}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
