@@ -18,7 +18,7 @@ export const Enquiries: CollectionConfig = {
     delete: ({ req }) => !!req.user,
   },
   fields: [
-    { name: 'enquiryType', type: 'select', required: true, options: ['trip', 'owner', 'newsletter', 'chalet-request'] },
+    { name: 'enquiryType', type: 'select', required: true, options: ['trip', 'owner', 'newsletter', 'chalet-request', 'wishlist', 'wishlist-share'] },
     { name: 'firstName', type: 'text' },
     { name: 'lastName', type: 'text' },
     { name: 'email', type: 'email', required: true },

@@ -12,7 +12,7 @@ import config from '@/payload.config'
 // If the portal is unreachable the record stays `portalSync: pending` for
 // retry — the submission is never dropped.
 
-const TYPES = new Set(['trip', 'owner', 'newsletter', 'chalet-request'])
+const TYPES = new Set(['trip', 'owner', 'newsletter', 'chalet-request', 'wishlist', 'wishlist-share'])
 const EMAIL_RE = /.+@.+\..+/
 
 export async function POST(request: Request) {

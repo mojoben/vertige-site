@@ -13,6 +13,7 @@ import Link from 'next/link'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { COUNTRIES } from '@/lib/destinations'
 import { gbp, type MockChalet } from '@/lib/mock-chalets'
+import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
 
 // Card shape = the prototype contract; portal-fed cards add their currency
 // symbol + slug (see lib/portal-client.ts toCard).
@@ -104,6 +105,39 @@ export function DestinationExplorer({
   const [activePin, setActivePin] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
   const fbodyRef = useRef<HTMLDivElement>(null)
+
+  // Wishlist hearts (HANDOFF 09 §5): saved state + save/unsave with a toast.
+  // savedTick starts at 0 and flips post-mount so SSR and first client render
+  // agree (localStorage is client-only).
+  const [savedTick, setSavedTick] = useState(0)
+  const [wlToast, setWlToast] = useState<string | null>(null)
+  useEffect(() => {
+    setSavedTick(1)
+    const sync = () => setSavedTick((t) => t + 1)
+    addEventListener('vg-wishlist', sync)
+    return () => removeEventListener('vg-wishlist', sync)
+  }, [])
+  const saved = (c: CatalogueChalet) => savedTick > 0 && isSaved(c.slug ?? c.name)
+  const toggleSave = (e: React.MouseEvent, c: CatalogueChalet) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const slug = c.slug ?? c.name
+    if (isSaved(slug)) {
+      removeItemEverywhere(slug)
+      setWlToast('Removed from your list')
+    } else {
+      const list = addItem({
+        slug,
+        name: c.name,
+        loc: `${c.resort}, ${c.country}`,
+        meta: `${c.guests} guests · ${c.beds} bedrooms`,
+        price: c.from > 0 ? `From ${price(c, c.from)} per week` : 'Price on request',
+        img: c.img,
+      })
+      setWlToast(list ? `Saved to ${list.name}` : 'Already on your list')
+    }
+    setTimeout(() => setWlToast(null), 1800)
+  }
 
   const set = (p: Partial<FilterState>) => setS((prev) => ({ ...prev, ...p }))
 
@@ -242,7 +276,14 @@ export function DestinationExplorer({
 
   const chaletCard = (c: CatalogueChalet) => (
     <Link key={c.name} className="pc" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'}>
-      <div className="im" style={{ backgroundImage: `url(${c.img})` }}><div className="heart">♡</div></div>
+      <div className="im" style={{ backgroundImage: `url(${c.img})` }}>
+        <div
+          className={`heart${saved(c) ? ' saved' : ''}`}
+          role="button"
+          aria-label="Save to wishlist"
+          onClick={(e) => toggleSave(e, c)}
+        >{saved(c) ? '♥' : '♡'}</div>
+      </div>
       <h3>{c.name}</h3>
       <div className="loc">{c.resort}, {c.country}</div>
       <div className="meta">{c.guests} guests · {c.beds} bedrooms · {c.baths} bathrooms</div>
@@ -448,6 +489,8 @@ export function DestinationExplorer({
       </aside>
 
       {guide}
+
+      {wlToast && <div className="wltoast" style={{ display: 'block' }}>{wlToast}</div>}
     </>
   )
 }

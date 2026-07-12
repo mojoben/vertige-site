@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     enquiries: Enquiry;
+    wishlists: Wishlist;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    wishlists: WishlistsSelect<false> | WishlistsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -171,7 +173,7 @@ export interface Media {
  */
 export interface Enquiry {
   id: number;
-  enquiryType: 'trip' | 'owner' | 'newsletter' | 'chalet-request';
+  enquiryType: 'trip' | 'owner' | 'newsletter' | 'chalet-request' | 'wishlist' | 'wishlist-share';
   firstName?: string | null;
   lastName?: string | null;
   email: string;
@@ -197,6 +199,29 @@ export interface Enquiry {
    * The page the form was submitted from.
    */
   sourcePath?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlists".
+ */
+export interface Wishlist {
+  id: number;
+  token: string;
+  name: string;
+  senderName?: string | null;
+  items?:
+    | {
+        slug: string;
+        chaletName?: string | null;
+        loc?: string | null;
+        meta?: string | null;
+        price?: string | null;
+        img?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -235,6 +260,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'enquiries';
         value: number | Enquiry;
+      } | null)
+    | ({
+        relationTo: 'wishlists';
+        value: number | Wishlist;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -332,6 +361,28 @@ export interface EnquiriesSelect<T extends boolean = true> {
   portalSync?: T;
   portalRef?: T;
   sourcePath?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlists_select".
+ */
+export interface WishlistsSelect<T extends boolean = true> {
+  token?: T;
+  name?: T;
+  senderName?: T;
+  items?:
+    | T
+    | {
+        slug?: T;
+        chaletName?: T;
+        loc?: T;
+        meta?: T;
+        price?: T;
+        img?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

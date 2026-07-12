@@ -35,6 +35,7 @@ export default function SitemapPage() {
           <div className="smcol"><h3>Explore</h3>
             <Link href="/">Home</Link>
             <Link href="/chalets">All chalets</Link>
+            <Link href="/wishlist">My Favourites</Link>
             <Link href="/concierge">Concierge</Link>
             <Link href="/approach">The Approach</Link>
             <Link href="/journal">The Journal</Link>

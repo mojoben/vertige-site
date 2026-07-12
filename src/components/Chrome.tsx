@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { COUNTRIES, ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { SITE } from '@/lib/site'
+import { WishlistHeaderButton } from '@/components/WishlistBits'
 
 // overlay: fixed, transparent over the hero → solid past it (flagship pages).
 // solid:   fixed, always solid (pages with no hero).
@@ -210,9 +211,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
             <button className="hicon" onClick={openSearch} aria-label="Search">
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
             </button>
-            <a className="hicon wish" href="#" aria-label="Wishlist">
-              <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.3-8.7C1.2 8.2 2.6 4.7 6 4.7c2 0 3.2 1.3 4 2.4.8-1.1 2-2.4 4-2.4 3.4 0 4.8 3.5 3.3 6.6C19 15.6 12 20 12 20z" /></svg>
-            </a>
+            <WishlistHeaderButton />
             <Link className="book" href="/contact">Book your stay</Link>
           </div>
         </div>
