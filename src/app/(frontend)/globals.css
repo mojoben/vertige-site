@@ -1429,3 +1429,6 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 .vform{max-width:820px;margin:0 auto;background:#fff;border:1px solid var(--line);padding:clamp(1.6rem,3vw,2.8rem)}
 .lbody{padding:clamp(2.4rem,4vw,3.8rem) 0 clamp(3rem,5vw,4.8rem)}
 .lhead{background:linear-gradient(180deg,#efe8dc 0%,#fcf9f5 100%)}
+/* icon-decorated room points (the prototype's .hasic rules) */
+.feats li.hasic,.slist span.hasic{display:flex;align-items:center;gap:.55rem;padding-left:0}
+.feats li.hasic::before,.slist span.hasic::before{display:none}

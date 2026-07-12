@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { fetchPortalProperties, fetchPortalAvailability } from '@/lib/portal-client'
 import { SITE } from '@/lib/site'
+import { Pt, PointIcon, AmenIcon } from '@/components/ChaletIcons'
 import {
   SubnavSpy, BookingCard, Availability, ReserveForm, ScheduleCall, Gallery,
 } from '@/components/ChaletDetailBits'
@@ -153,18 +154,18 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
             <summary>View full features &amp; amenities <span className="pm">+</span></summary>
             <div className="amwrap">
               {[
-                { n: 'Living room', items: ['Double-height ceiling', 'Open fireplace', '5 armchairs', 'Balcony access'] },
-                { n: 'Dining room', items: ['Table, 14 seats', 'Wine display'] },
-                { n: 'Kitchen', items: ['Range oven', 'Wine fridge', 'Coffee machine', 'Full appliances'] },
-                { n: 'Cinema room', items: ['Projector', '8 seats', 'Surround sound'] },
-                { n: 'Master bathroom', items: ['Bathtub', 'Walk-in shower', 'Double basin'] },
-                { n: 'Bathrooms 2–6', items: ['Bath or shower', 'Basin', 'WC'] },
-                { n: 'Wellness floor', items: ['Hammam', 'Sauna', 'Steam room', 'Massage room'] },
-                { n: 'Ski room', items: ['Boot warmers', 'Private ski storage'] },
-                { n: 'Utility', items: ['Washer & dryer', 'Drying room'] },
+                { ic: 'living', n: 'Living room', items: ['Double-height ceiling', 'Open fireplace', '5 armchairs', 'Balcony access'] },
+                { ic: 'dining', n: 'Dining room', items: ['Table, 14 seats', 'Wine display'] },
+                { ic: 'kitchen', n: 'Kitchen', items: ['Range oven', 'Wine fridge', 'Coffee machine', 'Full appliances'] },
+                { ic: 'cinema', n: 'Cinema room', items: ['Projector', '8 seats', 'Surround sound'] },
+                { ic: 'bath', n: 'Master bathroom', items: ['Bathtub', 'Walk-in shower', 'Double basin'] },
+                { ic: 'bath', n: 'Bathrooms 2–6', items: ['Bath or shower', 'Basin', 'WC'] },
+                { ic: 'spa', n: 'Wellness floor', items: ['Hammam', 'Sauna', 'Steam room', 'Massage room'] },
+                { ic: 'ski', n: 'Ski room', items: ['Boot warmers', 'Private ski storage'] },
+                { ic: 'laundry', n: 'Utility', items: ['Washer & dryer', 'Drying room'] },
               ].map((r) => (
                 <div key={r.n} className="ra">
-                  <div className="ra-h"><svg viewBox="0 0 24 24"><path d="M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" /><path d="M3 11h18v6H3z" /><path d="M5 17v3M19 17v3" /></svg><h4>{r.n}</h4></div>
+                  <div className="ra-h"><AmenIcon k={r.ic} /><h4>{r.n}</h4></div>
                   <div className="ra-items">{r.items.map((i) => <span key={i}>{i}</span>)}</div>
                 </div>
               ))}
@@ -182,8 +183,8 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
             <h2>Living spaces warmed <em>by the fire</em>.</h2>
             <p>Six interconnected spaces flow between the double-height salon and the terrace. An open fire anchors the room; the dining room frames the mountains through floor-to-ceiling glass; the wellness floor and cinema sit below, warm underfoot.</p>
             <div className="feats">
-              <div><h4>Living</h4><ul><li>Formal dining · 14</li><li>Sitting room with hearth</li><li>Chef&rsquo;s kitchen</li><li>Cinema room</li></ul></div>
-              <div><h4>Features</h4><ul><li>Open fireplace</li><li>Double-height glass</li><li>Underfloor heating</li><li>Wine cellar</li></ul></div>
+              <div><h4>Living</h4><ul>{['Formal dining · 14', 'Sitting room with hearth', "Chef's kitchen", 'Cinema room'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
+              <div><h4>Features</h4><ul>{['Open fireplace', 'Double-height glass', 'Underfloor heating', 'Wine cellar'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
             </div>
           </div>
         </div></div></section>
@@ -201,14 +202,14 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
             <div className="tx">
               <h3>Bedroom One</h3>
               <p className="d">A double bedroom opening to a private balcony — the pistes below, the peaks stretching to the horizon.</p>
-              <div className="slist"><span>Super-king</span><span>En suite</span><span>Dressing room</span><span>Private balcony</span><span>Open fire</span><span>Piste view</span></div>
+              <div className="slist">{['Super-king', 'En suite', 'Dressing room', 'Private balcony', 'Open fire', 'Piste view'].map((l) => <Pt key={l} label={l} />)}</div>
             </div>
           </div>
           <div className="suiterow">
-            <div className="scard"><h3>Bedroom Two</h3><div className="slist"><span>Super-king</span><span>En suite</span><span>Rain shower</span><span>Balcony</span></div></div>
-            <div className="scard"><h3>Bedroom Three</h3><div className="slist"><span>King</span><span>En suite</span><span>Bath &amp; shower</span><span>Mountain view</span></div></div>
-            <div className="scard"><h3>Bedroom Four</h3><div className="slist"><span>Twin / double</span><span>En suite</span><span>Freestanding bath</span><span>Terrace</span></div></div>
-            <div className="scard"><h3>Bedroom Five</h3><div className="slist"><span>Bunk room</span><span>En suite</span><span>Shower</span><span>For children</span></div></div>
+            <div className="scard"><h3>Bedroom Two</h3><div className="slist">{['Super-king', 'En suite', 'Rain shower', 'Balcony'].map((l) => <Pt key={l} label={l} />)}</div></div>
+            <div className="scard"><h3>Bedroom Three</h3><div className="slist">{['King', 'En suite', 'Bath & shower', 'Mountain view'].map((l) => <Pt key={l} label={l} />)}</div></div>
+            <div className="scard"><h3>Bedroom Four</h3><div className="slist">{['Twin / double', 'En suite', 'Freestanding bath', 'Terrace'].map((l) => <Pt key={l} label={l} />)}</div></div>
+            <div className="scard"><h3>Bedroom Five</h3><div className="slist">{['Bunk room', 'En suite', 'Shower', 'For children'].map((l) => <Pt key={l} label={l} />)}</div></div>
           </div>
         </div></section>
       </div>
