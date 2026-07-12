@@ -12,6 +12,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import type { Week } from '@/lib/weeks'
+import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
 
 export type { Week }
 
@@ -56,12 +57,12 @@ export function SubnavSpy() {
 
 // ── Booking card ────────────────────────────────────────────────────────────
 export function BookingCard({
-  name, resort, country, priceFrom, priceTo, sym, guests, beds, baths, weeks, slug, phone,
+  name, resort, country, priceFrom, priceTo, sym, guests, beds, baths, weeks, slug, phone, img,
 }: {
   name: string; resort: string; country: string
   priceFrom: string; priceTo: string; sym: string
   guests: number; beds: number; baths: number
-  weeks: Week[]; slug: string; phone: string
+  weeks: Week[]; slug: string; phone: string; img?: string
 }) {
   const [calOpen, setCalOpen] = useState(false)
   const months = useMemo(() => {
@@ -79,6 +80,32 @@ export function BookingCard({
   const [done, setDone] = useState(false)
   const [f, setF] = useState({ firstName: '', lastName: '', email: '', phone: '', notes: '' })
   const [busy, setBusy] = useState(false)
+
+  // Wishlist heart (HANDOFF 09 §5) — synced post-mount so SSR and hydration agree.
+  const [saved, setSaved] = useState(false)
+  const [wsToast, setWsToast] = useState<string | null>(null)
+  useEffect(() => {
+    const sync = () => setSaved(isSaved(slug))
+    sync()
+    addEventListener('vg-wishlist', sync)
+    return () => removeEventListener('vg-wishlist', sync)
+  }, [slug])
+  const flash = (t: string) => { setWsToast(t); setTimeout(() => setWsToast(null), 1800) }
+  const toggleSave = () => {
+    if (isSaved(slug)) {
+      removeItemEverywhere(slug)
+      flash('Removed from your list')
+    } else {
+      const list = addItem({
+        slug, name,
+        loc: `${resort}, ${country}`,
+        meta: `${guests} guests · ${beds} bedrooms`,
+        price: priceFrom && priceFrom !== '—' ? `From ${priceFrom} per week` : 'Price on request',
+        img: img ?? '',
+      })
+      flash(list ? `Saved to ${list.name}` : 'Already on your list')
+    }
+  }
 
   const wkByKey = useMemo(() => {
     const m: Record<string, number> = {}
@@ -221,7 +248,11 @@ export function BookingCard({
       {done && <div className="bcdone">Thank you — your Vertige advisor will be in touch shortly to confirm availability and a bespoke quotation.</div>}
       <p className="nb">Sending a request is not binding and no payment is required.</p>
       <div className="div" />
-      <div className="ws"><span>♡ Add to wishlist</span><span>↗ Share</span></div>
+      <div className="ws">
+        <span role="button" style={saved ? { color: 'var(--rose)' } : undefined} onClick={toggleSave}>{saved ? '♥ On your wishlist' : '♡ Add to wishlist'}</span>
+        <span role="button" onClick={() => { navigator.clipboard?.writeText(location.href); flash('Link copied') }}>↗ Share</span>
+      </div>
+      {wsToast && <div className="wltoast" style={{ display: 'block' }}>{wsToast}</div>}
       <div className="callspec">Call a specialist · <b>{phone}</b><small>Every day, 8am–midnight</small></div>
     </div>
   )

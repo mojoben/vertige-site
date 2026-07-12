@@ -132,7 +132,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
             name={c.name} resort={c.resort} country={c.country}
             priceFrom={priceFrom} priceTo={priceTo} sym={c.sym}
             guests={c.guests} beds={c.beds} baths={c.baths}
-            weeks={weeks} slug={slug} phone={SITE.phone}
+            weeks={weeks} slug={slug} phone={SITE.phone} img={c.hero}
           />
         </div></div></section>
 
