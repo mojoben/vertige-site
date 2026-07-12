@@ -80,7 +80,7 @@ export default function TermsPage() {
 
           <section id="cancel-you">
             <h2><span className="n">06</span> Changes &amp; cancellations by you</h2>
-            <p>If you need to cancel or amend a confirmed booking, cancellation or amendment charges are likely to apply. Send any cancellation request in writing to <a className="inl" href="mailto:hello@vertigoski.com">hello@vertigoski.com</a>; we will pass it to the owner. Unless your booking summary states otherwise, the following applies:</p>
+            <p>If you need to cancel or amend a confirmed booking, cancellation or amendment charges are likely to apply. Send any cancellation request in writing to <a className="inl" href="mailto:hello@vertigeski.com">hello@vertigeski.com</a>; we will pass it to the owner. Unless your booking summary states otherwise, the following applies:</p>
             <ul>
               <li>More than 84 days before arrival: you lose your deposit, with no further liability — and, where a peak week can be re-let, a cancellation charge of 25% of the total may apply.</li>
               <li>84 days or fewer before arrival: a charge of up to 100% of the total price, unless the chalet can be re-let for the same period, in which case we will reimburse you accordingly.</li>
@@ -123,7 +123,7 @@ export default function TermsPage() {
           <section id="arrival">
             <h2><span className="n">13</span> Arrival &amp; departure</h2>
             <p>Before you travel we will confirm arrival and departure times for your chalet. Standard check-in is from 4pm and check-out by 10am; earlier or later may be possible depending on the week — ask your advisor in advance. If you expect to arrive much later than the time given, please let the resort manager know so they can look after you.</p>
-            <p className="end">Questions about these terms? Write to <a href="mailto:hello@vertigoski.com">hello@vertigoski.com</a> or call +44 20 7131 0270. See also our <Link href="/privacy">Privacy Policy</Link> and <Link href="/cookies">Cookie Policy</Link>.</p>
+            <p className="end">Questions about these terms? Write to <a href="mailto:hello@vertigeski.com">hello@vertigeski.com</a> or call +44 20 7131 0270. See also our <Link href="/privacy">Privacy Policy</Link> and <Link href="/cookies">Cookie Policy</Link>.</p>
           </section>
         </main>
       </div></div>

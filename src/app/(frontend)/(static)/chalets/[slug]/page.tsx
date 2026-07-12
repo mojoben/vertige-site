@@ -270,6 +270,12 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
           </div>
           <div className="mapcard">
             <div className="mk">✦</div>
+            <a
+              className="gmap"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${c.name}, ${c.resort}, ${c.country}`)}`}
+              target="_blank"
+              rel="noopener"
+            >Open in Google Maps ↗</a>
           </div>
         </div></div></section>
 

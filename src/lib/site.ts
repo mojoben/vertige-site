@@ -3,8 +3,8 @@
 // consumer importing from here so that swap is one file.
 export const SITE = {
   name: 'Vertige',
-  domain: 'vertigoski.com',
+  domain: 'vertigeski.com',
   phone: '+44 20 7131 0270',
   phoneHours: 'Every day, 8am–midnight (local time)',
-  email: 'hello@vertigoski.com',
+  email: 'hello@vertigeski.com',
 }

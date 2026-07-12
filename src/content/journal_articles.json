@@ -8,8 +8,6 @@
   "read": 3,
   "h1": "Verbier or Zermatt?",
   "sub": "Two of Switzerland’s greatest resorts, two very different weeks. Which one is yours.",
-  "cat2": "&sect; Comparison",
-  "mid": "Comparison &middot; 3 min read",
   "lead": "Verbier and Zermatt are both among the best resorts in the world, both unmistakably Swiss, and both likely to leave you happy. But they ask for different things and offer different weeks, and the choice between them comes down to temperament more than terrain. Here is how to decide.",
   "sections": [
    {
@@ -74,8 +72,6 @@
   "read": 3,
   "h1": "Méribel, Beyond the Obvious",
   "sub": "The runs, tables and corners of Méribel that the week-one visitor walks straight past.",
-  "cat2": "&sect; The Local’s Guide",
-  "mid": "The Local’s Guide &middot; 3 min read",
   "lead": "Méribel is the heart of the Trois Vallées, which means most visitors spend the week using it as a junction — racing off to Courchevel or Val Thorens and back. Stay a beat longer and the valley reveals what the through-traffic misses: quieter trees, better tables, and a couple of corners worth planning a day around.",
   "sections": [
    {
@@ -131,8 +127,6 @@
   "read": 3,
   "h1": "Alpine Wellness, Out of Season",
   "sub": "The quiet weeks are when the spa, the slow morning and the long sauna actually come into their own.",
-  "cat2": "&sect; The Mountain Life",
-  "mid": "The Mountain Life &middot; 3 min read",
   "lead": "There is a version of a ski holiday that is not really about the skiing. It is about the cold air and the hot water, the sauna after a few runs, the massage that undoes the first day’s stiffness, and the long unhurried morning. In the quiet weeks of the season, that version comes into its own.",
   "sections": [
    {
@@ -160,7 +154,7 @@
     "title": "Skiing optional",
     "paras": [
      "The quiet weeks suit groups where not everyone is chasing vertical. One half of the party skis hard; the other half walks, swims, reads, and meets them for a long lunch. A resort with good off-mountain life — a real town, thermal baths, a few proper restaurants — makes the non-skiing days as good as the skiing ones.",
-     "[Bad Gastein](https://vertigoski.com/destinations/bad-gastein), with its thermal-spa tradition, and the Swiss resorts with serious wellness and quiet valleys, do this better than the high party resorts. The mountain does not have to be the only thing you came for."
+     "[Bad Gastein](https://vertigeski.com/destinations/bad-gastein), with its thermal-spa tradition, and the Swiss resorts with serious wellness and quiet valleys, do this better than the high party resorts. The mountain does not have to be the only thing you came for."
     ],
     "figure": null
    },
@@ -188,8 +182,6 @@
   "read": 3,
   "h1": "The Best Resorts for Beginners",
   "sub": "Where to learn to ski without being put off it — chosen for gentle terrain, good schools, and somewhere to graduate to.",
-  "cat2": "&sect; Planning",
-  "mid": "Planning &middot; 3 min read",
   "lead": "The first week decides whether someone skis for life or never again. Get the resort wrong — too steep, too high, too intimidating — and a beginner spends five days cold, frightened and quietly resolving never to return.",
   "sections": [
    {
@@ -205,9 +197,9 @@
     "id": "s2",
     "title": "Where we send first-timers",
     "paras": [
-     "[La Tania](https://vertigoski.com/destinations/la-tania) and the lower Courchevel villages. Wooded, gentle, and part of the vast Trois Vallées — so a beginner learns somewhere forgiving and graduates onto endless terrain without ever changing resort.",
-     "[Lech](https://vertigoski.com/destinations/lech). Gentle, sunny nursery areas, an exceptional ski-school tradition, and a village that rewards the non-skiing afternoons. It skis far easier than its glamorous reputation suggests.",
-     "[Megève](https://vertigoski.com/destinations/megeve). Mellow, tree-lined and characterful, with a real town to enjoy off the snow. One of the kindest places in the Alps to learn, and lovely for a family where not everyone is sold on skiing yet."
+     "[La Tania](https://vertigeski.com/destinations/la-tania) and the lower Courchevel villages. Wooded, gentle, and part of the vast Trois Vallées — so a beginner learns somewhere forgiving and graduates onto endless terrain without ever changing resort.",
+     "[Lech](https://vertigeski.com/destinations/lech). Gentle, sunny nursery areas, an exceptional ski-school tradition, and a village that rewards the non-skiing afternoons. It skis far easier than its glamorous reputation suggests.",
+     "[Megève](https://vertigeski.com/destinations/megeve). Mellow, tree-lined and characterful, with a real town to enjoy off the snow. One of the kindest places in the Alps to learn, and lovely for a family where not everyone is sold on skiing yet."
     ],
     "figure": {
      "src": "/images/chalets/din-01.webp",
@@ -247,8 +239,6 @@
   "read": 3,
   "h1": "Why a Chalet, Not a Hotel",
   "sub": "The case for taking the whole building — and what you actually gain when you do.",
-  "cat2": "&sect; Planning",
-  "mid": "Planning &middot; 3 min read",
   "lead": "A hotel sells you a room. A chalet gives you a building. For one week a year, with the people you most want to spend it with, that difference turns out to matter more than almost anything else on the trip.",
   "sections": [
    {
@@ -307,8 +297,6 @@
   "read": 3,
   "h1": "Easter in the Alps",
   "sub": "Spring sun, long days, and a holiday week that still skis well — at the resorts that hold their snow.",
-  "cat2": "&sect; When To Go",
-  "mid": "When To Go &middot; 3 min read",
   "lead": "Easter is the season’s last hurrah, and at the right resort it is one of its best weeks. The light is long, the sun has warmth, the terraces are full in the good way — and the skiing, up high, is still excellent. The trick is being up high.",
   "sections": [
    {
@@ -336,9 +324,9 @@
     "id": "s3",
     "title": "Where Easter works",
     "paras": [
-     "[Val Thorens](https://vertigoski.com/destinations/val-thorens), [Tignes](https://vertigoski.com/destinations/tignes) and Obergurgl. The high-altitude insurance policy — snow-sure into late April, with glacier terrain to fall back on.",
-     "[Zermatt](https://vertigoski.com/destinations/zermatt) and [Val d’Isère](https://vertigoski.com/destinations/val-disere). Serious altitude with great towns, so the long spring evenings have somewhere to go.",
-     "The high Arlberg — [Lech](https://vertigoski.com/destinations/lech) and Zürs. Reliable late snow and a village that is at its most relaxed once peak season has passed."
+     "[Val Thorens](https://vertigeski.com/destinations/val-thorens), [Tignes](https://vertigeski.com/destinations/tignes) and Obergurgl. The high-altitude insurance policy — snow-sure into late April, with glacier terrain to fall back on.",
+     "[Zermatt](https://vertigeski.com/destinations/zermatt) and [Val d’Isère](https://vertigeski.com/destinations/val-disere). Serious altitude with great towns, so the long spring evenings have somewhere to go.",
+     "The high Arlberg — [Lech](https://vertigeski.com/destinations/lech) and Zürs. Reliable late snow and a village that is at its most relaxed once peak season has passed."
     ],
     "figure": null
    },
@@ -366,8 +354,6 @@
   "read": 3,
   "h1": "The Family Ski Holiday, Age by Age",
   "sub": "The toddler year and the teenage year are different trips. How to plan for the children you actually have.",
-  "cat2": "&sect; Families &amp; Groups",
-  "mid": "Families &amp; Groups &middot; 3 min read",
   "lead": "There is no such thing as “a family ski holiday” in the abstract. There is the year your eldest is three and the whole trip bends around nap times, and there is the year they are fifteen and want nothing to do with you until dinner. Plan for the children you have, not a generic family.",
   "sections": [
    {
@@ -426,8 +412,6 @@
   "read": 3,
   "h1": "February Half-Term, Sorted",
   "sub": "The busiest, brightest week of the season — how to do it well, and what to book early.",
-  "cat2": "&sect; When To Go",
-  "mid": "When To Go &middot; 3 min read",
   "lead": "February half-term is the high tide of the ski season. The mountains are full, the snow is usually at its best, and every good chalet in every good resort is spoken for months ahead. It is the week most families can travel — which is exactly why it takes the most planning.",
   "sections": [
    {
@@ -470,7 +454,7 @@
    }
   ],
   "pick": {
-   "text": "If half-term is your week, commit early and go big — a large, well-connected area like the [Trois Vallées](https://vertigoski.com/destinations/meribel) will swallow the crowds better than a boutique resort, and a ski-in, ski-out chalet removes the worst of the peak-week friction. Lock in children’s ski school the day you book the chalet, not the month before you travel. The families who do half-term brilliantly are simply the ones who booked it first.",
+   "text": "If half-term is your week, commit early and go big — a large, well-connected area like the [Trois Vallées](https://vertigeski.com/destinations/meribel) will swallow the crowds better than a boutique resort, and a ski-in, ski-out chalet removes the worst of the peak-week friction. Lock in children’s ski school the day you book the chalet, not the month before you travel. The families who do half-term brilliantly are simply the ones who booked it first.",
    "att": "The Vertige Pick"
   },
   "pickAfter": 1
@@ -484,8 +468,6 @@
   "read": 3,
   "h1": "Planning Your First Luxury Ski Holiday",
   "sub": "A short, opinionated guide to getting the big decisions right — resort, chalet, timing and service.",
-  "cat2": "&sect; Planning",
-  "mid": "Planning &middot; 3 min read",
   "lead": "A luxury ski holiday is one of the few trips where the planning genuinely determines the week. Get the four big decisions right — where, what, when and who arranges it — and everything else follows. Get them wrong and no amount of thread count will fix it.",
   "sections": [
    {
@@ -543,8 +525,6 @@
   "read": 3,
   "h1": "The Case for March and April",
   "sub": "Longer days, quieter pistes, and the most civilised skiing of the season — if you know what you are choosing.",
-  "cat2": "&sect; When To Go",
-  "mid": "When To Go &middot; 3 min read",
   "lead": "By March the mountains exhale. The school holidays have passed, the light has lengthened, and the frantic energy of peak season gives way to something more civilised: long days, warm terraces, and pistes you do not have to share.",
   "sections": [
    {
@@ -573,9 +553,9 @@
     "id": "s3",
     "title": "Where to go late",
     "paras": [
-     "[Val Thorens](https://vertigoski.com/destinations/val-thorens) and [Tignes](https://vertigoski.com/destinations/tignes). The highest resorts in the Alps, snow-sure into spring, with glacier terrain that holds when everywhere lower has softened. The safe late-season bets.",
-     "[Zermatt](https://vertigoski.com/destinations/zermatt) and [Val d’Isère](https://vertigoski.com/destinations/val-disere). High, serious and reliable, with the altitude to ski well in April and the towns to enjoy the long evenings.",
-     "The high Arlberg — [Lech](https://vertigoski.com/destinations/lech) and Zürs. Austrian altitude with the village character that peak-season crowds otherwise obscure."
+     "[Val Thorens](https://vertigeski.com/destinations/val-thorens) and [Tignes](https://vertigeski.com/destinations/tignes). The highest resorts in the Alps, snow-sure into spring, with glacier terrain that holds when everywhere lower has softened. The safe late-season bets.",
+     "[Zermatt](https://vertigeski.com/destinations/zermatt) and [Val d’Isère](https://vertigeski.com/destinations/val-disere). High, serious and reliable, with the altitude to ski well in April and the towns to enjoy the long evenings.",
+     "The high Arlberg — [Lech](https://vertigeski.com/destinations/lech) and Zürs. Austrian altitude with the village character that peak-season crowds otherwise obscure."
     ],
     "figure": null
    },
@@ -603,8 +583,6 @@
   "read": 4,
   "h1": "The multi-generational ski week, done properly",
   "sub": "Three generations, three completely different holidays, one chalet that has to hold all of them. Here is what actually makes it work.",
-  "cat2": "&sect; Families &amp; Groups",
-  "mid": "Families &amp; Groups &middot; 4 min read",
   "lead": null,
   "sections": [
    {
@@ -676,8 +654,6 @@
   "read": 3,
   "h1": "Pre-Ski Fitness: Eight Weeks Out",
   "sub": "A little preparation turns the first day from a survival exercise into a good one. What actually helps.",
-  "cat2": "&sect; The Mountain Life",
-  "mid": "The Mountain Life &middot; 3 min read",
   "lead": "The cruellest part of a ski holiday is that the first day is often the worst. Legs that have not skied in a year give out by mid-afternoon, the next morning is agony, and a quarter of a precious week is lost to simply getting fit on the mountain. A little preparation fixes that entirely.",
   "sections": [
    {
@@ -740,8 +716,6 @@
   "read": 3,
   "h1": "Ski-In, Ski-Out: What It Actually Buys You",
   "sub": "The most overused phrase in the brochures — and what it really means for your week.",
-  "cat2": "&sect; Planning",
-  "mid": "Planning &middot; 3 min read",
   "lead": "“Ski-in, ski-out” is the most claimed and least defined phrase in the ski market. It can mean a chalet with skis-on access to the lift system, or a ten-minute walk that someone has generously rounded down. The difference matters, and it is worth knowing what you are actually being sold.",
   "sections": [
    {
@@ -798,8 +772,6 @@
   "read": 3,
   "h1": "What to Pack for a Ski Week",
   "sub": "The short list that matters — what to bring, what to leave, and what to arrange instead of carry.",
-  "cat2": "&sect; The Mountain Life",
-  "mid": "The Mountain Life &middot; 3 min read",
   "lead": "Packing for a ski week is a balance between bringing too much and forgetting the one thing that ruins a day. At this level, the goal is not to carry everything — it is to bring what matters and arrange the rest. Half of what people lug to the Alps could be waiting for them there instead.",
   "sections": [
    {
@@ -856,8 +828,6 @@
   "read": 3,
   "h1": "The Vertige Journey",
   "sub": "Why we started, what we are building, and the one measure we care about.",
-  "cat2": "&sect; Vertige",
-  "mid": "Vertige &middot; 3 min read",
   "lead": "Most ski companies will tell you they are different. Then they hand you the same list of chalets, in the same breathless language, as everyone else. We started Vertige because we thought the whole thing could be done with more honesty and more care — and because we had seen, from two very different angles, exactly where it falls down.",
   "sections": [
    {

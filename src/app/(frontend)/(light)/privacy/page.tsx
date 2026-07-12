@@ -42,7 +42,7 @@ export default function PrivacyPage() {
           <section id="who">
             <h2><span className="n">01</span> Important information &amp; who we are</h2>
             <p>Vertige Ltd is the controller responsible for your personal data (&ldquo;Vertige&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;). We have appointed a data privacy manager who oversees questions about this notice. This notice sits alongside any other privacy notice we may give on specific occasions, and does not override it.</p>
-            <div className="call"><div className="k">Contact details</div><p>Vertige Ltd, 14 Grafton Mews, London W1 · <a className="inl" href="mailto:privacy@vertigoski.com">privacy@vertigoski.com</a> · +44 20 7131 0270. You have the right to complain to the Information Commissioner&rsquo;s Office (ico.org.uk), though we&rsquo;d appreciate the chance to resolve your concern first.</p></div>
+            <div className="call"><div className="k">Contact details</div><p>Vertige Ltd, 14 Grafton Mews, London W1 · <a className="inl" href="mailto:privacy@vertigeski.com">privacy@vertigeski.com</a> · +44 20 7131 0270. You have the right to complain to the Information Commissioner&rsquo;s Office (ico.org.uk), though we&rsquo;d appreciate the chance to resolve your concern first.</p></div>
             <p>Our website is not intended for children; the only time we collect data about children is where you include them in a booking. Please keep us informed if the details we hold about you change.</p>
           </section>
 
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
 
           <section id="rights">
             <h2><span className="n">10</span> Your rights</h2>
-            <p>Under data-protection law you have the right to request access to, correction or erasure of your data; to object to or restrict its processing; to request its transfer; and to withdraw consent. There is usually no fee, and we aim to respond within one month. To exercise any of these rights, contact <a className="inl" href="mailto:privacy@vertigoski.com">privacy@vertigoski.com</a>.</p>
+            <p>Under data-protection law you have the right to request access to, correction or erasure of your data; to object to or restrict its processing; to request its transfer; and to withdraw consent. There is usually no fee, and we aim to respond within one month. To exercise any of these rights, contact <a className="inl" href="mailto:privacy@vertigeski.com">privacy@vertigeski.com</a>.</p>
             <p className="end">See also our <Link href="/terms">Booking Terms</Link> and <Link href="/cookies">Cookie Policy</Link>.</p>
           </section>
         </main>

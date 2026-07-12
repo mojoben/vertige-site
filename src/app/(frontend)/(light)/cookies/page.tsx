@@ -66,7 +66,7 @@ export default function CookiesPage() {
 
           <section id="contact">
             <h2><span className="n">05</span> Contact</h2>
-            <p>Questions about our use of cookies? Write to <a className="inl" href="mailto:privacy@vertigoski.com">privacy@vertigoski.com</a>.</p>
+            <p>Questions about our use of cookies? Write to <a className="inl" href="mailto:privacy@vertigeski.com">privacy@vertigeski.com</a>.</p>
             <p className="end">See also our <Link href="/privacy">Privacy Policy</Link> and <Link href="/terms">Booking Terms</Link>.</p>
           </section>
         </main>

@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import articles from '@/content/journal_articles.json'
+import { ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { Share, TocSpy } from '@/components/ArticleBits'
 import { SITE } from '@/lib/site'
 
@@ -36,10 +37,29 @@ export default async function JournalArticlePage({ params }: { params: Promise<{
   const idx = (articles as Article[]).findIndex((x) => x.slug === slug)
   const related = (articles as Article[]).filter((x) => x.slug !== slug).slice(idx % 3, idx % 3 + 3)
 
+  // Some article paragraphs carry markdown-style resort links,
+  // e.g. [Bad Gastein](https://vertigeski.com/destinations/bad-gastein) —
+  // resolve them to the built destination routes.
+  const linkify = (text: string): React.ReactNode[] => {
+    const out: React.ReactNode[] = []
+    let last = 0
+    for (const m of text.matchAll(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g)) {
+      out.push(text.slice(last, m.index))
+      const destSlug = m[2].match(/\/destinations\/([a-z0-9-]+)/)?.[1]
+      const dest = destSlug ? ALL_DESTINATIONS.find((d) => d.slug === destSlug) : null
+      out.push(dest
+        ? <Link key={m.index} href={destinationPath(dest.countrySlug, dest.slug)}>{m[1]}</Link>
+        : <a key={m.index} href={m[2]}>{m[1]}</a>)
+      last = (m.index ?? 0) + m[0].length
+    }
+    out.push(text.slice(last))
+    return out
+  }
+
   const renderSection = (s: Article['sections'][number], i: number) => (
     <section key={s.id} id={s.id}>
       <h2><span className="rn">{String(i + 1).padStart(2, '0')}</span>{s.title}</h2>
-      {s.paras.map((p, j) => <p key={j}>{p}</p>)}
+      {s.paras.map((p, j) => <p key={j}>{linkify(p)}</p>)}
       {s.figure && (
         <figure>
           {/* eslint-disable-next-line @next/next/no-img-element */}

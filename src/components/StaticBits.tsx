@@ -109,7 +109,7 @@ export function ContactForm() {
       <div className="grp"><label>How did you hear about us?</label><select name="heardAbout" defaultValue=""><option value="">Please choose…</option><option>Returning guest</option><option>Google / online search</option><option>Social media</option><option>Friend or family recommendation</option><option>Press or magazine</option><option>Travel advisor</option><option>Other</option></select></div>
       <div className="grp"><label className="consent"><input type="checkbox" name="optin" /> Keep me updated with new chalets and seasonal inspiration.</label></div>
       <div className="grp"><label className="consent"><input type="checkbox" required /> I agree to Vertige contacting me about my enquiry and accept the privacy policy.</label></div>
-      {state === 'error' && <div className="formnote" style={{ color: 'var(--rose)' }}>Something went wrong sending your enquiry — please try again, or email hello@vertigoski.com.</div>}
+      {state === 'error' && <div className="formnote" style={{ color: 'var(--rose)' }}>Something went wrong sending your enquiry — please try again, or email hello@vertigeski.com.</div>}
       <button className="btn submit" type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending…' : 'Send enquiry'}</button>
     </form>
   )
@@ -150,7 +150,7 @@ export function OwnerForm() {
       </div>
       <div className="grp"><label>About your chalet</label><textarea name="message" placeholder="Tell us about the chalet, its position, staffing, and how you currently let it (if at all)." /></div>
       <div className="grp"><label className="consent"><input type="checkbox" required /> I agree to Vertige contacting me about my enquiry and accept the privacy policy.</label></div>
-      {state === 'error' && <div className="formnote" style={{ color: 'var(--rose)' }}>Something went wrong sending your details — please try again, or email hello@vertigoski.com.</div>}
+      {state === 'error' && <div className="formnote" style={{ color: 'var(--rose)' }}>Something went wrong sending your details — please try again, or email hello@vertigeski.com.</div>}
       <button className="btn submit" type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending…' : 'Submit your chalet'}</button>
     </form>
   )
