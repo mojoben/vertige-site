@@ -29,6 +29,7 @@ const IC: Record<string, string> = {
  restaurant:'<path d="M7 3v7a2 2 0 0 0 4 0V3M9 10v11"/><path d="M16 3c-1.4 0-2.2 1.6-2.2 4S15 11 16 11v10"/>',
  lamp:'<path d="M10 3h4l1 4a3 3 0 0 1-6 0z"/><path d="M12 11v9M9 21h6"/>',
  shuttle:'<path d="M4 6h16v9H4zM4 15v3M20 15v3M4 11h16M7 18v.01M17 18v.01"/>',
+ ski:'<path d="M8 3v14M12 3v14M6 20l12-3"/>',
  def:'<path d="M5 12h14"/>'
 }
 
@@ -53,6 +54,9 @@ export function pick(t: string): string {
   if (t.includes('dining')) return 'dining'
   if (t.includes('sitting') || t.includes('hearth') || t.includes('fire')) return 'fire'
   if (t.includes('underfloor') || t.includes('heating')) return 'heat'
+  if (t.includes('hot tub') || t.includes('jacuzzi') || t.includes('pool')) return 'bath'
+  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage')) return 'heat'
+  if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('boot')) return 'ski'
   if (t.includes('dressing')) return 'hanger'
   if (t.includes('shower') || t.includes('rain')) return 'shower'
   if (t.includes('bath') || t.includes('suite') || t.includes('wc') || t.includes('basin')) return 'bath'

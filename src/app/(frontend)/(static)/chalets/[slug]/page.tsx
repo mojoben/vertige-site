@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { fetchPortalProperties, fetchPortalAvailability } from '@/lib/portal-client'
+import { fetchPortalProperties, fetchPortalAvailability, fetchPortalContent, type PortalContent } from '@/lib/portal-client'
 import { SITE } from '@/lib/site'
 import { Pt, PointIcon, AmenIcon } from '@/components/ChaletIcons'
 import {
@@ -11,15 +11,37 @@ import { mockWeeks, type Week } from '@/lib/weeks'
 // Chalet detail — faithful port of vertige-proto-chalet-detail-alt.html ("the
 // current, most-developed detail page", 02 §1). Live portal chalets render
 // their own name/resort/stats/pricing/gallery + REAL per-week availability
-// from the portal's quote-week engine; every other section (interior,
-// bedrooms, exterior, services, location, conditions) carries the prototype's
-// sample content until real chalet content is imported — exactly the interim
-// Ben asked for ("these will be replaced when we import live/real chalets").
-// Unknown slugs (incl. /chalets/sample) render the full prototype sample.
+// from the portal's quote-week engine.
+//
+// Editorial sections (overview, key features, amenities, interior, bedrooms,
+// exterior, location) come from the portal's content pipeline via
+// web.property_content_v — APPROVED content only. Rendering rule: a chalet
+// WITH approved content shows only the sections its content truthfully fills
+// (missing sections are omitted, never sample-padded — the no-false-
+// representation rule); a chalet with NO approved content keeps the full
+// prototype sample as the interim placeholder. Unknown slugs (incl.
+// /chalets/sample) render the full prototype sample.
 
 export const dynamic = 'force-dynamic'
 
 const money = (sym: string, n: number) => `${sym}${n.toLocaleString('en-GB')}`
+
+// Headlines carry one *emphasised* segment (registry contract) → <em>.
+function emify(s: string): React.ReactNode {
+  const parts = s.split('*')
+  if (parts.length < 3) return s
+  return <>{parts[0]}<em>{parts[1]}</em>{parts.slice(2).join('*')}</>
+}
+
+// Location-spec icons keyed by the registry's slot keys (prototype linework).
+const LOC_ICONS: Record<string, React.ReactNode> = {
+  lift: <path d="M3 5l18-2M8 8l1.5 4h5L19 8M7 12h10v6H7zM12 12v6" />,
+  village: <><path d="M10 3h4l1 4a3 3 0 0 1-6 0z" /><path d="M12 11v9M9 21h6" /></>,
+  restaurant: <><path d="M7 3v7a2 2 0 0 0 4 0V3M9 10v11" /><path d="M16 3c-1.4 0-2.2 1.6-2.2 4S15 11 16 11v10" /></>,
+  airport: <path d="M21 15l-8-3V5.5a1.5 1.5 0 0 0-3 0V12l-8 3v2l8-2v3l-2 1.5V21l3.5-1 3.5 1v-1.5L13 18v-3z" />,
+  transfers: <path d="M4 6h16M12 6v3M6 12h11l2.5 4H4zM12 16v3M9 22h6" />,
+  piste: <path d="M3 19l6-9 3.5 4.5L15 11l6 8z" />,
+}
 
 // The prototype's sample chalet (Chalet Aiguille, Verbier).
 const SAMPLE = {
@@ -53,7 +75,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         sym: p.currency === 'CHF' ? 'CHF ' : p.currency === 'GBP' ? '£' : '€',
         guests: p.sleeps,
         beds: p.bedrooms,
-        baths: p.bedrooms,
+        baths: p.bathrooms ?? p.bedrooms,
         from: p.weeklyFrom ?? 0,
         to: p.weeklyTo ?? p.weeklyFrom ?? 0,
         tier: p.tier,
@@ -62,6 +84,12 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         changeover: (p.changeoverDay === 'sun' ? 'Sun' : 'Sat') as 'Sat' | 'Sun',
       }
     : SAMPLE
+
+  // Approved editorial content (null → interim sample throughout).
+  const content: PortalContent | null = p ? await fetchPortalContent(p.slug) : null
+  const rooms = content?.rooms?.length ? content.rooms : null
+  // Section images: live gallery shots where available, prototype otherwise.
+  const gimg = (i: number, fallback: string) => (p && c.gallery[i]) || fallback
 
   // Weeks: REAL availability + pricing from the portal engine for live
   // chalets (Dec 2026 → mid-Apr 2027 season window); prototype mock otherwise.
@@ -116,18 +144,29 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         <section id="overview"><div className="wrap"><div className="grid2">
           <div className="ov">
             <div className="chapter">Overview</div>
-            <h2>Alpine grandeur, held <em>above the valley</em>.</h2>
-            <p>{c.name} blends handcrafted timber and stone with a contemporary sensibility. High ceilings, hand-hewn beams and carefully curated interiors create a refined yet welcoming atmosphere throughout the chalet.</p>
-            <p>The double-height sitting room opens directly onto the terrace, letting the mountains take centre stage, while an open fire lends warmth on colder evenings. A formal dining room frames the peaks through floor-to-ceiling glass — a stunning backdrop for memorable meals with family and friends.</p>
-            <p>The chalet accommodates {c.guests} guests across {c.beds} en suite bedrooms. The master claims the top floor with its own balcony and panoramic views; the further rooms sit below, each opening to the light.</p>
+            {content?.overview ? (
+              <>
+                <h2>{emify(content.overview.headline)}</h2>
+                {content.overview.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
+              </>
+            ) : (
+              <>
+                <h2>Alpine grandeur, held <em>above the valley</em>.</h2>
+                <p>{c.name} blends handcrafted timber and stone with a contemporary sensibility. High ceilings, hand-hewn beams and carefully curated interiors create a refined yet welcoming atmosphere throughout the chalet.</p>
+                <p>The double-height sitting room opens directly onto the terrace, letting the mountains take centre stage, while an open fire lends warmth on colder evenings. A formal dining room frames the peaks through floor-to-ceiling glass — a stunning backdrop for memorable meals with family and friends.</p>
+                <p>The chalet accommodates {c.guests} guests across {c.beds} en suite bedrooms. The master claims the top floor with its own balcony and panoramic views; the further rooms sit below, each opening to the light.</p>
+              </>
+            )}
             <div className="clevel top">
               <div className="ic"><span className="dia f" /><span className="dia f" /><span className={`dia${isPrive ? ' f' : ' t'}`} /></div>
               <div><h3>{isPrive ? 'Privé' : 'Reserve'} Service</h3><p>{isPrive ? 'Timeless luxury with a dedicated concierge at your side from the moment you book to the moment you leave — every transfer, reservation and detail handled.' : 'All the essentials for a seamless stay — check-in and check-out managed, transfers arranged, and any additional service organised and billed on request.'}</p><Link className="lm" href="/concierge">Learn more</Link></div>
             </div>
-            <div className="clevel">
-              <div className="ic" style={{ justifyContent: 'center' }}><span className="circmark">V</span></div>
-              <div><h3>A Vertige Exclusive</h3><p>This chalet is only available with Vertige.</p></div>
-            </div>
+            {(p ? p.exclusive : true) && (
+              <div className="clevel">
+                <div className="ic" style={{ justifyContent: 'center' }}><span className="circmark">V</span></div>
+                <div><h3>A Vertige Exclusive</h3><p>This chalet is only available with Vertige.</p></div>
+              </div>
+            )}
           </div>
           <BookingCard
             name={c.name} resort={c.resort} country={c.country}
@@ -138,22 +177,32 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         </div></div></section>
 
         {/* KEY FEATURES */}
+        {(content ? !!content.keyFeatures?.length || !!content.amenities?.length : true) && (
         <section id="keyfeatures"><div className="wrap">
           <h2 className="kf-title">Key features</h2>
-          <div className="kf">
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M4 17l14-4M4 15l14-4" /><path d="M15 6l1 3M18 5l1 3" /><path d="M3 20h6l1-2" /></svg><span>Ski-in / ski-out<small>{c.resort} side</small></span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M3 14h18v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" /><path d="M6 14V8a2 2 0 0 1 2-2h1" /><path d="M9 4v2M13 3c0 1-1 1-1 2s1 1 1 2M16 3c0 1-1 1-1 2s1 1 1 2" /></svg><span>Outdoor hot tub</span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" /><path d="M8 21v-5a4 4 0 0 1 8 0v5" /><path d="M12 12c1-1 1-2 0-3s-1-2 0-3" /></svg><span>Open fireplace</span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M4 18h16M4 14h16" /><path d="M8 10c1-1 1-2 0-3M12 10c1-1 1-2 0-3M16 10c1-1 1-2 0-3" /></svg><span>Underfloor heating</span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M8 3v13M11 3v13" /><path d="M6 20l14-3" /><path d="M8 16l-2 4M11 16l1 3" /></svg><span>Ski room<small>Heated, private</small></span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M12 12v4M8 20c0-2 2-3 4-3s4 1 4 3" /></svg><span>Hammam &amp; sauna</span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="1" /><path d="M7 21h10M9 17v4M15 17v4" /></svg><span>Cinema room</span></div>
-            <div className="k"><svg viewBox="0 0 24 24"><path d="M7 3v6a5 5 0 0 0 10 0V3" /><path d="M12 14v5M8 21h8" /></svg><span>Wine cellar</span></div>
-          </div>
+          {content?.keyFeatures?.length ? (
+            <div className="kf">
+              {content.keyFeatures.map((f) => (
+                <div key={f.label} className="k"><PointIcon label={f.label} className="" /><span>{f.label}{f.sub && <small>{f.sub}</small>}</span></div>
+              ))}
+            </div>
+          ) : !content && (
+            <div className="kf">
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M4 17l14-4M4 15l14-4" /><path d="M15 6l1 3M18 5l1 3" /><path d="M3 20h6l1-2" /></svg><span>Ski-in / ski-out<small>{c.resort} side</small></span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M3 14h18v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" /><path d="M6 14V8a2 2 0 0 1 2-2h1" /><path d="M9 4v2M13 3c0 1-1 1-1 2s1 1 1 2M16 3c0 1-1 1-1 2s1 1 1 2" /></svg><span>Outdoor hot tub</span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" /><path d="M8 21v-5a4 4 0 0 1 8 0v5" /><path d="M12 12c1-1 1-2 0-3s-1-2 0-3" /></svg><span>Open fireplace</span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M4 18h16M4 14h16" /><path d="M8 10c1-1 1-2 0-3M12 10c1-1 1-2 0-3M16 10c1-1 1-2 0-3" /></svg><span>Underfloor heating</span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M8 3v13M11 3v13" /><path d="M6 20l14-3" /><path d="M8 16l-2 4M11 16l1 3" /></svg><span>Ski room<small>Heated, private</small></span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M12 12v4M8 20c0-2 2-3 4-3s4 1 4 3" /></svg><span>Hammam &amp; sauna</span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="1" /><path d="M7 21h10M9 17v4M15 17v4" /></svg><span>Cinema room</span></div>
+              <div className="k"><svg viewBox="0 0 24 24"><path d="M7 3v6a5 5 0 0 0 10 0V3" /><path d="M12 14v5M8 21h8" /></svg><span>Wine cellar</span></div>
+            </div>
+          )}
+          {(content ? !!content.amenities?.length : true) && (
           <details className="amtoggle">
             <summary>View full features &amp; amenities <span className="pm">+</span></summary>
             <div className="amwrap">
-              {[
+              {(content?.amenities?.map((g) => ({ ic: g.icon, n: g.name, items: g.items })) ?? [
                 { ic: 'living', n: 'Living room', items: ['Double-height ceiling', 'Open fireplace', '5 armchairs', 'Balcony access'] },
                 { ic: 'dining', n: 'Dining room', items: ['Table, 14 seats', 'Wine display'] },
                 { ic: 'kitchen', n: 'Kitchen', items: ['Range oven', 'Wine fridge', 'Coffee machine', 'Full appliances'] },
@@ -163,7 +212,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
                 { ic: 'spa', n: 'Wellness floor', items: ['Hammam', 'Sauna', 'Steam room', 'Massage room'] },
                 { ic: 'ski', n: 'Ski room', items: ['Boot warmers', 'Private ski storage'] },
                 { ic: 'laundry', n: 'Utility', items: ['Washer & dryer', 'Drying room'] },
-              ].map((r) => (
+              ]).map((r) => (
                 <div key={r.n} className="ra">
                   <div className="ra-h"><AmenIcon k={r.ic} /><h4>{r.n}</h4></div>
                   <div className="ra-items">{r.items.map((i) => <span key={i}>{i}</span>)}</div>
@@ -171,64 +220,120 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
               ))}
             </div>
           </details>
+          )}
         </div></section>
+        )}
 
         {/* CHAPTER II — INTERIOR */}
+        {(content ? !!content.interior : true) && (
         <section id="interior"><div className="wrap"><div className="grid2">
           <div className="plate">
-            <div className="ph"><div className="im" style={{ backgroundImage: 'url(/images/chalets/liv-08.webp)' }} /></div>
+            <div className="ph"><div className="im" style={{ backgroundImage: `url(${gimg(1, '/images/chalets/liv-08.webp')})` }} /></div>
           </div>
           <div className="chtx">
             <div className="chapter">Interior</div>
-            <h2>Living spaces warmed <em>by the fire</em>.</h2>
-            <p>Six interconnected spaces flow between the double-height salon and the terrace. An open fire anchors the room; the dining room frames the mountains through floor-to-ceiling glass; the wellness floor and cinema sit below, warm underfoot.</p>
-            <div className="feats">
-              <div><h4>Living</h4><ul>{['Formal dining · 14', 'Sitting room with hearth', "Chef's kitchen", 'Cinema room'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
-              <div><h4>Features</h4><ul>{['Open fireplace', 'Double-height glass', 'Underfloor heating', 'Wine cellar'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
-            </div>
+            {content?.interior ? (
+              <>
+                <h2>{emify(content.interior.headline)}</h2>
+                <p>{content.interior.paragraph}</p>
+                <div className="feats">
+                  {content.interior.groups.map((g) => (
+                    <div key={g.title}><h4>{g.title}</h4><ul>{g.points.map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>Living spaces warmed <em>by the fire</em>.</h2>
+                <p>Six interconnected spaces flow between the double-height salon and the terrace. An open fire anchors the room; the dining room frames the mountains through floor-to-ceiling glass; the wellness floor and cinema sit below, warm underfoot.</p>
+                <div className="feats">
+                  <div><h4>Living</h4><ul>{['Formal dining · 14', 'Sitting room with hearth', "Chef's kitchen", 'Cinema room'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
+                  <div><h4>Features</h4><ul>{['Open fireplace', 'Double-height glass', 'Underfloor heating', 'Wine cellar'].map((l) => <li key={l} className="hasic"><PointIcon label={l} />{l}</li>)}</ul></div>
+                </div>
+              </>
+            )}
           </div>
         </div></div></section>
+        )}
 
         {/* CHAPTER III — BEDROOMS */}
+        {(content ? !!rooms : true) && (
         <section id="bedrooms"><div className="wrap">
           <div className="centerhead">
             <div className="chapter c">Bedrooms</div>
             <h2>{c.beds} suites, <em>{c.beds} aspects</em> on the mountains.</h2>
             <div className="rule-c" />
-            <p>Every bedroom is en suite and oriented to the light. The master claims the top floor with a private balcony above the pistes.</p>
+            <p>{content?.bedroomsIntro ?? 'Every bedroom is en suite and oriented to the light. The master claims the top floor with a private balcony above the pistes.'}</p>
           </div>
-          <div className="suitefeat">
-            <div className="im" style={{ backgroundImage: 'url(/images/chalets/bed-04.webp)' }} />
-            <div className="tx">
-              <h3>Bedroom One</h3>
-              <p className="d">A double bedroom opening to a private balcony — the pistes below, the peaks stretching to the horizon.</p>
-              <div className="slist">{['Super-king', 'En suite', 'Dressing room', 'Private balcony', 'Open fire', 'Piste view'].map((l) => <Pt key={l} label={l} />)}</div>
-            </div>
-          </div>
-          <div className="suiterow">
-            <div className="scard"><h3>Bedroom Two</h3><div className="slist">{['Super-king', 'En suite', 'Rain shower', 'Balcony'].map((l) => <Pt key={l} label={l} />)}</div></div>
-            <div className="scard"><h3>Bedroom Three</h3><div className="slist">{['King', 'En suite', 'Bath & shower', 'Mountain view'].map((l) => <Pt key={l} label={l} />)}</div></div>
-            <div className="scard"><h3>Bedroom Four</h3><div className="slist">{['Twin / double', 'En suite', 'Freestanding bath', 'Terrace'].map((l) => <Pt key={l} label={l} />)}</div></div>
-            <div className="scard"><h3>Bedroom Five</h3><div className="slist">{['Bunk room', 'En suite', 'Shower', 'For children'].map((l) => <Pt key={l} label={l} />)}</div></div>
-          </div>
+          {rooms ? (
+            <>
+              <div className="suitefeat">
+                <div className="im" style={{ backgroundImage: `url(${gimg(3, '/images/chalets/bed-04.webp')})` }} />
+                <div className="tx">
+                  <h3>{rooms[0].name}</h3>
+                  {rooms[0].description && <p className="d">{rooms[0].description}</p>}
+                  <div className="slist">{rooms[0].points.map((l) => <Pt key={l} label={l} />)}</div>
+                </div>
+              </div>
+              {rooms.length > 1 && (
+                <div className="suiterow">
+                  {rooms.slice(1).map((r) => (
+                    <div key={r.name} className="scard"><h3>{r.name}</h3><div className="slist">{r.points.map((l) => <Pt key={l} label={l} />)}</div></div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="suitefeat">
+                <div className="im" style={{ backgroundImage: 'url(/images/chalets/bed-04.webp)' }} />
+                <div className="tx">
+                  <h3>Bedroom One</h3>
+                  <p className="d">A double bedroom opening to a private balcony — the pistes below, the peaks stretching to the horizon.</p>
+                  <div className="slist">{['Super-king', 'En suite', 'Dressing room', 'Private balcony', 'Open fire', 'Piste view'].map((l) => <Pt key={l} label={l} />)}</div>
+                </div>
+              </div>
+              <div className="suiterow">
+                <div className="scard"><h3>Bedroom Two</h3><div className="slist">{['Super-king', 'En suite', 'Rain shower', 'Balcony'].map((l) => <Pt key={l} label={l} />)}</div></div>
+                <div className="scard"><h3>Bedroom Three</h3><div className="slist">{['King', 'En suite', 'Bath & shower', 'Mountain view'].map((l) => <Pt key={l} label={l} />)}</div></div>
+                <div className="scard"><h3>Bedroom Four</h3><div className="slist">{['Twin / double', 'En suite', 'Freestanding bath', 'Terrace'].map((l) => <Pt key={l} label={l} />)}</div></div>
+                <div className="scard"><h3>Bedroom Five</h3><div className="slist">{['Bunk room', 'En suite', 'Shower', 'For children'].map((l) => <Pt key={l} label={l} />)}</div></div>
+              </div>
+            </>
+          )}
         </div></section>
+        )}
       </div>
 
       {/* CHAPTER IV — EXTERIOR */}
+      {(content ? !!content.exterior : true) && (
       <section className="exhero" id="exterior">
-        <div className="bg" style={{ backgroundImage: 'url(/images/chalets/liv-19.webp)' }} />
+        <div className="bg" style={{ backgroundImage: `url(${gimg(2, '/images/chalets/liv-19.webp')})` }} />
         <div className="tx"><div className="expanel">
           <div className="chapter">Exterior</div>
-          <h2>Where the terrace <em>meets the sky</em>.</h2>
-          <p>A south-facing terrace runs the width of the chalet — sun through the afternoon, the pistes dropping away below, and space to gather once the lifts have closed.</p>
-          <div className="exfeats">
-            <span><svg viewBox="0 0 24 24"><path d="M4 10h16v10H4zM4 14h16M9 14v6M15 14v6M6 10V6l6-3 6 3v4" /></svg>South-facing terrace</span>
-            <span><svg viewBox="0 0 24 24"><path d="M4 13h16v2a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM9 6c0 1-1 1-1 2s1 1 1 2M13 5c0 1-1 1-1 2s1 1 1 2M6 20l-1 2M18 20l1 2" /></svg>Outdoor hot tub</span>
-            <span><svg viewBox="0 0 24 24"><path d="M12 3c2 3 4 4 4 7a4 4 0 0 1-8 0c0-1.2.6-2.2 1.3-2.8" /></svg>Firepit &amp; lounge</span>
-            <span><svg viewBox="0 0 24 24"><path d="M5 18l14-5M8 5v10M11 4v10M8 15l1 3M11 14l1 3" /></svg>Ski-in / ski-out</span>
-          </div>
+          {content?.exterior ? (
+            <>
+              <h2>{emify(content.exterior.headline)}</h2>
+              <p>{content.exterior.paragraph}</p>
+              <div className="exfeats">
+                {content.exterior.points.map((l) => <span key={l}><PointIcon label={l} className="" />{l}</span>)}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>Where the terrace <em>meets the sky</em>.</h2>
+              <p>A south-facing terrace runs the width of the chalet — sun through the afternoon, the pistes dropping away below, and space to gather once the lifts have closed.</p>
+              <div className="exfeats">
+                <span><svg viewBox="0 0 24 24"><path d="M4 10h16v10H4zM4 14h16M9 14v6M15 14v6M6 10V6l6-3 6 3v4" /></svg>South-facing terrace</span>
+                <span><svg viewBox="0 0 24 24"><path d="M4 13h16v2a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM9 6c0 1-1 1-1 2s1 1 1 2M13 5c0 1-1 1-1 2s1 1 1 2M6 20l-1 2M18 20l1 2" /></svg>Outdoor hot tub</span>
+                <span><svg viewBox="0 0 24 24"><path d="M12 3c2 3 4 4 4 7a4 4 0 0 1-8 0c0-1.2.6-2.2 1.3-2.8" /></svg>Firepit &amp; lounge</span>
+                <span><svg viewBox="0 0 24 24"><path d="M5 18l14-5M8 5v10M11 4v10M8 15l1 3M11 14l1 3" /></svg>Ski-in / ski-out</span>
+              </div>
+            </>
+          )}
         </div></div>
       </section>
+      )}
 
       {/* SERVICES */}
       <section className="household" id="services"><div className="wrap"><div className="grid2">
@@ -259,21 +364,33 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         <section id="location"><div className="wrap"><div className="locgrid">
           <div>
             <h2>Location</h2>
-            <p>A quiet position in {c.resort} — skis on at the door, the village a short walk below.</p>
-            <div className="locspecs">
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M3 5l18-2M8 8l1.5 4h5L19 8M7 12h10v6H7zM12 12v6" /></svg><div className="sl">Nearest lift</div><div className="sv">3-min walk</div></div>
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M10 3h4l1 4a3 3 0 0 1-6 0z" /><path d="M12 11v9M9 21h6" /></svg><div className="sl">Village centre</div><div className="sv">8-min walk · 3-min drive</div></div>
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M7 3v7a2 2 0 0 0 4 0V3M9 10v11" /><path d="M16 3c-1.4 0-2.2 1.6-2.2 4S15 11 16 11v10" /></svg><div className="sl">Nearest restaurant</div><div className="sv">5-min walk</div></div>
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M21 15l-8-3V5.5a1.5 1.5 0 0 0-3 0V12l-8 3v2l8-2v3l-2 1.5V21l3.5-1 3.5 1v-1.5L13 18v-3z" /></svg><div className="sl">Nearest airport</div><div className="sv">~2h drive</div></div>
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M4 6h16M12 6v3M6 12h11l2.5 4H4zM12 16v3M9 22h6" /></svg><div className="sl">Transfers</div><div className="sv">Arranged by Vertige</div></div>
-              <div><svg className="licn" viewBox="0 0 24 24"><path d="M3 19l6-9 3.5 4.5L15 11l6 8z" /></svg><div className="sl">Nearest piste</div><div className="sv">On the doorstep</div></div>
-            </div>
+            <p>{content?.locationIntro ?? `A quiet position in ${c.resort} — skis on at the door, the village a short walk below.`}</p>
+            {content?.locationSpecs?.length ? (
+              <div className="locspecs">
+                {content.locationSpecs.map((s) => (
+                  <div key={s.key}><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS[s.key] ?? LOC_ICONS.piste}</svg><div className="sl">{s.label}</div><div className="sv">{s.value}</div></div>
+                ))}
+              </div>
+            ) : !content && (
+              <div className="locspecs">
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.lift}</svg><div className="sl">Nearest lift</div><div className="sv">3-min walk</div></div>
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.village}</svg><div className="sl">Village centre</div><div className="sv">8-min walk · 3-min drive</div></div>
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.restaurant}</svg><div className="sl">Nearest restaurant</div><div className="sv">5-min walk</div></div>
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.airport}</svg><div className="sl">Nearest airport</div><div className="sv">~2h drive</div></div>
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.transfers}</svg><div className="sl">Transfers</div><div className="sv">Arranged by Vertige</div></div>
+                <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.piste}</svg><div className="sl">Nearest piste</div><div className="sv">On the doorstep</div></div>
+              </div>
+            )}
           </div>
           <div className="mapcard">
             <div className="mk">✦</div>
             <a
               className="gmap"
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${c.name}, ${c.resort}, ${c.country}`)}`}
+              href={`https://www.google.com/maps/search/?api=1&query=${
+                p?.latitude != null && p?.longitude != null
+                  ? `${p.latitude},${p.longitude}`
+                  : encodeURIComponent(`${c.name}, ${c.resort}, ${c.country}`)
+              }`}
               target="_blank"
               rel="noopener"
             >Open in Google Maps ↗</a>

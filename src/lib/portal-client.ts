@@ -32,6 +32,35 @@ export interface PortalProperty {
   features: string[]
   summary: string | null
   serviceInclusions: string | null
+  bathrooms: number | null
+  exclusive: boolean
+  latitude: number | null
+  longitude: number | null
+}
+
+// ── Editorial content (the mould — portal lib/content/registry.ts v1) ──────
+// Read from web.property_content_v, which the portal filters to APPROVED
+// content only — the sign-off gate. Absent sections fall back to the
+// prototype's sample copy on the detail page.
+export interface PortalRoom {
+  name: string
+  beds: string | null
+  ensuite: boolean
+  description: string | null
+  points: string[]
+  sortOrder: number
+}
+export interface PortalContent {
+  registryVersion: number
+  overview: { headline: string; paragraphs: string[] } | null
+  keyFeatures: { label: string; sub?: string }[] | null
+  amenities: { icon: string; name: string; items: string[] }[] | null
+  interior: { headline: string; paragraph: string; groups: { title: string; points: string[] }[] } | null
+  bedroomsIntro: string | null
+  exterior: { headline: string; paragraph: string; points: string[] } | null
+  locationIntro: string | null
+  locationSpecs: { key: string; label: string; value: string }[] | null
+  rooms: PortalRoom[]
 }
 
 export interface PortalWeek {
@@ -51,6 +80,8 @@ interface PropertyRow {
   currency: string; weekly_from: number | null; weekly_to: number | null
   images: PortalImage[]; features: string[]
   summary: string | null; service_inclusions: string | null
+  bathrooms: number | null; exclusive: boolean
+  latitude: number | null; longitude: number | null
 }
 
 const toProperty = (r: PropertyRow): PortalProperty => ({
@@ -72,6 +103,10 @@ const toProperty = (r: PropertyRow): PortalProperty => ({
   features: r.features ?? [],
   summary: r.summary,
   serviceInclusions: r.service_inclusions,
+  bathrooms: r.bathrooms == null ? null : Number(r.bathrooms),
+  exclusive: r.exclusive ?? false,
+  latitude: r.latitude == null ? null : Number(r.latitude),
+  longitude: r.longitude == null ? null : Number(r.longitude),
 })
 
 // Property content: mostly static → short shared cache (doc 10 §2 "live
@@ -93,6 +128,62 @@ export async function fetchPortalProperties(): Promise<{ properties: PortalPrope
   const properties = await loadProperties()
   if (!properties) return { properties: [], live: false }
   return { properties, live: true }
+}
+
+interface ContentRow {
+  registry_version: number
+  overview: PortalContent['overview']
+  key_features: PortalContent['keyFeatures']
+  amenities: PortalContent['amenities']
+  interior: PortalContent['interior']
+  bedrooms_intro: string | null
+  exterior: PortalContent['exterior']
+  location_intro: string | null
+  location_specs: PortalContent['locationSpecs']
+}
+
+// Approved editorial content + bedroom cards for one chalet. Same short
+// cache profile as the property feed — content changes on sign-off, not
+// minute-to-minute. Returns null when nothing is approved yet (the detail
+// page then renders its interim sample sections).
+const loadContent = unstable_cache(
+  async (slug: string): Promise<PortalContent | null> => {
+    try {
+      const db = sharedDb()
+      const [c, rooms] = await Promise.all([
+        db.query<ContentRow>('SELECT * FROM web.property_content_v WHERE slug = $1', [slug]),
+        db.query<PortalRoom & { sort_order: number }>(
+          'SELECT name, beds, ensuite, description, points, sort_order FROM web.property_rooms_v WHERE slug = $1 ORDER BY sort_order',
+          [slug],
+        ),
+      ])
+      const r = c.rows[0]
+      if (!r) return null
+      return {
+        registryVersion: r.registry_version,
+        overview: r.overview,
+        keyFeatures: r.key_features,
+        amenities: r.amenities,
+        interior: r.interior,
+        bedroomsIntro: r.bedrooms_intro,
+        exterior: r.exterior,
+        locationIntro: r.location_intro,
+        locationSpecs: r.location_specs,
+        rooms: rooms.rows.map((rm) => ({
+          name: rm.name, beds: rm.beds, ensuite: rm.ensuite,
+          description: rm.description, points: rm.points ?? [], sortOrder: rm.sort_order,
+        })),
+      }
+    } catch {
+      return null
+    }
+  },
+  ['web-property-content'],
+  { revalidate: 300 },
+)
+
+export async function fetchPortalContent(slug: string): Promise<PortalContent | null> {
+  return loadContent(slug)
 }
 
 // ── Week enumeration — the portal engine's contract (lib/quote-weeks.ts) ────
@@ -205,7 +296,7 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     ptype: 'Chalet',
     guests: p.sleeps,
     beds: p.bedrooms,
-    baths: p.bedrooms, // portal doesn't model bathrooms yet — mirror bedrooms
+    baths: p.bathrooms ?? p.bedrooms, // fall back to bedrooms until bathrooms is filled
     from: p.weeklyFrom ?? 0,
     to: p.weeklyTo ?? p.weeklyFrom ?? 0,
     tier: p.tier,
