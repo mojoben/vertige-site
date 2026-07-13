@@ -99,7 +99,7 @@ button{font-family:inherit}
 .navlinks .nvlink:hover{color:var(--rose)}
 .nv{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;transform:translateX(100%);visibility:hidden;transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility 0s .34s}
 .nv.on{transform:none;visibility:visible;transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility 0s 0s}
-.nv.nv-main{position:relative;transform:none;visibility:visible}
+.nv.nv-main{position:relative;transform:none;visibility:visible;height:100%;min-height:100%}
 .subtop{display:flex;align-items:center;justify-content:space-between;padding:1.4rem clamp(1.8rem,4vw,3rem) 0}
 .subtop .back{display:inline-flex;align-items:center;gap:.5rem;background:none;border:none;cursor:pointer;font-family:'Proxima Nova','Inter';font-size:.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--plum);font-weight:500}
 .subtop .back:hover{color:var(--rose)}
@@ -123,7 +123,7 @@ button{font-family:inherit}
 .navfoot .nf-row{display:flex;gap:.9rem;align-items:flex-start}
 .navfoot .nf-row svg{width:22px;height:22px;stroke:var(--plum);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;margin-top:.15rem}
 .navfoot .nf-row .t{font-family:'Proxima Nova','Inter';font-size:.82rem;color:var(--ink);line-height:1.5}
-.navfoot .nf-row .t b{font-weight:400;color:var(--plum)}
+.navfoot .nf-row .t b{display:block;font-weight:400;color:var(--plum);white-space:nowrap;margin-top:.1rem}
 .navfoot .nf-row .t span{display:block;color:var(--muted);font-size:.74rem;margin-top:.1rem}
 .navfoot .nf-row a{font-family:'Proxima Nova','Inter';font-size:.9rem;color:var(--plum)}
 .navfoot .nf-lang{font-family:'Proxima Nova','Inter';font-size:.78rem;letter-spacing:0.04em}
