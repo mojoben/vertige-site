@@ -73,7 +73,7 @@ export default async function HomePage() {
               ['Austria', '/images/chalets/ext-11.webp'],
               ['Italy', '/images/chalets/ext-12.webp'],
             ] as const).map(([name, img]) => (
-              <Link key={name} className="dcard" href="/chalets">
+              <Link key={name} className="dcard" href={`/${name.toLowerCase()}`}>
                 <div className="im" style={{ backgroundImage: `url(${img})` }} />
                 <div className="t"><h3>{name}</h3><div className="c">{countOf(name)} chalets</div></div>
               </Link>
@@ -86,7 +86,7 @@ export default async function HomePage() {
       <section className="chalets"><div className="wrap">
         <div className="gold-head reveal">
           <h2>Chalets you will <em>fall in love</em> with</h2>
-          <p>A selection of the chalets worth booking — across <Link href="/chalets">Switzerland</Link>, <Link href="/chalets">France</Link> and <Link href="/chalets">Austria</Link>, from grand catered chalets to modern apartments. Let us find your match.</p>
+          <p>A selection of the chalets worth booking — across <Link href="/switzerland">Switzerland</Link>, <Link href="/france">France</Link> and <Link href="/austria">Austria</Link>, from grand catered chalets to modern apartments. Let us find your match.</p>
         </div>
         <div className="reveal">
           <CarouselRow step={460}>
