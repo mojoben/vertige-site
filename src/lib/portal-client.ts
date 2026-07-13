@@ -36,6 +36,9 @@ export interface PortalProperty {
   exclusive: boolean
   latitude: number | null
   longitude: number | null
+  propertyType: string
+  floorAreaSqm: number | null
+  catering: string | null
 }
 
 // ── Editorial content (the mould — portal lib/content/registry.ts v1) ──────
@@ -82,6 +85,7 @@ interface PropertyRow {
   summary: string | null; service_inclusions: string | null
   bathrooms: number | null; exclusive: boolean
   latitude: number | null; longitude: number | null
+  property_type: string; floor_area_sqm: number | null; catering: string | null
 }
 
 const toProperty = (r: PropertyRow): PortalProperty => ({
@@ -107,6 +111,9 @@ const toProperty = (r: PropertyRow): PortalProperty => ({
   exclusive: r.exclusive ?? false,
   latitude: r.latitude == null ? null : Number(r.latitude),
   longitude: r.longitude == null ? null : Number(r.longitude),
+  propertyType: r.property_type ?? 'Chalet',
+  floorAreaSqm: r.floor_area_sqm == null ? null : Number(r.floor_area_sqm),
+  catering: r.catering,
 })
 
 // Property content: mostly static → short shared cache (doc 10 §2 "live
@@ -293,7 +300,7 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     name: p.name,
     resort: p.resort ?? '—',
     country: p.country ?? '—',
-    ptype: 'Chalet',
+    ptype: (['Chalet', 'Apartment', 'Penthouse', 'Lodge'].includes(p.propertyType) ? p.propertyType : 'Chalet') as 'Chalet' | 'Apartment' | 'Penthouse' | 'Lodge',
     guests: p.sleeps,
     beds: p.bedrooms,
     baths: p.bathrooms ?? p.bedrooms, // fall back to bedrooms until bathrooms is filled
