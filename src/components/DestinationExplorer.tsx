@@ -307,7 +307,7 @@ export function DestinationExplorer({
     set({ [f]: on ? [...s[f], v] : s[f].filter((x) => x !== v) } as Partial<FilterState>)
 
   const chaletCard = (c: CatalogueChalet) => (
-    <Link key={c.name} className="pc" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'}>
+    <Link key={c.name} className="pc" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'} target="_blank" rel="noopener">
       <div className="im" style={{ backgroundImage: `url(${c.img})` }}>
         <div
           className={`heart${saved(c) ? ' saved' : ''}`}
