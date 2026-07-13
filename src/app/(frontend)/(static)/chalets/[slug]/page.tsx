@@ -383,7 +383,18 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
             )}
           </div>
           <div className="mapcard">
-            <div className="mk">✦</div>
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY && p?.latitude != null && p?.longitude != null ? (
+              <iframe
+                className="gembed"
+                title={`Map — ${c.name}`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY}&q=${p.latitude},${p.longitude}&zoom=13&maptype=roadmap`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            ) : (
+              <div className="mk">✦</div>
+            )}
             <a
               className="gmap"
               href={`https://www.google.com/maps/search/?api=1&query=${
