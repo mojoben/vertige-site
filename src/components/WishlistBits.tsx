@@ -253,7 +253,7 @@ export function WishlistApp() {
               {HEART}
               <h3>No lists yet</h3>
               <p>Add your favourite chalets to a list, share it with an advisor and let us guide you.</p>
-              <Link className="btn" href="/chalets">Browse chalets</Link>
+              <Link className="btn" href="/destinations">Browse chalets</Link>
             </div>
           )}
         </div>
@@ -285,7 +285,7 @@ export function WishlistApp() {
                     </div>
                   </div>
                 ))
-                : <p style={{ color: 'var(--muted)' }}>This list is empty. <Link href="/chalets" style={{ color: 'var(--rose)' }}>Browse chalets</Link> and tap the heart to add them.</p>}
+                : <p style={{ color: 'var(--muted)' }}>This list is empty. <Link href="/destinations" style={{ color: 'var(--rose)' }}>Browse chalets</Link> and tap the heart to add them.</p>}
             </div>
             <div className="reqpanel">
               {reqSent && <div className="okmsg" style={{ display: 'block' }}>Thank you — your list is with our team. An advisor will confirm availability and pricing across your selection and be in touch shortly.</div>}

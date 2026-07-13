@@ -12,7 +12,19 @@ export default async function ChaletsPage() {
   const { chalets } = await getCatalogue()
 
   return (
-    <>
+    <div className="dpage">
+      {/* Header image in the destination-page treatment (Ben, 2026-07-13) —
+          also gives the explorer's search bar its proper resting place. */}
+      <section className="dhero" id="top">
+        <div className="bg" style={{ backgroundImage: 'url(/images/hero.jpg)' }} />
+        <div className="wrap">
+          <span className="eyebrow">The collection</span>
+          <h1>Our chalets</h1>
+          <p className="sub">The full Vertige portfolio across the Alps — search, filter and compare every chalet we represent.</p>
+          <a className="hbtn" href="#chalets">View the chalets ↓</a>
+        </div>
+      </section>
+
       <DestinationExplorer resortName={null} chalets={chalets} />
 
       <section className="plancta"><div className="in2">
@@ -24,6 +36,6 @@ export default async function ChaletsPage() {
         </div>
         <div className="pcta-im" style={{ backgroundImage: 'url(/images/cta-man.jpg)' }} />
       </div></section>
-    </>
+    </div>
   )
 }
