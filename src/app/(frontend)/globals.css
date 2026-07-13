@@ -181,7 +181,7 @@ button{font-family:inherit}
 /* ── Page hero (site-wide non-negotiable: white text, bottom-LEFT) ─────── */
 .hero{position:relative;min-height:72vh;overflow:hidden;color:#fff;display:flex}
 .hero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.04) 30%,rgba(31,35,48,.78));z-index:1}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.04) 30%,rgba(31,35,48,.78));z-index:1}
 .hero .wrap{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;padding-bottom:clamp(2.4rem,5vw,4.4rem);width:100%}
 .hero .eyebrow{font-family:'Proxima Nova','Inter';font-size:.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1rem}
 .hero h1{color:#fff;font-size:clamp(2.4rem,5.6vw,4.8rem);line-height:1.02;max-width:16ch}
@@ -193,7 +193,7 @@ button{font-family:inherit}
 /* Ported from vertige-proto-journal-article.html / -guide-*.html. */
 .ahero{position:relative;height:72vh;min-height:540px;overflow:hidden;color:#fff}
 .ahero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
-.ahero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.04) 30%,rgba(31,35,48,.78));z-index:1}
+.ahero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.04) 30%,rgba(31,35,48,.78));z-index:1}
 .ahero .kick{position:absolute;top:calc(80px + 1.6rem);left:0;right:0;z-index:2}
 .ahero .kick .wrap{font-family:'Proxima Nova','Inter';font-size:.56rem;letter-spacing:0.24em;text-transform:uppercase;color:#fff;opacity:.85}
 .ahero .btm{position:absolute;bottom:clamp(2rem,4vw,3.4rem);left:0;right:0;z-index:2}
@@ -328,7 +328,7 @@ button{font-family:inherit}
 .dpage .eyebrow{font-size:.6875rem;letter-spacing:0.08em;color:var(--rose);font-weight:500;display:inline-block;margin-bottom:.9rem;text-transform:none}
 .dhero{position:relative;min-height:80vh;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;overflow:hidden}
 .dhero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
-.dhero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.05) 34%,rgba(31,35,48,.62));z-index:1}
+.dhero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.05) 34%,rgba(31,35,48,.62));z-index:1}
 .dhero .wrap{position:relative;z-index:2;padding-bottom:clamp(3.4rem,7vw,6rem);padding-top:6rem;max-width:1340px;width:100%;text-align:left}
 .dhero .eyebrow{color:#fff;opacity:.92;margin-bottom:1rem}
 .dhero h1{color:#fff;font-size:clamp(2.8rem,7vw,5.6rem);line-height:1;margin-bottom:1.1rem}
@@ -547,7 +547,7 @@ button{font-family:inherit}
 .cdpage section{padding:clamp(4rem,8vw,7rem) 0}
 .cdpage .chero{position:relative;height:100vh;min-height:640px;overflow:hidden;color:#fff;padding:0}
 .cdpage .chero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
-.cdpage .chero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.05) 40%,rgba(31,35,48,.55));z-index:1}
+.cdpage .chero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.05) 40%,rgba(31,35,48,.55));z-index:1}
 .cdpage .chero .htitle{position:absolute;left:clamp(1.3rem,4vw,3.4rem);top:34%;z-index:2}
 .cdpage .chero .htitle .lab{font-family:'Proxima Nova','Inter';font-size:.62rem;letter-spacing:0.28em;text-transform:uppercase;opacity:.9;margin-bottom:1rem}
 .cdpage .chero .htitle h1{color:#fff;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6rem);line-height:1;max-width:14ch}
@@ -1154,7 +1154,7 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 
 /* ══ The Approach (scoped .appage) ══ */
 .appage .ahero .bg{position:absolute;inset:0;background:url(/images/chalets/liv-08.webp) center/cover no-repeat}
-.appage .ahero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.06) 38%,rgba(31,35,48,.66));z-index:1}
+.appage .ahero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.06) 38%,rgba(31,35,48,.66));z-index:1}
 .appage .ahero .wrap{position:relative;z-index:2;width:100%;text-align:left;padding-bottom:clamp(2.8rem,6vw,5rem);padding-top:7rem}
 .appage .ahero .eyebrow{color:#fff;opacity:.92;margin-bottom:1rem}
 .appage .ahero h1{color:#fff;font-size:clamp(2.4rem,5.5vw,4.4rem);max-width:18ch;margin-bottom:1.2rem}
@@ -1250,7 +1250,7 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 
 /* ══ Concierge (scoped .cgpage) ══ */
 .cgpage .chero .bg{position:absolute;inset:0;background:url(/images/03.jpg) center/cover no-repeat}
-.cgpage .chero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,35,48,.36),rgba(31,35,48,0) 45%,rgba(31,35,48,.4));z-index:1}
+.cgpage .chero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.36),rgba(31,35,48,0) 45%,rgba(31,35,48,.4));z-index:1}
 .cgpage .chero .wrap{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;padding-bottom:clamp(2.4rem,5vw,4.4rem)}
 .cgpage .chero .hlab{font-family:'Proxima Nova','Inter';font-size:.6rem;letter-spacing:0.24em;text-transform:uppercase;color:#fff;opacity:.9;margin-bottom:1.1rem}
 .cgpage .chero h1{color:#fff;font-size:clamp(3rem,8vw,6.5rem);letter-spacing:0.06em;line-height:1}
