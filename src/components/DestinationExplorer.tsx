@@ -29,22 +29,20 @@ const CAL_MIN = { y: 2026, m: 11 } // Dec 2026, as the prototype
 type PopName = 'dest' | 'cal' | 'guests' | null
 
 interface FilterState {
-  tier: string[]; country: string[]; ptype: string[]; attr: string[]
+  tier: string[]; country: string[]; resorts: string[]; ptype: string[]; attr: string[]
   beds: number; baths: number; bfrom: string; bto: string
   destCountry: string | null; destResort: string | null
   arr: Date | null; dep: Date | null; flex: boolean
   adults: number; children: number
 }
 
-const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype' | 'attr'; opts: { v: string; label: React.ReactNode }[] }[] = [
-  {
-    grp: 'collection', title: 'The Collection', f: 'tier',
-    opts: [
-      { v: 'Reserve', label: <span>Reserve ◆<span className="desc">Considered, characterful chalets with full concierge before your stay.</span></span> },
-      { v: 'Privé', label: <span>Privé ◆◆<span className="desc">Our most exceptional homes, with a dedicated host and in-resort team.</span></span> },
-    ],
-  },
-  { title: 'Resort country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) },
+type ChkGroup = { grp?: string; title: string; f: 'tier' | 'country' | 'resorts' | 'ptype' | 'attr'; opts: { v: string; label: React.ReactNode }[] }
+// Panel order (Ben, 2026-07-13): rooms + price first (rendered separately),
+// then location (country at catalogue level; that country's resorts when
+// scoped — built dynamically below), property type, ski access, chalet
+// features, wellness, and The Collection last.
+const CHK_GROUPS: ChkGroup[] = [
+  { title: 'Property type', f: 'ptype', opts: ['Chalet', 'Apartment', 'Penthouse', 'Lodge'].map((v) => ({ v, label: v })) },
   {
     title: 'Ski access', f: 'attr',
     opts: [
@@ -52,7 +50,6 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
       { v: 'near-lifts', label: 'Close to the lifts' }, { v: 'piste-view', label: 'Piste & mountain views' },
     ],
   },
-  { title: 'Property type', f: 'ptype', opts: ['Chalet', 'Apartment', 'Penthouse', 'Lodge'].map((v) => ({ v, label: v })) },
   {
     grp: 'features', title: 'Chalet features', f: 'attr',
     opts: [
@@ -66,6 +63,13 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
     opts: [
       { v: 'indoor-pool', label: 'Indoor pool' }, { v: 'hot-tub', label: 'Hot tub' },
       { v: 'spa', label: 'Spa & sauna' }, { v: 'gym', label: 'Gym' },
+    ],
+  },
+  {
+    grp: 'collection', title: 'The Collection', f: 'tier',
+    opts: [
+      { v: 'Reserve', label: <span>Reserve ◆<span className="desc">Considered, characterful chalets with full concierge before your stay.</span></span> },
+      { v: 'Privé', label: <span>Privé ◆◆<span className="desc">Our most exceptional homes, with a dedicated host and in-resort team.</span></span> },
     ],
   },
 ]
@@ -94,7 +98,7 @@ export function DestinationExplorer({
   after?: React.ReactNode
 }) {
   const [s, setS] = useState<FilterState>({
-    tier: [], country: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '',
+    tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '',
     destCountry: initialCountry, destResort: resortName, arr: null, dep: null, flex: true, adults: 0, children: 0,
   })
   const [pop, setPop] = useState<PopName>(null)
@@ -156,6 +160,7 @@ export function DestinationExplorer({
   const list = useMemo(() => chalets.filter((c) => {
     if (s.tier.length && !s.tier.includes(c.tier)) return false
     if (s.country.length && !s.country.includes(c.country)) return false
+    if (s.resorts.length && !s.resorts.includes(c.resort)) return false
     if (s.destCountry && c.country !== s.destCountry) return false
     if (s.destResort && !resortMatch(c, s.destResort)) return false
     if (s.ptype.length && !s.ptype.includes(c.ptype)) return false
@@ -168,15 +173,26 @@ export function DestinationExplorer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [s])
 
-  // Chalet features + Wellness offer only what the chalets in the current
-  // destination scope actually have (Ben, 2026-07-13) — no filter that can't
-  // match anything. Scoped by destination only (not the other filter
-  // controls), so options don't vanish as you tick them.
+  // Filter groups, built for the current scope (Ben, 2026-07-13):
+  // · location is contextual — countries at catalogue level; when scoped to
+  //   a country (or a resort within one), that country's resorts instead
+  // · Chalet features + Wellness offer only what the chalets in scope
+  //   actually have — no filter that can't match anything. Scoped by
+  //   destination only, so options don't vanish as you tick them.
   const chkGroups = useMemo(() => {
+    const scopeCountry = s.destCountry
+      ?? (s.destResort ? chalets.find((c) => resortMatch(c, s.destResort!))?.country ?? null : null)
     const inScope = chalets.filter((c) =>
       (!s.destCountry || c.country === s.destCountry) && (!s.destResort || resortMatch(c, s.destResort)))
+    const location: ChkGroup = scopeCountry
+      ? {
+          title: 'Resort', f: 'resorts',
+          opts: Array.from(new Set(chalets.filter((c) => c.country === scopeCountry).map((c) => c.resort)))
+            .sort().map((v) => ({ v, label: v })),
+        }
+      : { title: 'Country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) }
     const availAttrs = new Set(inScope.flatMap((c) => c.attrs ?? []))
-    return CHK_GROUPS
+    return [location, ...CHK_GROUPS]
       .map((g) => (g.f === 'attr' && (g.grp === 'features' || g.title === 'Wellness')
         ? { ...g, opts: g.opts.filter((o) => availAttrs.has(o.v)) }
         : g))
@@ -287,7 +303,7 @@ export function DestinationExplorer({
     )
   }
 
-  const toggleF = (f: 'tier' | 'country' | 'ptype' | 'attr', v: string, on: boolean) =>
+  const toggleF = (f: 'tier' | 'country' | 'resorts' | 'ptype' | 'attr', v: string, on: boolean) =>
     set({ [f]: on ? [...s[f], v] : s[f].filter((x) => x !== v) } as Partial<FilterState>)
 
   const chaletCard = (c: CatalogueChalet) => (
@@ -464,14 +480,6 @@ export function DestinationExplorer({
       <aside className={`fpanel${filtersOpen ? ' on' : ''}`}>
         <div className="fhead"><h2>All filters</h2><button className="x" onClick={() => setFiltersOpen(false)}>×</button></div>
         <div className="fbody" ref={fbodyRef}>
-          {chkGroups.slice(0, 1).map((g) => (
-            <div key={g.title} className="fgrp" data-grp={g.grp}>
-              <h4>{g.title}</h4>
-              {g.opts.map((o) => (
-                <label key={o.v} className="chk"><input type="checkbox" checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} /><span>{o.label}</span></label>
-              ))}
-            </div>
-          ))}
           <div className="fgrp" data-grp="rooms">
             <h4>Bedrooms &amp; Bathrooms</h4>
             {([['beds', 'Bedrooms'], ['baths', 'Bathrooms']] as const).map(([k, n]) => (
@@ -489,7 +497,7 @@ export function DestinationExplorer({
               <div><label>To</label><input type="number" value={s.bto} placeholder="Any" onChange={(e) => set({ bto: e.target.value })} /></div>
             </div>
           </div>
-          {chkGroups.slice(1).map((g) => (
+          {chkGroups.map((g) => (
             <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
               {g.opts.map((o) => (
@@ -499,7 +507,7 @@ export function DestinationExplorer({
           ))}
         </div>
         <div className="ffoot">
-          <button className="btn erase" onClick={() => set({ tier: [], country: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '' })}>Erase all</button>
+          <button className="btn erase" onClick={() => set({ tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '' })}>Erase all</button>
           <button className="btn" onClick={() => setFiltersOpen(false)}>See {list.length} chalets</button>
         </div>
       </aside>
