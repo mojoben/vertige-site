@@ -54,18 +54,18 @@ const CHK_GROUPS: { grp?: string; title: string; f: 'tier' | 'country' | 'ptype'
   },
   { title: 'Property type', f: 'ptype', opts: ['Chalet', 'Apartment', 'Penthouse', 'Lodge'].map((v) => ({ v, label: v })) },
   {
-    title: 'Wellness & pool', f: 'attr',
-    opts: [
-      { v: 'indoor-pool', label: 'Indoor pool' }, { v: 'hot-tub', label: 'Hot tub' },
-      { v: 'spa', label: 'Spa & sauna' }, { v: 'gym', label: 'Gym' },
-    ],
-  },
-  {
-    title: 'Chalet features', f: 'attr',
+    grp: 'features', title: 'Chalet features', f: 'attr',
     opts: [
       { v: 'chef', label: 'Private chef' }, { v: 'fireplace', label: 'Open fireplace' },
       { v: 'cinema', label: 'Cinema room' }, { v: 'ski-room', label: 'Ski room & boot warmers' },
       { v: 'cellar', label: 'Wine cellar' },
+    ],
+  },
+  {
+    title: 'Wellness', f: 'attr',
+    opts: [
+      { v: 'indoor-pool', label: 'Indoor pool' }, { v: 'hot-tub', label: 'Hot tub' },
+      { v: 'spa', label: 'Spa & sauna' }, { v: 'gym', label: 'Gym' },
     ],
   },
 ]
@@ -167,6 +167,22 @@ export function DestinationExplorer({
     return dateOK(c)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [s])
+
+  // Chalet features + Wellness offer only what the chalets in the current
+  // destination scope actually have (Ben, 2026-07-13) — no filter that can't
+  // match anything. Scoped by destination only (not the other filter
+  // controls), so options don't vanish as you tick them.
+  const chkGroups = useMemo(() => {
+    const inScope = chalets.filter((c) =>
+      (!s.destCountry || c.country === s.destCountry) && (!s.destResort || resortMatch(c, s.destResort)))
+    const availAttrs = new Set(inScope.flatMap((c) => c.attrs ?? []))
+    return CHK_GROUPS
+      .map((g) => (g.f === 'attr' && (g.grp === 'features' || g.title === 'Wellness')
+        ? { ...g, opts: g.opts.filter((o) => availAttrs.has(o.v)) }
+        : g))
+      .filter((g) => g.opts.length > 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chalets, s.destCountry, s.destResort])
 
   // ── Popovers ───────────────────────────────────────────────────────────
   function openPop(name: Exclude<PopName, null>, e: React.MouseEvent<HTMLElement>) {
@@ -388,7 +404,7 @@ export function DestinationExplorer({
             <button className="fbtn" onClick={() => setFiltersOpen(true)}>☰ All filters</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="rooms"]')?.scrollIntoView({ block: 'start' }), 200) }}>Rooms</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>Price</button>
-            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="collection"]')?.scrollIntoView({ block: 'start' }), 200) }}>Collections</button>
+            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="features"]')?.scrollIntoView({ block: 'start' }), 200) }}>Features</button>
           </div>
           <div className="fmeta"><span><b>{list.length}</b> chalets</span><span className="sort">Sort by: Recommended ⌄</span></div>
         </div></div>
@@ -448,7 +464,7 @@ export function DestinationExplorer({
       <aside className={`fpanel${filtersOpen ? ' on' : ''}`}>
         <div className="fhead"><h2>All filters</h2><button className="x" onClick={() => setFiltersOpen(false)}>×</button></div>
         <div className="fbody" ref={fbodyRef}>
-          {CHK_GROUPS.slice(0, 1).map((g) => (
+          {chkGroups.slice(0, 1).map((g) => (
             <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
               {g.opts.map((o) => (
@@ -473,8 +489,8 @@ export function DestinationExplorer({
               <div><label>To</label><input type="number" value={s.bto} placeholder="Any" onChange={(e) => set({ bto: e.target.value })} /></div>
             </div>
           </div>
-          {CHK_GROUPS.slice(1).map((g) => (
-            <div key={g.title} className="fgrp">
+          {chkGroups.slice(1).map((g) => (
+            <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
               {g.opts.map((o) => (
                 <label key={o.v} className="chk"><input type="checkbox" checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} /><span>{o.label}</span></label>
