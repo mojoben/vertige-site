@@ -1,15 +1,19 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { sharedDb } from '@/lib/shared-db'
 
 // POST /api/enquiry — the single hardened submission handler every form posts
 // to (HANDOFF 03 §3–§5). Pipeline, in order, so nothing is ever lost:
 //   1. validate + spam checks (honeypot now; Turnstile + rate-limit at deploy)
 //   2. STORE  → Payload `enquiries` (permanent backup, before anything else)
-//   3. FORWARD → res portal /api/public/enquiries (creates the working lead)
+//   3. LEAD   → INSERT into the shared web.leads mailbox (doc 10 §2: the
+//               site's ONLY write into portal territory, insert-only grant;
+//               the portal ingests it into a working enquiry). Supersedes
+//               the earlier HTTP forward to /api/public/enquiries.
 //   4. EMAIL  → auto-response + internal alert (TODO: needs the transactional
 //               provider creds — Resend/Postmark/SES per 03 §5)
-// If the portal is unreachable the record stays `portalSync: pending` for
+// If the database is unreachable the record stays `portalSync: pending` for
 // retry — the submission is never dropped.
 
 const TYPES = new Set(['trip', 'owner', 'newsletter', 'chalet-request', 'wishlist', 'wishlist-share'])
@@ -50,39 +54,29 @@ export async function POST(request: Request) {
     overrideAccess: true,
   })
 
-  // ── 3. Forward to the res portal (newsletter stays site-side/ESP) ─────
-  let portalRef: string | null = null
-  if (enquiryType !== 'newsletter' && process.env.PORTAL_URL && process.env.PORTAL_API_KEY) {
+  // ── 3. Lead → shared web.leads mailbox (newsletter stays site-side/ESP) ─
+  if (enquiryType !== 'newsletter') {
+    const lead = {
+      firstName,
+      lastName,
+      email,
+      phone: body.phone,
+      propertySlug: body.propertySlug,
+      countryCodes: body.countryCodes,
+      regions: body.regions,
+      travelStart: body.travelStart,
+      travelEnd: body.travelEnd,
+      flexibility: body.flexibility,
+      adults: body.adults,
+      children: body.children,
+      notes: [body.message, enquiryType === 'owner' ? '[Owner / Join the Portfolio enquiry]' : null, body.budget ? `Budget: ${body.budget}` : null]
+        .filter(Boolean)
+        .join('\n'),
+      summary: `Website ${enquiryType} form`,
+    }
     try {
-      const res = await fetch(`${process.env.PORTAL_URL}/api/public/enquiries`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.PORTAL_API_KEY },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          phone: body.phone,
-          propertySlug: body.propertySlug,
-          countryCodes: body.countryCodes,
-          regions: body.regions,
-          travelStart: body.travelStart,
-          travelEnd: body.travelEnd,
-          flexibility: body.flexibility,
-          adults: body.adults,
-          children: body.children,
-          notes: [body.message, enquiryType === 'owner' ? '[Owner / Join the Portfolio enquiry]' : null, body.budget ? `Budget: ${body.budget}` : null]
-            .filter(Boolean)
-            .join('\n'),
-          summary: `Website ${enquiryType} form`,
-        }),
-      })
-      if (res.ok) {
-        const j = await res.json().catch(() => ({}))
-        portalRef = j.ref ?? null
-        await payload.update({ collection: 'enquiries', id: stored.id, data: { portalSync: 'synced', portalRef: portalRef ?? '' }, overrideAccess: true })
-      } else {
-        await payload.update({ collection: 'enquiries', id: stored.id, data: { portalSync: 'failed' }, overrideAccess: true })
-      }
+      await sharedDb().query('INSERT INTO web.leads (payload) VALUES ($1)', [JSON.stringify(lead)])
+      await payload.update({ collection: 'enquiries', id: stored.id, data: { portalSync: 'synced' }, overrideAccess: true })
     } catch {
       await payload.update({ collection: 'enquiries', id: stored.id, data: { portalSync: 'failed' }, overrideAccess: true })
     }
@@ -91,5 +85,5 @@ export async function POST(request: Request) {
   // ── 4. Email (TODO: transactional provider — Resend/Postmark/SES) ─────
   // Auto-response to the customer + internal alert to the concierge inbox.
 
-  return NextResponse.json({ ok: true, ref: portalRef })
+  return NextResponse.json({ ok: true })
 }
