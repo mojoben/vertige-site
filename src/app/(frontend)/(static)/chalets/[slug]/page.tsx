@@ -432,7 +432,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
               </div>
             </div>
           </div>
-          <ReserveForm slug={slug} name={c.name} />
+          <ReserveForm slug={slug} name={c.name} weeks={weeks} />
         </div></div></section>
       </div>
 
@@ -456,7 +456,14 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
         </div>
         <div className="acards">
           {(live && properties.length > 1
-            ? properties.filter((x) => x.slug !== slug).slice(0, 4).map((x) => ({
+            ? (() => {
+                const others = properties.filter((x) => x.slug !== slug)
+                return [
+                  ...others.filter((x) => x.resort === p?.resort),
+                  ...others.filter((x) => x.resort !== p?.resort && x.country === p?.country),
+                  ...others.filter((x) => x.country !== p?.country),
+                ]
+              })().slice(0, 4).map((x) => ({
                 href: `/chalets/${x.slug}`, img: x.images[0]?.url ?? '/images/chalets/ext-02.webp',
                 tag: x.resort ?? '—', name: x.name, meta: `${x.sleeps} guests · ${x.bedrooms} beds`,
                 pr: x.weeklyFrom ? `${x.currency === 'CHF' ? 'CHF ' : '€'}${Math.round(x.weeklyFrom / 1000)}k` : '—',

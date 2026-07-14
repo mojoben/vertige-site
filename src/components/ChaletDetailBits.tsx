@@ -55,6 +55,105 @@ export function SubnavSpy() {
   return null
 }
 
+
+// Shared changeover-week selection logic: first click picks a week, a click
+// on the following week extends to 14 nights, clicking the start again
+// collapses back to 7.
+function pickWeek(prevStart: number, prevSpan: number, wi: number, ok: (i: number) => boolean): [number, number] {
+  if (prevStart < 0 || (wi !== prevStart && wi !== prevStart + 1)) return [wi, 1]
+  if (wi === prevStart + 1) return ok(prevStart + 1) ? [prevStart, 2] : [prevStart, prevSpan]
+  return [prevStart, 1]
+}
+
+// The booking card's changeover-constrained date picker, extracted so the
+// reserve form uses the same control (Ben, 2026-07-14: no free-text weeks).
+export function WeekPicker({ weeks, selStart, selSpan, onPick, placeholder = 'Select your dates', openSignal = 0 }: {
+  weeks: Week[]; selStart: number; selSpan: number
+  onPick: (wi: number) => void; placeholder?: string
+  openSignal?: number // increment to pop the calendar open from outside
+}) {
+  const [open, setOpen] = useState(false)
+  const [mi, setMi] = useState(0)
+  useEffect(() => { if (openSignal > 0) setOpen(true) }, [openSignal])
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  const months = useMemo(() => {
+    const out: { y: number; m: number }[] = []
+    for (const w of weeks) {
+      const dt = d(w.s)
+      if (!out.find((x) => x.y === dt.getFullYear() && x.m === dt.getMonth())) out.push({ y: dt.getFullYear(), m: dt.getMonth() })
+    }
+    return out
+  }, [weeks])
+  const wkByKey = useMemo(() => {
+    const m: Record<string, number> = {}
+    weeks.forEach((w, i) => { m[keyOf(d(w.s))] = i })
+    return m
+  }, [weeks])
+  const weekOK = (i: number) => i >= 0 && i < weeks.length && weeks[i].status !== 'un'
+  const co = weeks.length ? d(weeks[0].s).getDay() : 0
+  const CODN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][co]
+  const selected = selStart >= 0 ? weeks.slice(selStart, selStart + selSpan) : []
+  const s0 = selected[0] ? d(selected[0].s) : null
+  const eEnd = selected.length ? d(selected[selected.length - 1].e) : null
+
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (rootRef.current?.contains(e.target as Node)) return
+      setOpen(false)
+    }
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [])
+
+  const cal = (() => {
+    if (!open || !months.length) return null
+    const { y, m } = months[Math.min(mi, months.length - 1)]
+    const lead = (new Date(y, m, 1).getDay() + 6) % 7
+    const days = new Date(y, m + 1, 0).getDate()
+    const cells: React.ReactNode[] = []
+    for (let i = 0; i < lead; i++) cells.push(<span key={`e${i}`} className="cd empty" />)
+    for (let dn = 1; dn <= days; dn++) {
+      const date = new Date(y, m, dn)
+      const wi = wkByKey[keyOf(date)]
+      const isStart = wi !== undefined && weekOK(wi)
+      let inRange = false; let isEnd = false
+      if (selStart >= 0 && selected.length) {
+        const rs = d(weeks[selStart].s); const re = d(weeks[selStart + selSpan - 1].e)
+        if (date >= rs && date <= re) inRange = true
+        if (sameDay(date, rs) || sameDay(date, re)) isEnd = true
+      }
+      let cls = 'cd'
+      if (!isStart && !inRange) cls += ' off'
+      if (isStart) cls += ' sel-day'
+      if (inRange) cls += ' inrange'
+      if (isEnd) cls += ' end'
+      cells.push(<span key={dn} className={cls} onClick={isStart ? () => onPick(wi) : undefined}>{dn}</span>)
+    }
+    return (
+      <div className="cal" onClick={(e) => e.stopPropagation()}>
+        <div className="calhead">
+          <button type="button" onClick={() => setMi(Math.max(0, mi - 1))}>‹</button>
+          <span>{MN[m].toUpperCase()} {y}</span>
+          <button type="button" onClick={() => setMi(Math.min(months.length - 1, mi + 1))}>›</button>
+        </div>
+        <div className="caldow"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+        <div className="calgrid">{cells}</div>
+        <div className="calnote">{CODN}-to-{CODN} changeover · 7 or 14 nights</div>
+      </div>
+    )
+  })()
+
+  return (
+    <div className="dates" ref={rootRef}>
+      <div className={`dfield${selected.length ? ' set' : ''}`} onClick={() => setOpen(!open)}>
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="1" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
+        <span>{s0 && eEnd ? `${afd(s0)} → ${afd(eEnd)}` : placeholder}</span>
+      </div>
+      {cal}
+    </div>
+  )
+}
+
 // ── Booking card ────────────────────────────────────────────────────────────
 export function BookingCard({
   name, resort, country, priceFrom, priceTo, sym, guests, beds, baths, weeks, slug, phone, img,
@@ -64,16 +163,7 @@ export function BookingCard({
   guests: number; beds: number; baths: number
   weeks: Week[]; slug: string; phone: string; img?: string
 }) {
-  const [calOpen, setCalOpen] = useState(false)
-  const months = useMemo(() => {
-    const out: { y: number; m: number }[] = []
-    for (const w of weeks) {
-      const dt = d(w.s)
-      if (!out.find((x) => x.y === dt.getFullYear() && x.m === dt.getMonth())) out.push({ y: dt.getFullYear(), m: dt.getMonth() })
-    }
-    return out
-  }, [weeks])
-  const [mi, setMi] = useState(0)
+  const [calSignal, setCalSignal] = useState(0) // pops the picker from "Make a request" with no dates
   const [selStart, setSelStart] = useState(-1)
   const [selSpan, setSelSpan] = useState(1)
   const [formOpen, setFormOpen] = useState(false)
@@ -107,14 +197,7 @@ export function BookingCard({
     }
   }
 
-  const wkByKey = useMemo(() => {
-    const m: Record<string, number> = {}
-    weeks.forEach((w, i) => { m[keyOf(d(w.s))] = i })
-    return m
-  }, [weeks])
   const weekOK = (i: number) => i >= 0 && i < weeks.length && weeks[i].status !== 'un'
-  const co = weeks.length ? d(weeks[0].s).getDay() : 0
-  const CODN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][co]
 
   const money = (n: number) => `${sym}${n.toLocaleString('en-GB')}`
   const selected = selStart >= 0 ? weeks.slice(selStart, selStart + selSpan) : []
@@ -125,9 +208,8 @@ export function BookingCard({
   const eEnd = selected.length ? d(selected[selected.length - 1].e) : null
 
   function pickDay(wi: number) {
-    if (selStart < 0 || (wi !== selStart && wi !== selStart + 1)) { setSelStart(wi); setSelSpan(1) }
-    else if (wi === selStart + 1) { if (weekOK(selStart + 1)) setSelSpan(2) }
-    else setSelSpan(1)
+    const [a, b] = pickWeek(selStart, selSpan, wi, weekOK)
+    setSelStart(a); setSelSpan(b)
   }
   // Cross-component selection from the availability rows.
   useEffect(() => {
@@ -157,56 +239,6 @@ export function BookingCard({
     if (ok) { setFormOpen(false); setDone(true) }
   }
 
-  const cal = (() => {
-    if (!calOpen || !months.length) return null
-    const { y, m } = months[Math.min(mi, months.length - 1)]
-    const lead = (new Date(y, m, 1).getDay() + 6) % 7
-    const days = new Date(y, m + 1, 0).getDate()
-    const cells: React.ReactNode[] = []
-    for (let i = 0; i < lead; i++) cells.push(<span key={`e${i}`} className="cd empty" />)
-    for (let dn = 1; dn <= days; dn++) {
-      const date = new Date(y, m, dn)
-      const wi = wkByKey[keyOf(date)]
-      const isStart = wi !== undefined && weekOK(wi)
-      let inRange = false; let isEnd = false
-      if (selStart >= 0 && selected.length) {
-        const rs = d(weeks[selStart].s); const re = d(weeks[selStart + selSpan - 1].e)
-        if (date >= rs && date <= re) inRange = true
-        if (sameDay(date, rs) || sameDay(date, re)) isEnd = true
-      }
-      let cls = 'cd'
-      if (!isStart && !inRange) cls += ' off'
-      if (isStart) cls += ' sel-day'
-      if (inRange) cls += ' inrange'
-      if (isEnd) cls += ' end'
-      cells.push(
-        <span key={dn} className={cls} onClick={isStart ? () => pickDay(wi) : undefined}>{dn}</span>,
-      )
-    }
-    return (
-      <div className="cal" onClick={(e) => e.stopPropagation()}>
-        <div className="calhead">
-          <button type="button" onClick={() => setMi(Math.max(0, mi - 1))}>‹</button>
-          <span>{MN[m].toUpperCase()} {y}</span>
-          <button type="button" onClick={() => setMi(Math.min(months.length - 1, mi + 1))}>›</button>
-        </div>
-        <div className="caldow"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
-        <div className="calgrid">{cells}</div>
-        <div className="calnote">{CODN}-to-{CODN} changeover · 7 or 14 nights</div>
-      </div>
-    )
-  })()
-
-  useEffect(() => {
-    const close = (e: MouseEvent) => {
-      const t = e.target as Element | null
-      if (t?.closest?.('.bcard .dates')) return
-      setCalOpen(false)
-    }
-    document.addEventListener('click', close)
-    return () => document.removeEventListener('click', close)
-  }, [])
-
   return (
     <div className="bcard" id="enquire">
       <div className="loc">{resort}, {country}</div>
@@ -218,28 +250,22 @@ export function BookingCard({
         <div><div className="n">{beds}</div><div className="l">Beds</div></div>
         <div><div className="n">{baths}</div><div className="l">Baths</div></div>
       </div>
-      <div className="dates">
-        <div className="dlabel">Dates</div>
-        <div className={`dfield${selected.length ? ' set' : ''}`} onClick={() => setCalOpen(!calOpen)}>
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="1" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
-          <span>{s0 && eEnd ? `${afd(s0)} → ${afd(eEnd)}` : 'Select your dates'}</span>
-        </div>
-        {cal}
-      </div>
+      <div className="dlabel">Dates</div>
+      <WeekPicker weeks={weeks} selStart={selStart} selSpan={selSpan} onPick={pickDay} openSignal={calSignal} />
       <div className="total"><span className="tl">Total · <b>{selected.length ? `${nights} nights` : '—'}</b></span><span className="tv">{selected.length ? (total != null ? money(total) : 'On request') : '—'}</span></div>
       <p className="tax">{selected.length ? `Chalet hire only, before additional services — total for your ${nights}-night stay.` : 'Select your dates to see the total for your stay.'}</p>
       {!formOpen && !done && (
-        <button className="btn req" onClick={() => { if (selStart < 0) { setCalOpen(true); return } setFormOpen(true) }}>Make a request</button>
+        <button className="btn req" onClick={() => { if (selStart < 0) { setCalSignal((n) => n + 1); return } setFormOpen(true) }}>Make a request</button>
       )}
       {formOpen && (
         <div className="bcreq">
           <div className="frow2">
-            <label>First name<input value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
-            <label>Last name<input value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></label>
+            <label>First name<input name="given-name" autoComplete="given-name" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
+            <label>Last name<input name="family-name" autoComplete="family-name" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></label>
           </div>
           <div className="frow2">
-            <label>Email<input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
-            <label>Phone<input type="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
+            <label>Email<input name="email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
+            <label>Phone<input name="tel" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
           </div>
           <label className="full">Notes<textarea rows={4} placeholder="Party details, occasion, any requests…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
           <button className="btn" type="button" onClick={send} disabled={busy}>{busy ? 'Sending…' : 'Send request'}</button>
@@ -314,9 +340,22 @@ export function Availability({ weeks, sym }: { weeks: Week[]; sym: string }) {
 }
 
 // ── Reserve form + schedule-a-call ──────────────────────────────────────────
-export function ReserveForm({ slug, name }: { slug: string; name: string }) {
-  const [f, setF] = useState({ firstName: '', lastName: '', email: '', phone: '', party: '', week: '', notes: '' })
+export function ReserveForm({ slug, name, weeks }: { slug: string; name: string; weeks: Week[] }) {
+  const [f, setF] = useState({ firstName: '', lastName: '', email: '', phone: '', party: '', notes: '' })
+  const [selStart, setSelStart] = useState(-1)
+  const [selSpan, setSelSpan] = useState(1)
   const [state, setState] = useState<'idle' | 'busy' | 'done'>('idle')
+  const weekOK = (i: number) => i >= 0 && i < weeks.length && weeks[i].status !== 'un'
+  const selected = selStart >= 0 ? weeks.slice(selStart, selStart + selSpan) : []
+  const s0 = selected[0] ? d(selected[0].s) : null
+  const eEnd = selected.length ? d(selected[selected.length - 1].e) : null
+  // Stays in step with the booking card / availability rows: selecting a
+  // week anywhere on the page pre-fills the dates here too.
+  useEffect(() => {
+    const h = (e: Event) => { setSelStart((e as CustomEvent<number>).detail); setSelSpan(1) }
+    addEventListener('vg-chosen', h as EventListener)
+    return () => removeEventListener('vg-chosen', h as EventListener)
+  }, [])
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (state !== 'idle' || !f.firstName || !f.lastName || !f.email) return
@@ -324,7 +363,9 @@ export function ReserveForm({ slug, name }: { slug: string; name: string }) {
     const ok = await sendEnquiry({
       ...f,
       propertySlug: slug,
-      message: [`Reserve request: ${name}`, f.party ? `Party size: ${f.party}` : null, f.week ? `Preferred week: ${f.week}` : null, f.notes].filter(Boolean).join('\n'),
+      travelStart: s0?.toISOString().slice(0, 10),
+      travelEnd: eEnd?.toISOString().slice(0, 10),
+      message: [`Reserve request: ${name}`, f.party ? `Party size: ${f.party}` : null, s0 && eEnd ? `Dates: ${afd(s0)} → ${afd(eEnd)} (${selected.length * 7} nights)` : null, f.notes].filter(Boolean).join('\n'),
     })
     setState(ok ? 'done' : 'idle')
   }
@@ -332,16 +373,16 @@ export function ReserveForm({ slug, name }: { slug: string; name: string }) {
   return (
     <form className="eform" onSubmit={submit}>
       <div className="row">
-        <div><label>First name</label><input placeholder="Elena" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></div>
-        <div><label>Family name</label><input placeholder="Marchetti" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></div>
+        <div><label>First name</label><input name="given-name" autoComplete="given-name" placeholder="Elena" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></div>
+        <div><label>Family name</label><input name="family-name" autoComplete="family-name" placeholder="Marchetti" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></div>
       </div>
       <div className="row">
-        <div><label>Email</label><input placeholder="you@example.com" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
-        <div><label>Telephone</label><input id="corrPhone" placeholder="+44" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
+        <div><label>Email</label><input name="email" type="email" autoComplete="email" placeholder="you@example.com" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
+        <div><label>Telephone</label><input id="corrPhone" name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
       </div>
       <div className="row">
-        <div><label>Party size</label><input placeholder="10" value={f.party} onChange={(e) => setF({ ...f, party: e.target.value })} /></div>
-        <div><label>Preferred week</label><input placeholder="Dec 20 — 27" value={f.week} onChange={(e) => setF({ ...f, week: e.target.value })} /></div>
+        <div><label>Party size</label><input name="party" inputMode="numeric" placeholder="10" value={f.party} onChange={(e) => setF({ ...f, party: e.target.value })} /></div>
+        <div><label>Select your dates</label><WeekPicker weeks={weeks} selStart={selStart} selSpan={selSpan} onPick={(wi) => { const [a, b] = pickWeek(selStart, selSpan, wi, weekOK); setSelStart(a); setSelSpan(b) }} /></div>
       </div>
       <div><label>A few words on your stay</label><textarea placeholder="Family of ten, keen skiers, would appreciate a private guide and chef tasting menu…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></div>
       <div className="ef-foot"><span>Reply within 24h · Vertige atelier</span><button className="btn" type="submit" disabled={state !== 'idle'}>{state === 'busy' ? 'Sending…' : 'Make a request'}</button></div>
@@ -362,17 +403,18 @@ export function ScheduleCall({ slug, name }: { slug: string; name: string }) {
   return (
     <>
       <button className="btn" type="button" onClick={() => setOpen(!open)}>Schedule a call</button>
-      {open && (
+      <div className={`cbrev${open ? ' on' : ''}`} aria-hidden={!open}>
+        <div className="cbrev-in">
         <div className="cbform">
           {state !== 'done' ? (
             <>
               <div className="frow2">
-                <label>First name<input value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
-                <label>Last name<input value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></label>
+                <label>First name<input name="given-name" autoComplete="given-name" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></label>
+                <label>Last name<input name="family-name" autoComplete="family-name" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></label>
               </div>
               <div className="frow2">
-                <label>Email<input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
-                <label>Phone<input type="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
+                <label>Email<input name="email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
+                <label>Phone<input name="tel" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
               </div>
               <label className="full">Message<textarea rows={2} placeholder="A good time to reach you, and anything you'd like to discuss…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
               <button className="btn" type="button" onClick={submit} disabled={state !== 'idle'}>{state === 'busy' ? 'Sending…' : 'Request callback'}</button>
@@ -381,7 +423,8 @@ export function ScheduleCall({ slug, name }: { slug: string; name: string }) {
             <div className="cbdone">Thank you — we&rsquo;ll call you back shortly.</div>
           )}
         </div>
-      )}
+        </div>
+      </div>
     </>
   )
 }
