@@ -26,7 +26,7 @@ const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const fmtD = (d: Date) => `${DOWS[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`
 const CAL_MIN = { y: 2026, m: 11 } // Dec 2026, as the prototype
 
-type PopName = 'dest' | 'cal' | 'guests' | null
+type PopName = 'dest' | 'cal' | 'guests' | 'beds' | null
 
 interface FilterState {
   tier: string[]; country: string[]; resorts: string[]; ptype: string[]; attr: string[]
@@ -225,6 +225,29 @@ export function DestinationExplorer({
     return () => document.removeEventListener('click', close)
   }, [])
 
+  // Search handoff from the home hero (?dest&adults&children&beds&arr&dep) —
+  // applied post-mount so SSR and hydration agree.
+  useEffect(() => {
+    const q = new URLSearchParams(location.search)
+    const p: Partial<FilterState> = {}
+    const dest = q.get('dest')
+    if (dest) {
+      const country = COUNTRIES.find((c) => c.name.toLowerCase() === dest.toLowerCase())
+      if (country) p.destCountry = country.name
+      else p.destResort = dest
+    }
+    const n = (k: string) => Math.max(0, Number(q.get(k)) || 0)
+    if (q.get('adults')) p.adults = n('adults')
+    if (q.get('children')) p.children = n('children')
+    if (q.get('beds')) p.beds = n('beds')
+    const toDate = (k: string) => { const v = q.get(k); if (!v) return null; const dt = new Date(`${v}T00:00:00`); return isNaN(dt.getTime()) ? null : dt }
+    const arr = toDate('arr'); const dep = toDate('dep')
+    if (arr) p.arr = arr
+    if (dep) p.dep = dep
+    if (Object.keys(p).length) set(p)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // ── Tabs scroll-spy (prototype spy()) ──────────────────────────────────
   useEffect(() => {
     const spy = () => {
@@ -332,10 +355,12 @@ export function DestinationExplorer({
       {/* ── Floating search bar ── */}
       <div className="searchwrap"><div className="searchbar"><div className="searchrow">
         <div className="srch">
+          {/* One field set across every search box (Ben, 2026-07-14):
+              Destination · Guests · Bedrooms · Dates (single range picker). */}
           <div className={`f${pop === 'dest' ? ' active' : ''}`} onClick={(e) => openPop('dest', e)}><label>Destination</label><span>{s.destResort || s.destCountry || 'The Alps'}</span></div>
-          <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Arrival</label><span>{s.arr ? fmtD(s.arr) : 'Add dates'}</span></div>
-          <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Departure</label><span>{s.dep ? fmtD(s.dep) : 'Add dates'}</span></div>
           <div className={`f${pop === 'guests' ? ' active' : ''}`} onClick={(e) => openPop('guests', e)}><label>Guests</label><span>{guestsTxt}</span></div>
+          <div className={`f${pop === 'beds' ? ' active' : ''}`} onClick={(e) => openPop('beds', e)}><label>Bedrooms</label><span>{s.beds > 0 ? `${s.beds}+` : 'Any'}</span></div>
+          <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Dates</label><span>{s.arr && s.dep ? `${fmtD(s.arr)} — ${fmtD(s.dep)}` : s.arr ? `${fmtD(s.arr)} — ?` : 'Add dates'}</span></div>
           <button onClick={() => { setPop(null); scrollToId('chalets') }}>Search</button>
         </div>
       </div></div></div>
@@ -387,6 +412,19 @@ export function DestinationExplorer({
             </div>
           </div>
         ))}
+        <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
+      </div>
+
+      <div className={`pop pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
+        <div className="pop-head">How many bedrooms?</div>
+        <div className="gr">
+          <div><div className="gn">Bedrooms</div><div className="gs">Minimum</div></div>
+          <div className="ctrl">
+            <button disabled={s.beds <= 0} onClick={() => set({ beds: Math.max(0, s.beds - 1) })}>−</button>
+            <span className="v">{s.beds > 0 ? `${s.beds}+` : 'Any'}</span>
+            <button onClick={() => set({ beds: s.beds + 1 })}>+</button>
+          </div>
+        </div>
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
 

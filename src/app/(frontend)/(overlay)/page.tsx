@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { getCatalogue } from '@/lib/portal-client'
-import { HeroSlides, CarouselRow, CtaBand, HomeFx } from '@/components/HomeBits'
+import { HeroSlides, CarouselRow, CtaBand, HomeFx, HeroSearch } from '@/components/HomeBits'
 
 // Home — faithful port of vertige-proto-home-mockup.html (confirmed as the
 // canonical home, Ben 2026-07-11). Featured chalet + chalet carousel are fed
@@ -31,12 +31,7 @@ export default async function HomePage() {
             <div className="thumb" style={{ backgroundImage: `url(${featured?.img ?? '/images/chalets/ext-01.webp'})` }} />
             <div className="in"><div className="k">Featured chalet</div><div className="n">{featured?.name ?? 'Chalet Aiguille'} <span>→</span></div></div>
           </Link>
-          <div className="hsearch">
-            <div className="f"><label>Destination</label><span>Any resort</span></div>
-            <div className="f"><label>Guests</label><span>8 guests</span></div>
-            <div className="f"><label>Bedrooms</label><span>4+</span></div>
-            <Link className="hgo" href="/chalets">Search</Link>
-          </div>
+          <HeroSearch />
         </div></div>
       </section>
 
