@@ -1,25 +1,70 @@
 import React from 'react'
 import Link from 'next/link'
 import articles from '@/content/journal_articles.json'
-import { JournalIndexGrid } from '@/components/JournalIndexGrid'
+import guides from '@/content/t1_guides_rich.json'
+import { COUNTRY_CONTENT, resortImage } from '@/lib/country-content'
+import { JournalIndexGrid, type JournalCard } from '@/components/JournalIndexGrid'
 
-// The Journal index — faithful port of vertige-proto-journal.html.
-// Hero, featured essay, section filter, masonry grid of the 15 worked-up
-// articles, and the newsletter band.
+// The Journal index — everything findable in one place (Ben, 2026-07-14):
+// the 16 worked-up articles PLUS all 30 destination guides (26 resort + 4
+// country), under five simple filters. The guides stay reachable from the
+// destination pages too — this is the editorial front door.
 
 export const metadata = { title: 'The Journal — Vertige' }
 
 interface A { slug: string; cat: string; title: string; dek: string; hero: string; read: number }
+interface G { slug: string; name: string; country: string; cslug: string; intro: string }
+
+// Original fine-grained categories → the five filter groups. "Vertige"
+// (the journey essay) is featured up top and lives under All.
+const GROUP: Record<string, string> = {
+  'Comparison': 'Planning',
+  'Planning': 'Planning',
+  'When To Go': 'When to go',
+  'Families & Groups': 'Families & groups',
+  'The Mountain Life': 'Mountain life',
+  'Dining': 'Mountain life',
+  'The Local’s Guide': 'Destination guides',
+  'Vertige': 'Vertige',
+}
+
+const firstSentence = (s: string) => {
+  const i = s.indexOf('. ')
+  return i === -1 ? s : s.slice(0, i + 1)
+}
 
 export default function JournalIndexPage() {
-  // The index grid is the prototype's 15 cards — articles whose category has
-  // a filter tab. (Where to Eat in Verbier is Dining: linked from the
-  // sitemap and related rails, not in this grid, as the prototype.)
-  const TAB_CATS = new Set(['Comparison', 'The Local’s Guide', 'The Mountain Life', 'Planning', 'When To Go', 'Families & Groups', 'Vertige'])
-  const all = (articles as A[]).filter((a) => TAB_CATS.has(a.cat))
-  const featured = all.find((a) => a.slug === 'journal-the-journey')
-  const cards = all.map(({ slug, cat, title, dek, hero }) => ({ slug, cat, title, dek, hero }))
-  const reads = Object.fromEntries(all.map((a) => [a.slug, a.read]))
+  const arts = articles as A[]
+  const featured = arts.find((a) => a.slug === 'journal-the-journey')
+
+  const articleCards: JournalCard[] = arts.map((a) => ({
+    slug: a.slug,
+    cat: GROUP[a.cat] ?? a.cat,
+    title: a.title,
+    dek: a.dek,
+    img: `/images/chalets/${a.hero}.webp`,
+    read: a.read,
+  }))
+
+  const resortGuideCards: JournalCard[] = (guides as G[]).map((g) => ({
+    slug: `guide/${g.slug}-guide`,
+    cat: 'Destination guides',
+    title: `${g.name}: the Vertige guide`,
+    dek: firstSentence(g.intro),
+    img: resortImage(g.slug, g.cslug),
+    read: 7,
+  }))
+
+  const countryGuideCards: JournalCard[] = COUNTRY_CONTENT.map((c) => ({
+    slug: `guide/${c.slug}-guide`,
+    cat: 'Destination guides',
+    title: `Skiing in ${c.name}: the Vertige guide`,
+    dek: `Where to go, when to travel and which resorts suit your group — ${c.name}, resort by resort.`,
+    img: `/images/destinations/_ski-${c.slug}.jpg`,
+    read: 8,
+  }))
+
+  const cards = [...articleCards, ...countryGuideCards, ...resortGuideCards]
 
   return (
     <div className="jipage">
@@ -48,7 +93,7 @@ export default function JournalIndexPage() {
           </div>
         </div></section>
 
-        <JournalIndexGrid cards={cards} reads={reads} />
+        <JournalIndexGrid cards={cards} />
       </div>
 
       <section className="jnews"><div className="wrap">
