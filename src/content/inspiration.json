@@ -8,11 +8,19 @@
   "ov2": "It changes as the winter does — early-season snow-sure altitude, deep mid-winter powder, long sunny spring days. Tell us roughly when you can travel and how your group skis, and we'll point you to where the season is best and match you to the chalet to enjoy it from."
  },
  {
+  "slug": "winter-2026-27",
+  "name": "Winter 2026 / 2027",
+  "hero": "images/hero.jpg",
+  "sub": "The new season is open — the chalets and weeks now taking bookings for winter 2026 / 2027.",
+  "ov1": "The 2026 / 2027 season is now booking across the collection. The best weeks — Christmas, New Year and February half-term — are held on a first-enquiry basis and go early, and the chalets people return to every year go with them.",
+  "ov2": "Browse what's available below, or tell us the week you have in mind and how your group skis, and we'll hold the right chalet while you decide. Book early for the peak weeks; late January and March reward flexible dates."
+ },
+ {
   "slug": "ski-in-ski-out",
   "name": "Ski-in, ski-out chalets",
   "hero": "images/chalets/ext-05.webp",
   "sub": "Click in at your door and ski home to tea — the chalets with the mountain quite literally on the doorstep.",
-  "ov1": "There is no luxury on a ski holiday quite like ski-in, ski-out: no boots across the village, no bus, no wet walk home — just clip in at the door in the morning and ski back to a warm chalet in the afternoon. It is the single feature families and serious skiers ask us for most.",
+  "ov1": "There is no luxury on a ski week quite like ski-in, ski-out: no boots across the village, no bus, no wet walk home — just clip in at the door in the morning and ski back to a warm chalet in the afternoon. It is the single feature families and serious skiers ask us for most.",
   "ov2": "Our ski-in, ski-out collection spans the Alps, from the high purpose-built stations of the Tarentaise to the slopes above Zermatt and Verbier. Positions vary from true door-to-piste to a few steps from the lift, so tell us how close you need to be and we'll match the chalet to the group."
  },
  {
@@ -22,6 +30,14 @@
   "sub": "Private pools, spas, hammams and treatment rooms — the chalets built for the hours after the lifts stop.",
   "ov1": "A hard day on the mountain deserves a proper recovery. The chalets in this collection are built for it: private indoor pools, spas and saunas, hammams and steam rooms, and treatment rooms where a therapist can come to you. The wellness side of the week becomes as much of a draw as the skiing.",
   "ov2": "Facilities vary from a compact spa and hot tub to a full private pool and wellness suite with a resident masseuse. Tell us what matters most to your group and we'll match you to the right chalet, and arrange the treatments, the trainer or the yoga to go with it."
+ },
+ {
+  "slug": "private-chef",
+  "name": "A private chef, included",
+  "hero": "images/chalets/din-01.webp",
+  "sub": "Chalets with a private chef — breakfast, tea and a proper dinner cooked around your day, not the kitchen's hours.",
+  "ov1": "A private chef changes the shape of a ski week. Breakfast is ready when the first skiers are up, children eat early, and dinner is served once they're down — no reservations, no dressing for the dining room, and the friction of feeding a big group across three generations and two bedtimes quietly removed.",
+  "ov2": "Every chalet in this collection comes with a chef — included with Privé service or arranged by our concierge. Tell us how you like to eat and we'll brief the chef before you arrive, from easy family suppers to a proper chef's table."
  },
  {
   "slug": "large-groups",

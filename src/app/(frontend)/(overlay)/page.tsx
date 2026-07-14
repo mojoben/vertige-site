@@ -56,7 +56,7 @@ export default async function HomePage() {
             <div className="tx">
               <p>We don&rsquo;t hand you a list and wish you luck. We ask the questions that matter — how you ski, who&rsquo;s coming, what you loved last time — and make a recommendation you can trust.</p>
               <p>Curation over volume, insider knowledge, and a level of service you feel in the small things. Some of the best things we do never appear on an invoice.</p>
-              <a className="arrowlink" href="#">Discover the Vertige approach ›</a>
+              <Link className="arrowlink" href="/approach">Discover the Vertige approach ›</Link>
             </div>
           </div>
         </div></div></section>
@@ -103,9 +103,9 @@ export default async function HomePage() {
 
       {/* FULL-WIDTH CTA SLIDER */}
       <CtaBand slides={[
-        { img: '/images/hero.jpg', eyebrow: 'Now booking', title: 'Winter 2026 / 2027', cta: { label: 'Book your stay', href: '/chalets' } },
-        { img: '/images/chalets/ext-07.webp', eyebrow: 'Privé service', title: 'A private chef, included', cta: { label: 'Explore Privé', href: featured ? chaletHref(featured) : '/chalets/sample' } },
-        { img: '/images/chalets/ext-09.webp', eyebrow: 'Ski-in, ski-out', title: 'Doorstep to the piste', cta: { label: 'See the chalets', href: '/chalets' } },
+        { img: '/images/hero.jpg', eyebrow: 'Now booking', title: 'Winter 2026 / 2027', cta: { label: 'Book your stay', href: '/inspiration/winter-2026-27' } },
+        { img: '/images/chalets/ext-07.webp', eyebrow: 'Privé service', title: 'A private chef, included', cta: { label: 'Explore Privé', href: '/inspiration/private-chef' } },
+        { img: '/images/chalets/ext-09.webp', eyebrow: 'Ski-in, ski-out', title: 'Doorstep to the piste', cta: { label: 'See the chalets', href: '/inspiration/ski-in-ski-out' } },
       ]} />
 
       {/* PRIVATE CHEF */}
@@ -117,7 +117,7 @@ export default async function HomePage() {
           <p>A private chef who cooks around your day, not the kitchen&rsquo;s hours. Breakfast when the first skiers are up, children fed early, a proper dinner once they&rsquo;re down — no reservations, no dressing for the dining room.</p>
           <p>The friction of feeding a big group across three generations and two bedtimes, quietly removed.</p>
           <div className="label">Privé Service</div>
-          <div style={{ marginTop: '1.3rem' }}><Link className="arrowlink" href={featured ? chaletHref(featured) : '/chalets/sample'}>Explore Privé Service ›</Link></div>
+          <div style={{ marginTop: '1.3rem' }}><Link className="arrowlink" href="/concierge">Explore Privé Service ›</Link></div>
         </div>
       </div></div></section>
 
@@ -131,7 +131,7 @@ export default async function HomePage() {
             <p>Vertige was founded by Oli Dannatt and Ben Wood — one who learned the mountain the only way you can, as an instructor in Verbier; the other who builds the brand, the platform and the concierge systems that make a service genuinely seamless rather than merely promised.</p>
             <p className="quote">&ldquo;We&rsquo;d rather have tens of clients who come back every year than hundreds who book once.&rdquo;</p>
             <div className="sig">Oli &amp; Ben</div>
-            <a className="arrowlink" href="#">Meet Oli &amp; Ben ›</a>
+            <Link className="arrowlink" href="/about">Meet Oli &amp; Ben ›</Link>
           </div>
         </div></div>
       </section>
@@ -141,16 +141,16 @@ export default async function HomePage() {
         <section><div className="wrap">
           <div className="gold-head reveal">
             <h2>Your <em>home</em> in the mountains</h2>
-            <p>Chalets with private pools and hot tubs, layouts built for families, and homes for groups and celebrations — curated to match the week you want. <Link href="/chalets">Discover our chalet collections</Link></p>
+            <p>Chalets with private pools and hot tubs, layouts built for families, and homes for groups and celebrations — curated to match the week you want.</p>
           </div>
           <div className="ctiles">
             {([
-              ['Ski-in Ski-out', 'Ski right to your door.', '/images/chalets/ext-10.webp'],
-              ['Wellness', 'Soak tired legs after a day on the slopes.', '/images/chalets/well-01.webp'],
-              ['Families & groups', 'Space enough for everyone under one roof.', '/images/chalets/liv-11.webp'],
-              ['Chef’s table', 'Built around a private chef and a long table.', '/images/chalets/din-01.webp'],
-            ] as const).map(([title, sub, img]) => (
-              <Link key={title} className="ctile reveal" href="/chalets">
+              ['Ski-in Ski-out', 'Ski right to your door.', '/images/chalets/ext-10.webp', '/inspiration/ski-in-ski-out'],
+              ['Wellness', 'Soak tired legs after a day on the slopes.', '/images/chalets/well-01.webp', '/inspiration/pool-and-spa'],
+              ['Families & groups', 'Space enough for everyone under one roof.', '/images/chalets/liv-11.webp', '/inspiration/large-groups'],
+              ['Chef’s table', 'Built around a private chef and a long table.', '/images/chalets/din-01.webp', '/inspiration/private-chef'],
+            ] as const).map(([title, sub, img, href]) => (
+              <Link key={title} className="ctile reveal" href={href}>
                 <div className="im" style={{ backgroundImage: `url(${img})` }} />
                 <h3>{title}</h3><p>{sub}</p>
               </Link>

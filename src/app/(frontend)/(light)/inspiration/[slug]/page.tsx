@@ -28,6 +28,9 @@ const LATE_SEASON_RESORTS = [
 const FILTERS: Record<string, (c: CatalogueChalet) => boolean> = {
   'ski-in-ski-out': (c) => c.attrs.includes('ski-in'),
   'pool-and-spa': (c) => ['indoor-pool', 'spa', 'hot-tub'].some((a) => c.attrs.includes(a)),
+  // 'winter-2026-27' is editorial like where-to-ski-this-season: the whole
+  // bookable collection, narrowed by dates rather than a theme.
+  'private-chef': (c) => c.attrs.includes('chef'),
   'large-groups': (c) => c.guests >= 12,
   'late-season-snow': (c) => LATE_SEASON_RESORTS.some((r) => c.resort.toLowerCase().includes(r.toLowerCase())),
 }

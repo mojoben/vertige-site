@@ -169,8 +169,10 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
             <div className="nvtitle">Inspiration</div>
             <div className="nv-list">
               <Link href="/inspiration/where-to-ski-this-season" onClick={closeNav}>Where to ski this season</Link>
+              <Link href="/inspiration/winter-2026-27" onClick={closeNav}>Winter 2026 / 2027</Link>
               <Link href="/inspiration/ski-in-ski-out" onClick={closeNav}>Ski-in / ski-out chalets</Link>
               <Link href="/inspiration/pool-and-spa" onClick={closeNav}>Chalets with a pool &amp; spa</Link>
+              <Link href="/inspiration/private-chef" onClick={closeNav}>A private chef, included</Link>
               <Link href="/inspiration/large-groups" onClick={closeNav}>Best for large groups</Link>
               <Link href="/inspiration/new-to-the-collection" onClick={closeNav}>New to the collection</Link>
               <Link href="/journal" onClick={closeNav}>Seen in the press</Link>
