@@ -12,11 +12,20 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="abpage">
+      {/* Header in the join-the-portfolio treatment (Ben, 2026-07-14). */}
+      <section className="pagehero"><div className="bg" style={{ backgroundImage: 'url(/images/founders.jpg)' }} />
+        <div className="wrap">
+          <span className="eyebrow">Our story</span>
+          <h1>Two founders, one <em>standard.</em></h1>
+          <p className="sub">A short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — founded by Oli Dannatt and Ben Wood.</p>
+        </div>
+      </section>
+
       {/* Belief statement */}
       <section className="believe"><div className="wrap">
         <div className="eyebrow">§ · What we believe</div>
         <div className="grid">
-          <h1>The Alps do not need improving. <em>They need someone paying attention.</em></h1>
+          <h2>The Alps do not need improving. <em>They need someone paying attention.</em></h2>
           <p className="supp">Vertige is not a directory. It is a short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted by us — matched to your group and looked after from the first enquiry to the last morning on the mountain.</p>
         </div>
       </div></section>

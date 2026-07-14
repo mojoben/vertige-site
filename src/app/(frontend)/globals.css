@@ -1189,8 +1189,8 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 .abpage .believe .eyebrow{margin-bottom:1.8rem}
 .abpage .believe .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
 @media(max-width:820px){.abpage .believe .grid{grid-template-columns:1fr;gap:1.5rem}}
-.abpage .believe h1{font-size:clamp(2rem,4.2vw,3.4rem);line-height:1.18;letter-spacing:0.03em;max-width:20ch}
-.abpage .believe h1 em{color:var(--rose)}
+.abpage .believe h2{font-size:clamp(2rem,4.2vw,3.4rem);line-height:1.18;letter-spacing:0.03em;max-width:20ch}
+.abpage .believe h2 em{color:var(--rose)}
 .abpage .believe .supp{color:var(--muted);font-size:1rem;line-height:1.7;max-width:44ch}
 .abpage .fdrs .wrap{padding-top:clamp(2rem,4vw,3.4rem);padding-bottom:clamp(3.4rem,6vw,5.4rem)}
 .abpage .fdrs .fhead{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:clamp(2.4rem,4vw,3.4rem)}

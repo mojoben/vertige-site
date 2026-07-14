@@ -12,10 +12,13 @@ export const metadata = {
 export default function ConciergePage() {
   return (
     <div className="cgpage">
-      {/* Hero */}
-      <section className="chero">
-        <div className="bg" />
-        <div className="wrap"><div className="hlab">Vertige · Trip planning &amp; concierge</div><h1>Concierge</h1></div>
+      {/* Header in the join-the-portfolio treatment (Ben, 2026-07-14). */}
+      <section className="pagehero"><div className="bg" style={{ backgroundImage: 'url(/images/03.jpg)' }} />
+        <div className="wrap">
+          <span className="eyebrow">Vertige · Trip planning &amp; concierge</span>
+          <h1>Concierge</h1>
+          <p className="sub">You should arrive to a week that already works — passes collected, chef briefed, transfers timed. One point of contact, first enquiry to last morning.</p>
+        </div>
       </section>
 
       {/* Opening statement */}

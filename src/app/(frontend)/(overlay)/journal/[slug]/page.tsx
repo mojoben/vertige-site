@@ -127,7 +127,7 @@ export default async function JournalArticlePage({ params }: { params: Promise<{
                 <div className="k">§ Plan your stay</div>
                 <h3>Looking for the right chalet?</h3>
                 <p>Tell us how you like to ski and who you&rsquo;re travelling with, and we&rsquo;ll find the chalet that fits — then take care of everything, from the first enquiry to the last morning on the mountain.</p>
-                <div className="jcta-row"><Link className="btn" href="/chalets">Speak to a specialist</Link><span className="jcta-ph">or call <b>{SITE.phone}</b></span></div>
+                <div className="jcta-row"><Link className="btn" href="/destinations">Find your chalet</Link><span className="jcta-ph">or call <b>{SITE.phone}</b></span></div>
               </div>
             </div>
           </article>
