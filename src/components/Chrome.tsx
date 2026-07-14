@@ -40,25 +40,13 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
   const [navOpen, setNavOpen] = useState(false)
   const [panels, setPanels] = useState<string[]>([]) // stack of open sub-panels
   const [searchOpen, setSearchOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(variant === 'solid' || variant === 'light')
   const [query, setQuery] = useState('')
 
-  // Header: transparent over the hero → solid past it (threshold from the
-  // prototype: innerHeight*0.72 - 140). Solid pages are always "scrolled".
-  useEffect(() => {
-    if (variant !== 'overlay') return
-    // Clamp the threshold so a not-yet-measured viewport (innerHeight 0) can
-    // never yield a negative threshold and lock the header solid at top.
-    const onScroll = () =>
-      setScrolled(window.scrollY > Math.max(window.innerHeight * 0.72 - 140, 60))
-    onScroll()
-    addEventListener('scroll', onScroll, { passive: true })
-    addEventListener('resize', onScroll, { passive: true })
-    return () => {
-      removeEventListener('scroll', onScroll)
-      removeEventListener('resize', onScroll)
-    }
-  }, [variant])
+  // Header is solid white on every page, hero or not (Ben, 2026-07-14:
+  // "really, really clear and visible") — the prototype's transparent-over-
+  // hero state and its scroll threshold are retired. "scrolled" stays as
+  // the CSS hook for the solid styling.
+  const scrolled = true
 
   // Lock body scroll while an overlay is open; Escape closes.
   useEffect(() => {

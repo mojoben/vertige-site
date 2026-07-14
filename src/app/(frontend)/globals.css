@@ -79,7 +79,7 @@ button{font-family:inherit}
 .hdr .right .book:hover{background:var(--rose)}
 /* NOTE: the prototype adds backdrop-filter:blur(12px) here; dropped — at .96
    alpha the blur is imperceptible and it wedges embedded-preview compositors. */
-.hdr.scrolled{background:rgba(252,249,245,.98);border-color:var(--line)}
+.hdr.scrolled{background:#fff;border-color:var(--line)}
 .hdr.scrolled .menu{color:var(--plum)}
 .hdr.scrolled .right{color:var(--plum)}
 .hdr.scrolled .right .book{color:#fff}
