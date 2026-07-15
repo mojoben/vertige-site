@@ -249,12 +249,15 @@ export function HeroSearch() {
         <button className="dest-all" onClick={() => { setDest(null); setPop(null) }}>All the Alps</button>
         {COUNTRIES.map((c) => (
           <div key={c.slug} className={`dcountry${openCountry === c.name ? ' open' : ''}`}>
-            <button className="dch" onClick={() => setOpenCountry(openCountry === c.name ? null : c.name)}>{c.name}<span className="cnt">{c.resorts.length} resorts</span></button>
-            <div className="dbody">
-              <button className="rbtn all" onClick={() => { setDest(c.name); setPop(null) }}>All of {c.name}</button>
-              <div className="rlist">{c.resorts.filter((r) => r.tier === 1).map((r) => (
-                <button key={r.slug} className="rbtn" onClick={() => { setDest(r.name); setPop(null) }}>{r.name}</button>
-              ))}</div>
+            <button className="dch" onClick={() => setOpenCountry(openCountry === c.name ? null : c.name)}>
+              <span>{c.name}</span><span className="cc">{c.resorts.length} resorts ⌄</span>
+            </button>
+            <div className="drs">
+              <button className="rall" onClick={() => { setDest(c.name); setPop(null) }}>All of {c.name} →</button>
+              <div className="rlab">Signature resorts</div>
+              <div className="rlist">{c.resorts.filter((r) => r.tier === 1).map((r) => <button key={r.slug} className="rbtn" onClick={() => { setDest(r.name); setPop(null) }}>{r.name}</button>)}</div>
+              <div className="rlab">More in {c.name}</div>
+              <div className="rlist">{c.resorts.filter((r) => r.tier === 2).map((r) => <button key={r.slug} className="rbtn" onClick={() => { setDest(r.name); setPop(null) }}>{r.name}</button>)}</div>
             </div>
           </div>
         ))}
