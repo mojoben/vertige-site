@@ -16,6 +16,11 @@ const LINE = '#e5e0d6'
 const MUTED = '#6f7680'
 
 const SANS = "'Inter', Helvetica, Arial, sans-serif"
+
+// Absolute asset origin for email clients — mail can't resolve relative
+// paths. SITE_ORIGIN switches this to vertigeski.com when the domain goes
+// live; until then the Render URL serves the logo.
+const ASSET_ORIGIN = process.env.SITE_ORIGIN ?? 'https://vertige-site.onrender.com'
 const SERIF = "'Cormorant Garamond', Georgia, 'Times New Roman', serif"
 
 const esc = (s: string) =>
@@ -28,11 +33,11 @@ function shell(inner: string, opts: { legal?: string } = {}): string {
 <body style="margin:0;padding:32px 16px;background:${WARM};font-family:${SANS};color:${INK};line-height:1.6;-webkit-font-smoothing:antialiased">
   <div style="max-width:600px;margin:0 auto;background:${PAPER};border:1px solid ${LINE}">
     <div style="text-align:center;padding:35px 0 22px;border-bottom:1px solid ${LINE}">
-      <img src="https://vertigeski.com/images/vertige-logo.png" alt="Vertige" style="height:30px;border:0">
+      <img src="${ASSET_ORIGIN}/images/vertige-logo.png" alt="Vertige" style="height:30px;border:0">
     </div>
     ${inner}
     <div style="border-top:1px solid ${LINE};text-align:center;padding:29px 32px 35px;color:${MUTED}">
-      <img src="https://vertigeski.com/images/vertige-logo.png" alt="Vertige" style="height:24px;border:0;opacity:.9;margin-bottom:14px"><br>
+      <img src="${ASSET_ORIGIN}/images/vertige-logo.png" alt="Vertige" style="height:24px;border:0;opacity:.9;margin-bottom:14px"><br>
       <span style="font-family:${SERIF};font-style:italic;color:${NAVY};font-size:16px">See you on the mountain.</span>
       <div style="font-size:11.5px;line-height:1.7;margin-top:11px">Vertige &middot; luxury ski chalet rentals across the Alps<br>London &amp; the Alps &middot; <a href="mailto:hello@vertigeski.com" style="color:${NAVY}">hello@vertigeski.com</a> &middot; +44 20 7131 0270</div>
       ${opts.legal ? `<div style="font-size:10px;color:#9a9aa0;margin-top:16px">${opts.legal}</div>` : ''}
