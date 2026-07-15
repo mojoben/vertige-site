@@ -56,13 +56,18 @@ export function SubnavSpy() {
 }
 
 
-// Shared changeover-week selection logic: first click picks a week, a click
-// on the following week extends to 14 nights, clicking the start again
-// collapses back to 7.
+// Shared changeover-week selection, endpoint style (Ben, 2026-07-15):
+// the first click sets the ARRIVAL changeover day; a later click reads as
+// the DEPARTURE day — the current departure confirms 7 nights, the
+// changeover a week further extends to 14. Anything else starts a new
+// arrival. (Clicking the departure day must never force a longer stay.)
 function pickWeek(prevStart: number, prevSpan: number, wi: number, ok: (i: number) => boolean): [number, number] {
-  if (prevStart < 0 || (wi !== prevStart && wi !== prevStart + 1)) return [wi, 1]
-  if (wi === prevStart + 1) return ok(prevStart + 1) ? [prevStart, 2] : [prevStart, prevSpan]
-  return [prevStart, 1]
+  if (prevStart < 0) return [wi, 1]
+  const diff = wi - prevStart
+  if (diff === 0) return [wi, 1] // re-click arrival → back to one week
+  if (diff === 1) return [prevStart, 1] // clicked the 7-night departure day
+  if (diff === 2 && ok(prevStart + 1)) return [prevStart, 2] // 14-night departure
+  return [wi, 1]
 }
 
 // The booking card's changeover-constrained date picker, extracted so the
