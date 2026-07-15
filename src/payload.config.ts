@@ -33,6 +33,11 @@ export default buildConfig({
     // Isolated schema: keeps the site's tables (editorial + enquiry backup)
     // fully separate from the res platform's public schema in the shared dev DB.
     schemaName: 'site',
+    // Create/sync the schema on boot in every environment — without this the
+    // hosted DB never gets the site tables (Payload only pushes in dev) and
+    // enquiry storage fails. Swap for generated Payload migrations at
+    // production hardening.
+    push: true,
   }),
   sharp,
   plugins: [],
