@@ -561,6 +561,8 @@ button{font-family:inherit}
 .cdpage .rule-c{width:56px;height:1px;background:var(--rose);opacity:.5;margin:1.4rem auto}
 .cdpage section{padding:clamp(4rem,8vw,7rem) 0}
 .cdpage .chero{position:relative;height:100vh;min-height:640px;overflow:hidden;color:#fff;padding:0}
+/* 25% shorter chalet header — previewing on Marmottière (Ben, 2026-07-15). */
+.cdpage .chero.chero-75{height:75vh;min-height:520px}
 .cdpage .chero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
 .cdpage .chero::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1)),linear-gradient(180deg,rgba(31,35,48,.34),rgba(31,35,48,.05) 40%,rgba(31,35,48,.55));z-index:1}
 .cdpage .chero .htitle{position:absolute;left:clamp(1.3rem,4vw,3.4rem);top:34%;z-index:2}
