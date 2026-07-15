@@ -190,7 +190,7 @@ export function BookingCard({
   const [selSpan, setSelSpan] = useState(1)
   const [formOpen, setFormOpen] = useState(false)
   const [done, setDone] = useState(false)
-  const [f, setF] = useState({ firstName: '', lastName: '', email: '', phone: '', notes: '' })
+  const [f, setF] = useState({ firstName: '', lastName: '', email: '', phone: '', party: '', notes: '' })
   const [busy, setBusy] = useState(false)
 
   // Wishlist heart (HANDOFF 09 §5) — synced post-mount so SSR and hydration agree.
@@ -255,7 +255,7 @@ export function BookingCard({
       propertySlug: slug,
       travelStart: s0?.toISOString().slice(0, 10),
       travelEnd: eEnd?.toISOString().slice(0, 10),
-      message: [`Chalet request: ${name} (${resort})`, s0 && eEnd ? `Week: ${afd(s0)} → ${afd(eEnd)} (${nights} nights)` : null, total != null ? `Indicative total shown: ${money(total)}` : null, f.notes].filter(Boolean).join('\n'),
+      message: [`Chalet request: ${name} (${resort})`, s0 && eEnd ? `Week: ${afd(s0)} → ${afd(eEnd)} (${nights} nights)` : null, f.party ? `Party size: ${f.party}` : null, total != null ? `Indicative total shown: ${money(total)}` : null, f.notes].filter(Boolean).join('\n'),
     })
     setBusy(false)
     if (ok) { setFormOpen(false); setDone(true) }
@@ -289,7 +289,10 @@ export function BookingCard({
             <label>Email<input name="email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
             <label>Phone number<input name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onFocus={() => seedDialCode(f.phone, (v) => setF({ ...f, phone: v }))} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
           </div>
-          <label className="full">Notes<textarea rows={4} placeholder="Party details, occasion, any requests…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
+          <div className="frow2">
+            <label>Party size<input name="party" inputMode="numeric" placeholder="10" value={f.party} onChange={(e) => setF({ ...f, party: e.target.value })} /></label>
+          </div>
+          <label className="full">A few words on your stay<textarea rows={4} placeholder="Occasion, ski abilities, any requests…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
           <button className="btn" type="button" onClick={send} disabled={busy}>{busy ? 'Sending…' : 'Send request'}</button>
         </div>
       )}

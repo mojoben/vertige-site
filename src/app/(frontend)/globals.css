@@ -615,6 +615,7 @@ button{font-family:inherit}
 .eform .dfield{border:none;border-bottom:1px solid var(--line);padding:.4rem 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;gap:.55rem}
 .eform .dfield svg{width:16px;height:16px}
 .eform .dfield span{letter-spacing:normal}
+.eform .dates{margin-bottom:0}
 .bcard .dfield:hover,.eform .dfield:hover{border-color:var(--plum)}
 .bcard .dfield.set,.eform .dfield.set{color:var(--plum)}
 .bcard .dfield svg,.eform .dfield svg{width:20px;height:20px;stroke:var(--plum);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
@@ -812,7 +813,9 @@ button{font-family:inherit}
 .speccard .sc-links a:hover,.speccard .sc-links button:hover{color:var(--rose)}
 .eform{background:#fff;border:1px solid var(--line);padding:clamp(1.8rem,3vw,2.6rem)}
 .eform .eh{font-family:'Proxima Nova','Inter';font-size:.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:1.6rem}
-.eform .row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+/* align-items:end keeps paired underlines level when one cell (the date
+   picker) is taller than a plain input (Ben, 2026-07-15). */
+.eform .row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;align-items:end}
 @media(max-width:560px){.eform .row{grid-template-columns:1fr}}
 .eform label{display:block;font-family:'Proxima Nova','Inter';font-size:.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
 .eform input,.eform textarea{width:100%;border:none;border-bottom:1px solid var(--line);background:transparent;padding:.4rem 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--plum);outline:none}
