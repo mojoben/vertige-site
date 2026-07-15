@@ -118,9 +118,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ s
       <SubnavSpy />
 
       {/* HERO */}
-      {/* Reduced-height header PREVIEW on Marmottière only (Ben, 2026-07-15:
-          75vh trial — roll out to all chalets once approved). */}
-      <section className={`chero${slug === 'chalet-marmottiere' ? ' chero-75' : ''}`}>
+      <section className="chero">
         <div className="bg" style={{ backgroundImage: `url(${c.hero})` }} />
         <div className="htitle"><div className="lab">{c.resort} · {c.country}</div><h1>{c.name}</h1></div>
         <div className="statbar"><div className="in">
