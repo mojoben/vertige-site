@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { renderShareWishlistEmail, renderVerifyCodeEmail, renderEnquiryAutoReply, renderInternalEnquiryAlert } from '@/lib/emails'
+import { renderShareWishlistEmail, renderVerifyCodeEmail, renderEnquiryAutoReply, renderInternalEnquiryAlert, renderWishlistFollowUpEmail } from '@/lib/emails'
 
 // Dev-only preview of the transactional email templates (HANDOFF 09 §6):
 // /api/dev/email-preview?t=share | verify. Sample data mirrors the mocks.
@@ -9,7 +9,19 @@ export async function GET(request: Request) {
   const t = new URL(request.url).searchParams.get('t')
   const origin = new URL(request.url).origin
   const { html } =
-    t === 'enquiry'
+    t === 'wishlist-saved'
+      ? renderWishlistFollowUpEmail({
+          firstName: 'Ben',
+          listName: 'Verbier, February',
+          chalets: [
+            { name: 'Chalet Marmottière', location: 'Verbier, Switzerland', img: `${origin}/images/chalets/ext-07.webp`, url: `${origin}/chalets/chalet-marmottiere` },
+            { name: 'Chalet Sorojasa', location: 'Verbier, Switzerland', img: `${origin}/images/chalets/ext-03.webp`, url: `${origin}/chalets/chalet-sorojasa` },
+          ],
+          moreCount: 1,
+          wishlistUrl: `${origin}/wishlist`,
+          contactUrl: `${origin}/contact`,
+        })
+      : t === 'enquiry'
       ? renderEnquiryAutoReply({
           firstName: 'Ben',
           chalet: { name: 'Chalet Marmottière', location: 'Verbier, Switzerland', img: `${origin}/images/chalets/ext-07.webp`, url: `${origin}/chalets/chalet-marmottiere` },

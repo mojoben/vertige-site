@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { sharedDb } from '@/lib/shared-db'
-import { renderEnquiryAutoReply, renderInternalEnquiryAlert } from '@/lib/emails'
+import { renderEnquiryAutoReply, renderInternalEnquiryAlert, renderWishlistFollowUpEmail } from '@/lib/emails'
 import { sendEmail } from '@/lib/send-email'
 
 // POST /api/enquiry — the single hardened submission handler every form posts
@@ -112,7 +112,43 @@ export async function POST(request: Request) {
         // chalet context is best-effort — the emails still go without it
       }
     }
-    const reply = renderEnquiryAutoReply({ firstName, chalet })
+    // Wishlist requests get the richer follow-up: their saved chalets +
+    // how sharing works, instead of the generic acknowledgement.
+    let wishlistChalets: { name: string; location: string; img?: string; url?: string }[] = []
+    const listSlugs = Array.isArray(body.properties) ? body.properties.filter((x: unknown) => typeof x === 'string').slice(0, 12) : []
+    if (enquiryType === 'wishlist' && listSlugs.length) {
+      try {
+        const { rows } = await sharedDb().query<{ slug: string; name: string; resort: string | null; country: string | null; hero: string | null }>(
+          `SELECT p.slug, p.name, p.resort, p.country, p.images->0->>'url' AS hero
+             FROM web.property_public_v p WHERE p.slug = ANY($1)`,
+          [listSlugs],
+        )
+        // Preserve the list's own order.
+        type Row = (typeof rows)[number]
+        wishlistChalets = listSlugs
+          .map((sl: string) => rows.find((r: Row) => r.slug === sl))
+          .filter((r: Row | undefined): r is Row => !!r)
+          .map((r: Row) => ({
+            name: r.name,
+            location: [r.resort, r.country].filter(Boolean).join(', '),
+            img: r.hero && !r.hero.startsWith('http') ? `${origin}${r.hero}` : r.hero ?? undefined,
+            url: `${origin}/chalets/${r.slug}`,
+          }))
+      } catch {
+        // best-effort — the follow-up still reads well without the cards
+      }
+    }
+    const reply =
+      enquiryType === 'wishlist'
+        ? renderWishlistFollowUpEmail({
+            firstName,
+            listName: typeof body.listName === 'string' && body.listName ? body.listName : 'your wishlist',
+            chalets: wishlistChalets,
+            moreCount: Math.max(0, wishlistChalets.length - 4),
+            wishlistUrl: `${origin}/wishlist`,
+            contactUrl: `${origin}/contact`,
+          })
+        : renderEnquiryAutoReply({ firstName, chalet })
     const alert = renderInternalEnquiryAlert({
       name: `${firstName} ${lastName}`.trim(),
       email,

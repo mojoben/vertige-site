@@ -178,3 +178,72 @@ export function renderInternalEnquiryAlert(o: {
     html: shell(inner),
   }
 }
+
+// ── Wishlist follow-up (Ben, 2026-07-15) ─────────────────────────────────────
+// Sent when someone saves a wishlist and asks us to plan around it — the
+// Vertige take on Le Collectionist's "Transform your list into an
+// unforgettable stay": their saved chalets, how sharing works, and the
+// route to an advisor.
+
+export interface WishlistFollowUpInput {
+  firstName: string
+  listName: string
+  chalets: { name: string; location: string; img?: string; url?: string }[]
+  moreCount?: number // chalets beyond the ones shown
+  wishlistUrl: string
+  contactUrl: string
+}
+
+export function renderWishlistFollowUpEmail(o: WishlistFollowUpInput): { subject: string; html: string } {
+  const name = esc(o.firstName || 'there')
+  const cards = o.chalets
+    .slice(0, 4)
+    .map(
+      (c) => `
+      <div style="border:1px solid ${LINE};margin:0 0 14px">
+        ${c.img ? `<div style="height:180px;background:url(${c.img}) center/cover"></div>` : ''}
+        <div style="padding:15px 20px 17px">
+          <div style="font-family:${SERIF};font-size:20px;color:${NAVY};margin-bottom:2px">${esc(c.name)}</div>
+          <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:${MUTED}">${esc(c.location)}</div>
+          ${c.url ? `<a href="${c.url}" style="display:inline-block;margin-top:10px;color:${ROSE};font-size:13px;text-decoration:none">View the chalet &rarr;</a>` : ''}
+        </div>
+      </div>`
+    )
+    .join('')
+  const steps = [
+    ['1', 'Open your wishlist', 'Your list is saved and waiting on Vertige.'],
+    ['2', 'Share it', 'Send it to your group by email, WhatsApp or link.'],
+    ['3', 'Pick together', 'When a favourite emerges, we plan the week around it.'],
+  ]
+    .map(
+      ([n, t, d]) => `
+      <td style="width:33%;padding:0 8px;text-align:center;vertical-align:top">
+        <div style="width:34px;height:34px;line-height:32px;border:1px solid ${NAVY};border-radius:50%;margin:0 auto 10px;font-family:${SERIF};font-size:16px;color:${NAVY}">${n}</div>
+        <div style="font-size:13px;color:${INK};font-weight:500;margin-bottom:4px">${t}</div>
+        <div style="font-size:12px;color:${MUTED};line-height:1.5">${d}</div>
+      </td>`
+    )
+    .join('')
+  const inner = `
+    <div style="padding:32px">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${ROSE};font-weight:600;margin-bottom:16px">Your chalets are saved</div>
+      <h1 style="font-family:${SERIF};font-weight:500;color:${NAVY};font-size:30px;line-height:1.2;margin:0 0 16px;letter-spacing:.2px">Turn your list into a week in the mountains</h1>
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">Dear ${name},</p>
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 22px">Thank you for putting together <span style="font-family:${SERIF};font-style:italic;color:${NAVY}">${esc(o.listName)}</span>. Ready to book, or would your group like a say? Share the list, settle on a favourite, and our team will take it from there.</p>
+      ${cards}
+      ${o.moreCount ? `<p style="font-size:13px;color:${MUTED};margin:0 0 22px">+ ${o.moreCount} more on your list.</p>` : ''}
+      <table role="presentation" style="width:100%;border-collapse:collapse;margin:26px 0 28px"><tr>${steps}</tr></table>
+      <a href="${o.wishlistUrl}" style="display:block;background:${NAVY};color:#ffffff;text-decoration:none;text-align:center;padding:16px 26px;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 26px">View my wishlist &rarr;</a>
+      <div style="background:${WARM2};border:1px solid ${LINE};text-align:center;padding:24px 26px">
+        <div style="font-family:${SERIF};font-size:19px;color:${NAVY};margin-bottom:6px">Questions about a chalet?</div>
+        <p style="font-size:13.5px;color:#4a4450;margin:0 0 14px">A dedicated advisor will walk you through any home on your list and plan the week around it — every day, 8am to midnight, on <span style="color:${NAVY};white-space:nowrap">+44 20 7131 0270</span>.</p>
+        <a href="${o.contactUrl}" style="display:inline-block;border:1px solid ${NAVY};color:${NAVY};text-decoration:none;padding:11px 24px;font-size:10.5px;letter-spacing:2px;text-transform:uppercase">Schedule a call</a>
+      </div>
+    </div>`
+  return {
+    subject: 'Turn your wishlist into a week in the mountains',
+    html: shell(inner, {
+      legal: 'You&rsquo;re receiving this because you saved a wishlist on Vertige. This mailbox isn&rsquo;t monitored — for anything at all, write to hello@vertigeski.com.',
+    }),
+  }
+}
