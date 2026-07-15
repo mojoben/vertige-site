@@ -13,6 +13,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import type { Week } from '@/lib/weeks'
 import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
+import { seedDialCode } from '@/lib/dial-code'
 
 export type { Week }
 
@@ -282,7 +283,7 @@ export function BookingCard({
           </div>
           <div className="frow2">
             <label>Email<input name="email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
-            <label>Phone<input name="tel" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
+            <label>Phone<input name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onFocus={() => seedDialCode(f.phone, (v) => setF({ ...f, phone: v }))} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
           </div>
           <label className="full">Notes<textarea rows={4} placeholder="Party details, occasion, any requests…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
           <button className="btn" type="button" onClick={send} disabled={busy}>{busy ? 'Sending…' : 'Send request'}</button>
@@ -391,11 +392,11 @@ export function ReserveForm({ slug, name, weeks }: { slug: string; name: string;
     <form className="eform" onSubmit={submit}>
       <div className="row">
         <div><label>First name</label><input name="given-name" autoComplete="given-name" placeholder="Elena" value={f.firstName} onChange={(e) => setF({ ...f, firstName: e.target.value })} /></div>
-        <div><label>Family name</label><input name="family-name" autoComplete="family-name" placeholder="Marchetti" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></div>
+        <div><label>Last name</label><input name="family-name" autoComplete="family-name" placeholder="Marchetti" value={f.lastName} onChange={(e) => setF({ ...f, lastName: e.target.value })} /></div>
       </div>
       <div className="row">
         <div><label>Email</label><input name="email" type="email" autoComplete="email" placeholder="you@example.com" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
-        <div><label>Telephone</label><input id="corrPhone" name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
+        <div><label>Phone</label><input id="corrPhone" name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onFocus={() => seedDialCode(f.phone, (v) => setF({ ...f, phone: v }))} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
       </div>
       <div className="row">
         <div><label>Party size</label><input name="party" inputMode="numeric" placeholder="10" value={f.party} onChange={(e) => setF({ ...f, party: e.target.value })} /></div>
@@ -431,7 +432,7 @@ export function ScheduleCall({ slug, name }: { slug: string; name: string }) {
               </div>
               <div className="frow2">
                 <label>Email<input name="email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
-                <label>Phone<input name="tel" type="tel" autoComplete="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
+                <label>Phone<input name="tel" type="tel" autoComplete="tel" placeholder="+44" value={f.phone} onFocus={() => seedDialCode(f.phone, (v) => setF({ ...f, phone: v }))} onChange={(e) => setF({ ...f, phone: e.target.value })} /></label>
               </div>
               <label className="full">Message<textarea rows={2} placeholder="A good time to reach you, and anything you'd like to discuss…" value={f.notes} onChange={(e) => setF({ ...f, notes: e.target.value })} /></label>
               <button className="btn" type="button" onClick={submit} disabled={state !== 'idle'}>{state === 'busy' ? 'Sending…' : 'Request callback'}</button>

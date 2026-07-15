@@ -610,6 +610,11 @@ button{font-family:inherit}
 .bcard .dates,.eform .dates{position:relative;margin-bottom:.2rem}
 .bcard .dlabel{font-family:'Proxima Nova','Inter';font-size:.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
 .bcard .dfield,.eform .dfield{display:flex;align-items:center;gap:.7rem;border:1px solid var(--line);padding:.9rem 1rem;cursor:pointer;color:var(--muted);font-family:'Proxima Nova','Inter';font-size:.9rem;transition:.2s}
+/* In the reserve form the picker sits beside underline inputs — match them
+   (Ben, 2026-07-15: it rendered oversized next to Party size). */
+.eform .dfield{border:none;border-bottom:1px solid var(--line);padding:.4rem 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;gap:.55rem}
+.eform .dfield svg{width:16px;height:16px}
+.eform .dfield span{letter-spacing:normal}
 .bcard .dfield:hover,.eform .dfield:hover{border-color:var(--plum)}
 .bcard .dfield.set,.eform .dfield.set{color:var(--plum)}
 .bcard .dfield svg,.eform .dfield svg{width:20px;height:20px;stroke:var(--plum);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}

@@ -1,5 +1,6 @@
 'use client'
 
+import { seedInputDialCode } from '@/lib/dial-code'
 import React, { useEffect, useRef, useState } from 'react'
 
 // Client bits for the static pages: the legal-page TOC scroll-spy and the
@@ -104,7 +105,7 @@ export function ContactForm() {
       <div className="vrow"><div className="grp"><label>First name</label><input type="text" name="firstName" required /></div><div className="grp"><label>Last name</label><input type="text" name="lastName" required /></div></div>
       <div className="vrow">
         <div className="grp"><label>Email</label><input type="email" name="email" required /></div>
-        <div className="grp"><label>Phone</label><input type="tel" name="phone" /></div>
+        <div className="grp"><label>Phone</label><input type="tel" name="phone" placeholder="+44" onFocus={seedInputDialCode} /></div>
       </div>
       <div className="grp"><label>How did you hear about us?</label><select name="heardAbout" defaultValue=""><option value="">Please choose…</option><option>Returning guest</option><option>Google / online search</option><option>Social media</option><option>Friend or family recommendation</option><option>Press or magazine</option><option>Travel advisor</option><option>Other</option></select></div>
       <div className="grp"><label className="consent"><input type="checkbox" name="optin" /> Keep me updated with new chalets and seasonal inspiration.</label></div>
@@ -138,7 +139,7 @@ export function OwnerForm() {
       </div>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" style={{ position: 'absolute', left: -9999 }} aria-hidden="true" />
       <div className="vrow"><div className="grp"><label>First name</label><input type="text" name="firstName" required /></div><div className="grp"><label>Last name</label><input type="text" name="lastName" required /></div></div>
-      <div className="vrow"><div className="grp"><label>Email</label><input type="email" name="email" required /></div><div className="grp"><label>Phone</label><input type="tel" name="phone" /></div></div>
+      <div className="vrow"><div className="grp"><label>Email</label><input type="email" name="email" required /></div><div className="grp"><label>Phone</label><input type="tel" name="phone" placeholder="+44" onFocus={seedInputDialCode} /></div></div>
       <div className="vrow">
         <div className="grp"><label>Resort / location</label><input type="text" name="resort" placeholder="e.g. Verbier" /></div>
         <div className="grp"><label>Country</label><select name="country" defaultValue=""><option value="">No preference / not sure yet</option><option>France</option><option>Switzerland</option><option>Austria</option><option>Italy</option></select></div>
