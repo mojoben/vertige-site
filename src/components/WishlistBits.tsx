@@ -187,7 +187,9 @@ export function WishlistApp() {
     if (!cur) return
     const fd = new FormData(e.currentTarget)
     const friendEmail = String(fd.get('friendEmail') ?? '').trim()
-    const senderName = String(fd.get('senderName') ?? '').trim()
+    const senderFirstName = String(fd.get('senderFirstName') ?? '').trim()
+    const senderLastName = String(fd.get('senderLastName') ?? '').trim()
+    const senderName = [senderFirstName, senderLastName].filter(Boolean).join(' ')
     const note = String(fd.get('note') ?? '').trim()
     withShare(async (token) => {
       const countries = [...new Set(cur.items.map((i) => i.loc.split(',').pop()?.trim()).filter(Boolean))]
@@ -195,7 +197,7 @@ export function WishlistApp() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          friendEmail, senderName, note,
+          friendEmail, senderName, senderFirstName, senderLastName, note,
           listName: cur.name,
           countLine: `${cur.items.length} chalet${cur.items.length === 1 ? '' : 's'}${countries.length ? ` · ${countries.join(' & ')}` : ''}`,
           coverImg: cur.items[0]?.img, thumbs: cur.items.slice(0, 3).map((i) => i.img),
@@ -339,7 +341,10 @@ export function WishlistApp() {
             <form onSubmit={sendShareEmail}>
               <p style={{ color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1.2rem' }}>We&rsquo;ll send your friend a beautifully presented email with your list and a link to view it.</p>
               <label>Your friend&rsquo;s email</label><input type="email" name="friendEmail" placeholder="friend@email.com" required />
-              <label>Your name</label><input type="text" name="senderName" placeholder="So they know who it’s from" />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.9rem' }}>
+                <div><label>First name</label><input type="text" name="senderFirstName" placeholder="So they know" /></div>
+                <div><label>Last name</label><input type="text" name="senderLastName" placeholder="who it’s from" /></div>
+              </div>
               <label>Add a note (optional)</label><textarea name="note" placeholder="Thought you’d love these for our trip…" />
               <div style={{ display: 'flex', gap: '.8rem', alignItems: 'center' }}>
                 <button type="button" className="wlbtn" onClick={() => setShareStep('opts')}>Back</button>

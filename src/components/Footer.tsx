@@ -52,7 +52,7 @@ export function Footer() {
             <p>Join our private circle for first access to new seasonal collections.</p>
           </div>
           <div className="fp-bot">
-            <div className="field"><label>Email address</label><input placeholder="" /></div>
+            <div className="field"><label>Email</label><input placeholder="" /></div>
             <button>Subscribe</button>
           </div>
         </div>

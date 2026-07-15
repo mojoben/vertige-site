@@ -22,6 +22,8 @@ export async function POST(request: Request) {
   const friendEmail = typeof body.friendEmail === 'string' ? body.friendEmail.trim() : ''
   if (!EMAIL_RE.test(friendEmail)) return NextResponse.json({ error: 'A valid email is required' }, { status: 422 })
   const senderName = typeof body.senderName === 'string' ? body.senderName.trim().slice(0, 120) : ''
+  const senderFirstName = typeof body.senderFirstName === 'string' ? body.senderFirstName.trim().slice(0, 60) : ''
+  const senderLastName = typeof body.senderLastName === 'string' ? body.senderLastName.trim().slice(0, 60) : ''
   const note = typeof body.note === 'string' ? body.note.trim().slice(0, 600) : ''
   const listName = typeof body.listName === 'string' ? body.listName.trim().slice(0, 120) : 'My favourites'
   const countLine = typeof body.countLine === 'string' ? body.countLine.trim().slice(0, 160) : ''
@@ -47,8 +49,8 @@ export async function POST(request: Request) {
     collection: 'enquiries',
     data: {
       enquiryType: 'wishlist-share',
-      firstName: senderName || 'Wishlist',
-      lastName: 'Share',
+      firstName: senderFirstName || senderName || 'Wishlist',
+      lastName: senderLastName || 'Share',
       email: friendEmail,
       phone: '',
       payload: { source: 'wishlist share', senderName, note, listName, shareToken, shareUrl, subject, renderedEmail: html },
