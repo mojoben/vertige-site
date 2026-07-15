@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { renderShareWishlistEmail, renderVerifyCodeEmail } from '@/lib/emails'
+import { renderShareWishlistEmail, renderVerifyCodeEmail, renderEnquiryAutoReply, renderInternalEnquiryAlert } from '@/lib/emails'
 
 // Dev-only preview of the transactional email templates (HANDOFF 09 §6):
 // /api/dev/email-preview?t=share | verify. Sample data mirrors the mocks.
@@ -9,7 +9,20 @@ export async function GET(request: Request) {
   const t = new URL(request.url).searchParams.get('t')
   const origin = new URL(request.url).origin
   const { html } =
-    t === 'verify'
+    t === 'enquiry'
+      ? renderEnquiryAutoReply({
+          firstName: 'Ben',
+          chalet: { name: 'Chalet Marmottière', location: 'Verbier, Switzerland', img: `${origin}/images/chalets/ext-07.webp`, url: `${origin}/chalets/chalet-marmottiere` },
+        })
+      : t === 'enquiry-plain'
+      ? renderEnquiryAutoReply({ firstName: 'Ben' })
+      : t === 'alert'
+      ? renderInternalEnquiryAlert({
+          name: 'Ben Wood', email: 'ben@example.com', phone: '+44 7700 900000', enquiryType: 'chalet-request',
+          chalet: { name: 'Chalet Marmottière', location: 'Verbier, Switzerland' },
+          summary: 'Family of ten, February half-term, keen skiers.', portalUrl: 'https://vertige-portal.onrender.com/quotes',
+        })
+      : t === 'verify'
       ? renderVerifyCodeEmail('482913')
       : renderShareWishlistEmail({
           senderName: 'Ben Wood',

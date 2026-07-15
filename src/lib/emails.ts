@@ -98,3 +98,79 @@ export function renderVerifyCodeEmail(code: string): { subject: string; html: st
     </div>`
   return { subject: 'Your Vertige verification code', html: shell(inner) }
 }
+
+// ── Enquiry auto-reply + internal alert (Ben, 2026-07-15) ────────────────────
+// Sent the moment a form lands: the client gets a branded acknowledgement in
+// the wishlist-email style; the team gets a plain internal alert. When the
+// enquiry came from a chalet page the chalet rides along on both.
+
+export interface EnquiryEmailInput {
+  firstName: string
+  chalet?: { name: string; location: string; img?: string; url?: string } | null
+}
+
+export function renderEnquiryAutoReply(o: EnquiryEmailInput): { subject: string; html: string } {
+  const name = esc(o.firstName || 'there')
+  const chaletBlock = o.chalet
+    ? `
+      <div style="border:1px solid ${LINE};margin:24px 0 26px">
+        ${o.chalet.img ? `<div style="height:190px;background:url(${o.chalet.img}) center/cover"></div>` : ''}
+        <div style="padding:17px 21px 19px">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${MUTED};margin-bottom:5px">Your enquiry</div>
+          <div style="font-family:${SERIF};font-size:21.5px;color:${NAVY};margin-bottom:2px">${esc(o.chalet.name)}</div>
+          <div style="font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:${MUTED}">${esc(o.chalet.location)}</div>
+          ${o.chalet.url ? `<a href="${o.chalet.url}" style="display:inline-block;margin-top:12px;color:${ROSE};font-size:13px;text-decoration:none">View the chalet &rarr;</a>` : ''}
+        </div>
+      </div>`
+    : ''
+  const inner = `
+    <div style="padding:32px">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${ROSE};font-weight:600;margin-bottom:16px">Thank you for your enquiry</div>
+      <h1 style="font-family:${SERIF};font-weight:500;color:${NAVY};font-size:30px;line-height:1.2;margin:0 0 16px;letter-spacing:.2px">We&rsquo;ll be in touch shortly</h1>
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">Dear ${name},</p>
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">Thank you for reaching out to Vertige. Your enquiry has been received and one of our advisors is reviewing it now — we&rsquo;ll come back to you shortly with availability and a considered recommendation.</p>
+      ${chaletBlock}
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">If your plans are urgent, call us on <span style="color:${NAVY};white-space:nowrap">+44 20 7131 0270</span> — every day, 8am to midnight.</p>
+      <p style="color:#4a4450;font-size:15.5px;margin:0 0 6px">We look forward to planning your week in the mountains.</p>
+      <p style="font-family:${SERIF};font-style:italic;color:${NAVY};font-size:17px;margin:14px 0 0">Vertige</p>
+    </div>`
+  return {
+    subject: 'Thank you for your enquiry — we’ll be in touch shortly',
+    html: shell(inner, {
+      legal: 'Please don&rsquo;t reply to this email — it&rsquo;s sent automatically when an enquiry arrives and isn&rsquo;t monitored. Our advisor will write to you from their own address.',
+    }),
+  }
+}
+
+export function renderInternalEnquiryAlert(o: {
+  ref?: string | null
+  name: string
+  email: string
+  phone?: string
+  enquiryType: string
+  chalet?: { name: string; location: string } | null
+  summary?: string
+  portalUrl: string
+}): { subject: string; html: string } {
+  const rows = [
+    ['Name', o.name],
+    ['Email', o.email],
+    o.phone ? ['Phone', o.phone] : null,
+    ['Type', o.enquiryType],
+    o.chalet ? ['Chalet', `${o.chalet.name} — ${o.chalet.location}`] : null,
+    o.summary ? ['Details', o.summary] : null,
+  ].filter(Boolean) as [string, string][]
+  const inner = `
+    <div style="padding:32px">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${ROSE};font-weight:600;margin-bottom:16px">New enquiry</div>
+      <h1 style="font-family:${SERIF};font-weight:500;color:${NAVY};font-size:26px;line-height:1.2;margin:0 0 18px">${esc(o.chalet ? o.chalet.name : 'Website enquiry')}</h1>
+      <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px">
+        ${rows.map(([k, v]) => `<tr><td style="padding:7px 14px 7px 0;color:${MUTED};white-space:nowrap;vertical-align:top">${k}</td><td style="padding:7px 0;color:${INK}">${esc(v)}</td></tr>`).join('')}
+      </table>
+      <a href="${o.portalUrl}" style="display:block;background:${NAVY};color:#ffffff;text-decoration:none;text-align:center;padding:14px 26px;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:22px 0 0">Open in the portal &rarr;</a>
+    </div>`
+  return {
+    subject: `New enquiry — ${o.chalet ? o.chalet.name : o.name}`,
+    html: shell(inner),
+  }
+}

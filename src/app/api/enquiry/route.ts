@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { sharedDb } from '@/lib/shared-db'
+import { renderEnquiryAutoReply, renderInternalEnquiryAlert } from '@/lib/emails'
+import { sendEmail } from '@/lib/send-email'
 
 // POST /api/enquiry — the single hardened submission handler every form posts
 // to (HANDOFF 03 §3–§5). Pipeline, in order, so nothing is ever lost:
@@ -82,8 +84,63 @@ export async function POST(request: Request) {
     }
   }
 
-  // ── 4. Email (TODO: transactional provider — Resend/Postmark/SES) ─────
-  // Auto-response to the customer + internal alert to the concierge inbox.
+  // ── 4. Email — branded auto-reply to the client + internal new-enquiry
+  // alert (Ben, 2026-07-15). Rendered + stored on the enquiry record first,
+  // then sent via Microsoft Graph when the AZURE_*/MAIL_SENDER env vars are
+  // present; without them the send is a recorded no-op and can be replayed.
+  if (enquiryType !== 'newsletter' && enquiryType !== 'wishlist-share') {
+    const origin = process.env.SITE_ORIGIN ?? 'https://vertigeski.com'
+    // Chalet context when the form came from a chalet page.
+    let chalet: { name: string; location: string; img?: string; url?: string } | null = null
+    if (typeof body.propertySlug === 'string' && body.propertySlug) {
+      try {
+        const { rows } = await sharedDb().query<{ name: string; resort: string | null; country: string | null; hero: string | null }>(
+          `SELECT p.name, p.resort, p.country, p.images->0->>'url' AS hero
+             FROM web.property_public_v p WHERE p.slug = $1`,
+          [body.propertySlug],
+        )
+        if (rows[0]) {
+          const img = rows[0].hero ?? undefined
+          chalet = {
+            name: rows[0].name,
+            location: [rows[0].resort, rows[0].country].filter(Boolean).join(', '),
+            img: img && !img.startsWith('http') ? `${origin}${img}` : img,
+            url: `${origin}/chalets/${body.propertySlug}`,
+          }
+        }
+      } catch {
+        // chalet context is best-effort — the emails still go without it
+      }
+    }
+    const reply = renderEnquiryAutoReply({ firstName, chalet })
+    const alert = renderInternalEnquiryAlert({
+      name: `${firstName} ${lastName}`.trim(),
+      email,
+      phone: typeof body.phone === 'string' ? body.phone : undefined,
+      enquiryType,
+      chalet,
+      summary: typeof body.message === 'string' ? body.message.slice(0, 500) : undefined,
+      portalUrl: `${process.env.PORTAL_ORIGIN ?? 'https://vertige-portal.onrender.com'}/quotes`,
+    })
+    const [replyRes, alertRes] = await Promise.all([
+      sendEmail({ to: email, subject: reply.subject, html: reply.html }),
+      sendEmail({ to: process.env.ENQUIRY_ALERT_TO ?? 'hello@vertigeski.com', subject: alert.subject, html: alert.html }),
+    ])
+    await payload
+      .update({
+        collection: 'enquiries',
+        id: stored.id,
+        data: {
+          payload: {
+            ...body,
+            autoReply: { subject: reply.subject, html: reply.html, sent: replyRes.sent, detail: replyRes.detail },
+            internalAlert: { sent: alertRes.sent, detail: alertRes.detail },
+          },
+        },
+        overrideAccess: true,
+      })
+      .catch(() => {})
+  }
 
   return NextResponse.json({ ok: true })
 }
