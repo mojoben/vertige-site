@@ -792,7 +792,7 @@ button{font-family:inherit}
 .selbtn:hover{background:var(--rose)}
 .selbtn.ghost{background:#fff;border:1px solid var(--plum);color:var(--plum)}
 .selbtn.ghost:hover{background:var(--warm)}
-.selbtn.chosen{background:var(--rose)}
+.selbtn.chosen{background:var(--rose);color:#fff;border-color:var(--rose)}
 /* reserve / correspondence */
 .cdpage .corr .grid2{grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,4vw,4rem)}
 @media(max-width:920px){.cdpage .corr .grid2{grid-template-columns:1fr}}
