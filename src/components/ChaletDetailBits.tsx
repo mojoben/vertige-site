@@ -105,6 +105,18 @@ export function WeekPicker({ weeks, selStart, selSpan, onPick, placeholder = 'Se
     return () => document.removeEventListener('click', close)
   }, [])
 
+  // A start week at the end of a month (e.g. Marmottière's 29 Nov season
+  // opener) needs the NEXT month on screen to pick the extension week —
+  // follow the selection so the 6th/13th are clickable (Ben, 2026-07-15).
+  useEffect(() => {
+    if (selStart < 0) return
+    const follow = weeks[selStart + (selSpan === 1 ? 1 : selSpan - 1)] ?? weeks[selStart]
+    const dt = d(follow.s)
+    const idx = months.findIndex((m) => m.y === dt.getFullYear() && m.m === dt.getMonth())
+    if (idx >= 0) setMi(idx)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selStart, selSpan])
+
   const cal = (() => {
     if (!open || !months.length) return null
     const { y, m } = months[Math.min(mi, months.length - 1)]

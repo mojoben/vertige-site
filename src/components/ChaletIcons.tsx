@@ -43,6 +43,15 @@ const IC: Record<string, string> = {
  sofa:'<path d="M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v6H3z"/><path d="M5 17v2M19 17v2"/>',
  snow:'<path d="M12 3v18M5 6.5l14 11M19 6.5l-14 11"/>',
  art:'<rect x="4" y="4" width="16" height="16"/><path d="M7 15l3-4 2 2.5L14 11l3 4"/><path d="M9 8v.01"/>',
+ car:'<path d="M3 17v-4l2-5h14l2 5v4"/><path d="M3 13h18"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+ desk:'<path d="M3 8h18M4 8v10M20 8v10M13 8v10M13 11h7M13 14h7"/>',
+ tv:'<rect x="3" y="5" width="18" height="12" rx="1"/><path d="M9 21h6M12 17v4"/>',
+ wifi:'<path d="M4 9a12 12 0 0 1 16 0"/><path d="M7 12.5a8 8 0 0 1 10 0"/><path d="M10 16a4 4 0 0 1 4 0"/><path d="M12 19v.01"/>',
+ safe:'<rect x="4" y="4" width="16" height="16" rx="1"/><circle cx="12" cy="12" r="4"/><path d="M12 8v2M12 14v2M8 12h2M14 12h2"/>',
+ piano:'<rect x="3" y="8" width="18" height="8"/><path d="M7 8v5M11 8v5M15 8v5"/>',
+ laundry:'<rect x="5" y="3" width="14" height="18" rx="1"/><circle cx="12" cy="13" r="4"/><path d="M8 6h.01M11 6h.01"/>',
+ coffee:'<path d="M5 9h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2"/><path d="M8.5 5c0-1 .5-1 .5-2M12 5c0-1 .5-1 .5-2"/>',
+ sound:'<rect x="6" y="3" width="12" height="18" rx="1"/><circle cx="12" cy="15" r="3.5"/><circle cx="12" cy="7.5" r="1.5"/>',
  def:'<path d="M5 12h14"/>'
 }
 
@@ -79,9 +88,29 @@ export function pick(t: string): string {
   if (t.includes('hot tub') || t.includes('jacuzzi') || t.includes('pool')) return 'bath'
   if (t.includes('gym') || t.includes('fitness') || t.includes('wellbeing') || t.includes('well-being')) return 'gym'
   if (t.includes('housekeep') || t.includes('linen') || t.includes('towel') || t.includes('turndown')) return 'towels'
-  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage') || t.includes('meditation')) return 'heat'
+  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage') || t.includes('meditation') || t.includes('relaxation')) return 'heat'
   if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out') || t.includes('ski pass') || t.includes('boot')) return 'ski'
   if (t.includes('chef') || t.includes('catered') || t.includes('cook')) return 'chef'
+  if (t.includes('garage') || t.includes('parking')) return 'car'
+  if (t.includes('office') || t.includes('bureau') || t.includes('desk') || t.includes('study') || t.includes('conference')) return 'desk'
+  if (/\btv\b/.test(t) || t.includes('television') || t.includes('projector') || t.includes('flat-screen')) return 'tv'
+  if (t.includes('wi-fi') || t.includes('wifi')) return 'wifi'
+  if (/\bsafe/.test(t)) return 'safe'
+  if (t.includes('piano')) return 'piano'
+  if (t.includes('laundry') || t.includes('washer') || t.includes('dryer') || t.includes('drying room')) return 'laundry'
+  if (t.includes('coffee') || t.includes('nespresso')) return 'coffee'
+  if (t.includes('sound') || t.includes('dolby') || t.includes('sonos') || t.includes('speaker') || t.includes('surround')) return 'sound'
+  if (t.includes('table tennis') || t.includes('table football') || t.includes('pinball') || t.includes('ping')) return 'games'
+  if (t.includes('ski rack') || t.includes('ski storage') || t.includes('ski-pass') || t.includes('slope access') || t.includes('equipment storage')) return 'ski'
+  if (t.includes('closet') || t.includes('wardrobe') || t.includes('storage')) return 'hanger'
+  if (t.includes('armchair') || t.includes('sofa') || t.includes('nook') || t.includes('corner') || t.includes('open-plan') || t.includes('split-level') || t.includes('mezzanine') || t.includes('layout')) return 'sofa'
+  if (t.includes('seats') || /\btable\b/.test(t)) return 'dining'
+  if (t.includes('appliance') || t.includes('equipped') || t.includes('oven')) return 'kitchen'
+  if (t.includes('in-town')) return 'lamp'
+  if (t.includes('forest') || t.includes('nature') || t.includes('natural') || t.includes('valley') || t.includes('panorama') || t.includes('outlook') || t.includes('standalone') || t.includes('neighbour') || t.includes('setting')) return 'mountain'
+  if (t.includes('exterior access') || t.includes('opens into')) return 'balcony'
+  if (t.includes('window')) return 'window'
+  if (t.includes('service')) return 'towels'
   if (t.includes('dressing')) return 'hanger'
   if (t.includes('shower') || t.includes('rain')) return 'shower'
   if (t.includes('bath') || t.includes('suite') || t.includes('wc') || t.includes('basin')) return 'bath'
@@ -91,7 +120,7 @@ export function pick(t: string): string {
   if (t.includes('newly') || t.includes('renovat') || t.includes('rated')) return 'child'
   if (t.includes('view') || t.includes('mountain') || t.includes('piste')) return 'mountain'
   if (t.includes('child') || t.includes('nanny')) return 'child'
-  if (t.includes('king') || t.includes('bed') || t.includes('bunk') || t.includes('twin') || t.includes('double') || t.includes('super')) return 'bed'
+  if (t.includes('king') || t.includes('queen') || t.includes('bed') || t.includes('bunk') || t.includes('twin') || t.includes('double') || t.includes('super')) return 'bed'
   if (t.includes('restaurant')) return 'restaurant'
   if (t.includes('aerodrome') || t.includes('airport') || t.includes('sion') || t.includes('geneva') || t.includes('gva')) return 'plane'
   if (t.includes('heli')) return 'heli'
