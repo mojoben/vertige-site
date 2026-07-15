@@ -133,21 +133,26 @@ export function HeroSearch() {
   const [openCountry, setOpenCountry] = useState<string | null>(null)
   const [calStart, setCalStart] = useState(() => new Date(HS_CAL_MIN.y, HS_CAL_MIN.m, 1))
 
+  const barRef = useRef<HTMLDivElement>(null)
   function openPop(name: Exclude<typeof pop, null>, e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation()
     if (pop === name) { setPop(null); return }
     const fr = e.currentTarget.getBoundingClientRect()
+    const wr = barRef.current?.getBoundingClientRect()
+    if (!wr) return
     const w = name === 'cal' ? Math.min(620, innerWidth * 0.94) : name === 'dest' ? Math.min(560, innerWidth * 0.92) : Math.min(320, innerWidth * 0.92)
-    let left = fr.left
-    if (left + w > innerWidth - 12) left = innerWidth - w - 12
-    if (left < 12) left = 12
-    setPopPos({ left, top: fr.bottom + 2 })
+    // Anchored (absolute) inside the bar wrapper — clamp to the viewport
+    // by translating viewport limits into wrapper coordinates.
+    let left = fr.left - wr.left
+    if (wr.left + left + w > innerWidth - 12) left = innerWidth - 12 - w - wr.left
+    if (wr.left + left < 12) left = 12 - wr.left
+    setPopPos({ left, top: fr.bottom - wr.top + 2 })
     setPop(name)
   }
   useEffect(() => {
     const close = (e: MouseEvent) => {
       const t = e.target as Element | null
-      if (t?.closest?.('.pop') || t?.closest?.('.hsearch .f')) return
+      if (t?.closest?.('.pop') || t?.closest?.('.hsrch .f')) return
       setPop(null)
     }
     document.addEventListener('click', close)
@@ -230,16 +235,16 @@ export function HeroSearch() {
   )
 
   return (
-    <>
-      <div className="hsearch">
+    <div className="hsrch" ref={barRef}>
+      <div className="srch">
         <div className={`f${pop === 'dest' ? ' active' : ''}`} onClick={(e) => openPop('dest', e)}><label>Destination</label><span>{dest ?? 'Any resort'}</span></div>
         <div className={`f${pop === 'guests' ? ' active' : ''}`} onClick={(e) => openPop('guests', e)}><label>Guests</label><span>{guestsTxt}</span></div>
         <div className={`f${pop === 'beds' ? ' active' : ''}`} onClick={(e) => openPop('beds', e)}><label>Bedrooms</label><span>{beds > 0 ? `${beds}+` : 'Any'}</span></div>
         <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Dates</label><span>{arr && dep ? `${hsFmt(arr)} — ${hsFmt(dep)}` : arr ? `${hsFmt(arr)} — ?` : 'Add dates'}</span></div>
-        <button className="hgo" onClick={go}>Search</button>
+        <button onClick={go}>Search</button>
       </div>
 
-      <div className={`pop pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stop}>
+      <div className={`pop anchored pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stop}>
         <div className="pop-head">Where would you like to ski?</div>
         <button className="dest-all" onClick={() => { setDest(null); setPop(null) }}>All the Alps</button>
         {COUNTRIES.map((c) => (
@@ -255,7 +260,7 @@ export function HeroSearch() {
         ))}
       </div>
 
-      <div className={`pop pop-cal${pop === 'cal' ? ' on' : ''}`} style={popPos} onClick={stop}>
+      <div className={`pop anchored pop-cal${pop === 'cal' ? ' on' : ''}`} style={popPos} onClick={stop}>
         <div className="pop-head">Select your week</div>
         <div className="cal-note">Changeover days vary by chalet, so both <b>Saturdays</b> and <b>Sundays</b> are selectable.</div>
         <div className="cal-months">
@@ -269,18 +274,18 @@ export function HeroSearch() {
         </div>
       </div>
 
-      <div className={`pop pop-guests${pop === 'guests' ? ' on' : ''}`} style={popPos} onClick={stop}>
+      <div className={`pop anchored pop-guests${pop === 'guests' ? ' on' : ''}`} style={popPos} onClick={stop}>
         <div className="pop-head">Who&rsquo;s coming?</div>
         {stepper('Adults', 'Age 13+', adults, setAdults)}
         {stepper('Children', 'Age 0–12', children, setChildren)}
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
 
-      <div className={`pop pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stop}>
+      <div className={`pop anchored pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stop}>
         <div className="pop-head">How many bedrooms?</div>
         {stepper('Bedrooms', 'Minimum', beds, setBeds, (n) => (n > 0 ? `${n}+` : 'Any'))}
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
-    </>
+    </div>
   )
 }

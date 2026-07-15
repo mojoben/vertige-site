@@ -201,15 +201,21 @@ export function DestinationExplorer({
   }, [chalets, s.destCountry, s.destResort])
 
   // ── Popovers ───────────────────────────────────────────────────────────
+  // Anchored to the search bar (Ben, 2026-07-15): the pops are absolutely
+  // positioned inside .searchwrap, so they stay latched to the bar when the
+  // page scrolls instead of floating at a fixed viewport position.
+  const searchRef = useRef<HTMLDivElement>(null)
   function openPop(name: Exclude<PopName, null>, e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation()
     if (pop === name) { setPop(null); return }
     const fr = e.currentTarget.getBoundingClientRect()
+    const wr = searchRef.current?.getBoundingClientRect()
+    if (!wr) return
     const w = name === 'cal' ? Math.min(620, innerWidth * 0.94) : name === 'dest' ? Math.min(560, innerWidth * 0.92) : Math.min(320, innerWidth * 0.92)
-    let left = fr.left
-    if (left + w > innerWidth - 12) left = innerWidth - w - 12
-    if (left < 12) left = 12
-    setPopPos({ left, top: fr.bottom + 2 })
+    let left = fr.left - wr.left
+    if (left + w > wr.width) left = wr.width - w
+    if (left < 0) left = 0
+    setPopPos({ left, top: fr.bottom - wr.top + 2 })
     setPop(name)
   }
   useEffect(() => {
@@ -353,7 +359,7 @@ export function DestinationExplorer({
   return (
     <>
       {/* ── Floating search bar ── */}
-      <div className="searchwrap"><div className="searchbar"><div className="searchrow">
+      <div className="searchwrap"><div className="searchbar" ref={searchRef}><div className="searchrow">
         <div className="srch">
           {/* One field set across every search box (Ben, 2026-07-14):
               Destination · Guests · Bedrooms · Dates (single range picker). */}
@@ -363,10 +369,9 @@ export function DestinationExplorer({
           <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Dates</label><span>{s.arr && s.dep ? `${fmtD(s.arr)} — ${fmtD(s.dep)}` : s.arr ? `${fmtD(s.arr)} — ?` : 'Add dates'}</span></div>
           <button onClick={() => { setPop(null); scrollToId('chalets') }}>Search</button>
         </div>
-      </div></div></div>
 
-      {/* Popovers (fixed, anchored to the clicked field) */}
-      <div className={`pop pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
+      {/* Popovers — absolute inside the wrap, latched to the bar */}
+      <div className={`pop anchored pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
         <div className="pop-head">Where would you like to ski?</div>
         <button className="dest-all" onClick={() => { set({ destCountry: null, destResort: null }); setPop(null) }}>All the Alps</button>
         {COUNTRIES.map((c) => (
@@ -385,7 +390,7 @@ export function DestinationExplorer({
         ))}
       </div>
 
-      <div className={`pop pop-cal${pop === 'cal' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
+      <div className={`pop anchored pop-cal${pop === 'cal' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
         <div className="pop-head">Select your week</div>
         <div className="cal-note">Changeover days vary by chalet, so both <b>Saturdays</b> and <b>Sundays</b> are selectable. Choose the week you have in mind — we&rsquo;ll show chalets on either changeover.</div>
         <label className="cal-flex"><input type="checkbox" checked={s.flex} onChange={(e) => set({ flex: e.target.checked })} /> Flexible changeover — include Sat &amp; Sun (recommended)</label>
@@ -400,7 +405,7 @@ export function DestinationExplorer({
         </div>
       </div>
 
-      <div className={`pop pop-guests${pop === 'guests' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
+      <div className={`pop anchored pop-guests${pop === 'guests' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
         <div className="pop-head">Who&rsquo;s coming?</div>
         {([['adults', 'Adults', 'Age 13+'], ['children', 'Children', 'Age 0–12']] as const).map(([k, n, sub]) => (
           <div key={k} className="gr">
@@ -415,7 +420,7 @@ export function DestinationExplorer({
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
 
-      <div className={`pop pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
+      <div className={`pop anchored pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
         <div className="pop-head">How many bedrooms?</div>
         <div className="gr">
           <div><div className="gn">Bedrooms</div><div className="gs">Minimum</div></div>
@@ -427,9 +432,13 @@ export function DestinationExplorer({
         </div>
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
+      </div></div></div>
 
       {/* ── Breadcrumb + sticky tabs ── */}
-      {after}
+      {/* The server-page slots (after/overview/guide) sit in keyed fragments:
+          rendered bare in this root fragment's child list, the RSC-built
+          elements trip React's missing-key check during hydration. */}
+      <React.Fragment key="after">{after}</React.Fragment>
       {overview != null && (
         <div className="dtabs"><div className="in">
           <button className={`dtab${activeTab === 'overview' ? ' act' : ''}`} onClick={() => scrollToId('overview')}>Overview</button>
@@ -438,7 +447,7 @@ export function DestinationExplorer({
         </div></div>
       )}
 
-      {overview}
+      <React.Fragment key="overview">{overview}</React.Fragment>
 
       {/* ── Luxury chalets: filter bar + results + map ── */}
       <section id="chalets" className="chsec">
@@ -550,7 +559,7 @@ export function DestinationExplorer({
         </div>
       </aside>
 
-      {guide}
+      <React.Fragment key="guide">{guide}</React.Fragment>
 
       {wlToast && <div className="wltoast" style={{ display: 'block' }}>{wlToast}</div>}
     </>
