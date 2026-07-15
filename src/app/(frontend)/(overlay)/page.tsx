@@ -9,7 +9,6 @@ import { HeroSlides, CarouselRow, CtaBand, HomeFx, HeroSearch } from '@/componen
 
 export default async function HomePage() {
   const { chalets } = await getCatalogue()
-  const featured = chalets[0]
   const carousel = chalets.slice(0, 4)
   const countOf = (country: string) => chalets.filter((c) => c.country === country).length
 
@@ -19,20 +18,15 @@ export default async function HomePage() {
     <div className="homepage">
       <HomeFx />
 
-      {/* HERO */}
+      {/* HERO — stacked (Ben, 2026-07-15): title, sub-copy beneath it, then
+          the search bar; the featured-chalet card is gone. */}
       <section className="hero">
         <HeroSlides images={['/images/hero.jpg', '/images/chalets/ext-05.webp', '/images/chalets/ext-06.webp']} />
         <div className="wrap">
           <h1>The mountain,<br />made <em>yours</em>.</h1>
           <p className="snip">A curated portfolio of the finest ski chalets across the Alps — designed for families, groups of friends, and the weeks you come back for.</p>
-        </div>
-        <div className="hbottom"><div className="wrap">
-          <Link className="hprev" href={featured ? chaletHref(featured) : '/chalets/sample'}>
-            <div className="thumb" style={{ backgroundImage: `url(${featured?.img ?? '/images/chalets/ext-01.webp'})` }} />
-            <div className="in"><div className="k">Featured chalet</div><div className="n">{featured?.name ?? 'Chalet Aiguille'} <span>→</span></div></div>
-          </Link>
           <HeroSearch />
-        </div></div>
+        </div>
       </section>
 
       <div className="fadewrap">
