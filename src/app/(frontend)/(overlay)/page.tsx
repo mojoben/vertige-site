@@ -21,9 +21,11 @@ export default async function HomePage() {
       {/* HERO — stacked (Ben, 2026-07-15): title, sub-copy beneath it, then
           the search bar; the featured-chalet card is gone. */}
       <section className="hero">
-        {/* Static hero — slideshow retired (Ben, 2026-07-15): just the
-            mountain shot, no chalet slides. */}
-        <div className="hslide on" style={{ backgroundImage: 'url(/images/hero.jpg)' }} />
+        {/* Video hero (Ben, 2026-07-15) — muted looping background, the
+            mountain shot as poster/fallback wherever autoplay is blocked. */}
+        <video className="hvideo" autoPlay muted loop playsInline poster="/images/hero.jpg">
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
         <div className="wrap">
           <h1>The mountain,<br />made <em>yours</em>.</h1>
           <p className="snip">A curated portfolio of the finest ski chalets across the Alps — designed for families, groups of friends, and the weeks you come back for.</p>

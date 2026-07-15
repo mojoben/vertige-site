@@ -929,6 +929,7 @@ button{font-family:inherit}
 .homepage .hslide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.4s ease}
 .homepage .hslide.on{opacity:1}
 .homepage .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(47,47,47,.42),rgba(47,47,47,.05) 34%,rgba(47,47,47,.5));z-index:1}
+.homepage .hero .hvideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 /* Stacked hero (Ben, 2026-07-15): title (+25% size), sub-copy under it,
    search bar beneath — the absolute top-corners layout is retired. */
 .homepage .hero .wrap{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
