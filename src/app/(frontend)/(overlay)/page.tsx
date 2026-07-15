@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { getCatalogue } from '@/lib/portal-client'
-import { HeroSlides, CarouselRow, CtaBand, HomeFx, HeroSearch } from '@/components/HomeBits'
+import { CarouselRow, CtaBand, HomeFx, HeroSearch } from '@/components/HomeBits'
 
 // Home — faithful port of vertige-proto-home-mockup.html (confirmed as the
 // canonical home, Ben 2026-07-11). Featured chalet + chalet carousel are fed
@@ -21,7 +21,9 @@ export default async function HomePage() {
       {/* HERO — stacked (Ben, 2026-07-15): title, sub-copy beneath it, then
           the search bar; the featured-chalet card is gone. */}
       <section className="hero">
-        <HeroSlides images={['/images/hero.jpg', '/images/chalets/ext-05.webp', '/images/chalets/ext-06.webp']} />
+        {/* Static hero — slideshow retired (Ben, 2026-07-15): just the
+            mountain shot, no chalet slides. */}
+        <div className="hslide on" style={{ backgroundImage: 'url(/images/hero.jpg)' }} />
         <div className="wrap">
           <h1>The mountain,<br />made <em>yours</em>.</h1>
           <p className="snip">A curated portfolio of the finest ski chalets across the Alps — designed for families, groups of friends, and the weeks you come back for.</p>
