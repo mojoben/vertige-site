@@ -149,7 +149,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <div className="lb-head"><h3>Handpicked chalets in {g.name}</h3></div>
               <div className="lb-cards">
                 {(inResort.length ? inResort : sampleCards).map((c) => (
-                  <Link key={c.name} className="ccard" href={'slug' in c && c.slug ? `/chalets/${c.slug}` : '/chalets/sample'}>
+                  <Link key={c.name} className="ccard" href={('href' in c && c.href) || ('slug' in c && c.slug ? `/chalets/${c.slug}` : '/chalets')}>
                     <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
                     <h3>{c.name}</h3>
                     <div className="loc">{g.name}, {g.country}</div>

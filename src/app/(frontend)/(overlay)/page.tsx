@@ -12,7 +12,7 @@ export default async function HomePage() {
   const carousel = chalets.slice(0, 4)
   const countOf = (country: string) => chalets.filter((c) => c.country === country).length
 
-  const chaletHref = (c: { slug?: string }) => (c.slug ? `/chalets/${c.slug}` : '/chalets/sample')
+  const chaletHref = (c: { slug?: string; href?: string }) => c.href ?? (c.slug ? `/chalets/${c.slug}` : '/chalets')
 
   return (
     <div className="homepage">

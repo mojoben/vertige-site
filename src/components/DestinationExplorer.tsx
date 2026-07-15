@@ -17,7 +17,7 @@ import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
 
 // Card shape = the prototype contract; portal-fed cards add their currency
 // symbol + slug (see lib/portal-client.ts toCard).
-export type CatalogueChalet = MockChalet & { priceSymbol?: string; slug?: string }
+export type CatalogueChalet = MockChalet & { priceSymbol?: string; slug?: string; href?: string }
 const price = (c: CatalogueChalet, n: number) =>
   c.priceSymbol ? `${c.priceSymbol}${n >= 1000 ? (n / 1000).toFixed(0) + 'k' : n}` : gbp(n)
 
@@ -336,7 +336,7 @@ export function DestinationExplorer({
     set({ [f]: on ? [...s[f], v] : s[f].filter((x) => x !== v) } as Partial<FilterState>)
 
   const chaletCard = (c: CatalogueChalet) => (
-    <Link key={c.name} className="pc" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'} target="_blank" rel="noopener">
+    <Link key={c.name} className="pc" href={c.href ?? (c.slug ? `/chalets/${c.slug}` : '/chalets')} target="_blank" rel="noopener">
       <div className="im" style={{ backgroundImage: `url(${c.img})` }}>
         <div
           className={`heart${saved(c) ? ' saved' : ''}`}
@@ -508,7 +508,7 @@ export function DestinationExplorer({
                   return (
                     <div className={`mpop${c.my < 0.42 ? ' below' : ''}`} style={{ left: `${c.mx * 100}%`, top: `${c.my * 100}%` }} onClick={stopAll}>
                       <button className="cx" onClick={() => setActivePin(null)}>×</button>
-                      <Link className="lk" href={c.slug ? `/chalets/${c.slug}` : '/chalets/sample'} target="_blank" rel="noopener">
+                      <Link className="lk" href={c.href ?? (c.slug ? `/chalets/${c.slug}` : '/chalets')} target="_blank" rel="noopener">
                         <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
                         <div className="b"><h4>{c.name}</h4><div className="r">{c.resort}, {c.country}</div><div className="pr">{c.from > 0 ? `From ${price(c, c.from)} / week` : 'Price on request'}</div><span className="view">View chalet ↗</span></div>
                       </Link>

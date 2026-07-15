@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { sharedDb } from '@/lib/shared-db'
+import { chaletPath } from '@/lib/portal-client'
 import { renderEnquiryAutoReply, renderInternalEnquiryAlert, renderWishlistFollowUpEmail } from '@/lib/emails'
 import { sendEmail } from '@/lib/send-email'
 
@@ -94,8 +95,8 @@ export async function POST(request: Request) {
     let chalet: { name: string; location: string; img?: string; url?: string } | null = null
     if (typeof body.propertySlug === 'string' && body.propertySlug) {
       try {
-        const { rows } = await sharedDb().query<{ name: string; resort: string | null; country: string | null; hero: string | null }>(
-          `SELECT p.name, p.resort, p.country, p.images->0->>'url' AS hero
+        const { rows } = await sharedDb().query<{ name: string; resort: string | null; country: string | null; resort_slug: string | null; country_iso: string | null; hero: string | null }>(
+          `SELECT p.name, p.resort, p.country, p.resort_slug, p.country_iso, p.images->0->>'url' AS hero
              FROM web.property_public_v p WHERE p.slug = $1`,
           [body.propertySlug],
         )
@@ -105,7 +106,7 @@ export async function POST(request: Request) {
             name: rows[0].name,
             location: [rows[0].resort, rows[0].country].filter(Boolean).join(', '),
             img: img && !img.startsWith('http') ? `${origin}${img}` : img,
-            url: `${origin}/chalets/${body.propertySlug}`,
+            url: `${origin}${chaletPath({ slug: body.propertySlug, resortSlug: rows[0].resort_slug, countryIso: rows[0].country_iso })}`,
           }
         }
       } catch {

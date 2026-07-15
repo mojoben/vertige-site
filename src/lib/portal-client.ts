@@ -293,7 +293,7 @@ function toAttrs(features: string[]): string[] {
   return ATTR_PATTERNS.filter(([, re]) => features.some((f) => re.test(f))).map(([k]) => k)
 }
 
-export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; slug: string } {
+export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; slug: string; href: string } {
   const [mx, my] = hashPos(p.name)
   return {
     slug: p.slug,
@@ -316,12 +316,22 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     mx,
     my,
     priceSymbol: sym(p.currency),
+    href: chaletPath(p),
   }
+}
+
+// Canonical chalet URL: /{country}/{resort}/{chalet-slug} (Ben, 2026-07-15 —
+// destination-nested for SEO). Falls back to the legacy /chalets/{slug}
+// (which 308s to the canonical) when destination data is missing.
+const ISO_TO_COUNTRY_SLUG: Record<string, string> = { FR: 'france', CH: 'switzerland', AT: 'austria', IT: 'italy' }
+export function chaletPath(p: { slug: string; resortSlug?: string | null; countryIso?: string | null }): string {
+  const country = p.countryIso ? ISO_TO_COUNTRY_SLUG[p.countryIso] : null
+  return country && p.resortSlug ? `/${country}/${p.resortSlug}/${p.slug}` : `/chalets/${p.slug}`
 }
 
 /** The catalogue feed: live shared-DB chalets when reachable, prototype mocks
  *  otherwise (dev fallback — never ship mocks as real inventory). */
-export async function getCatalogue(): Promise<{ chalets: (MockChalet & { priceSymbol?: string; slug?: string })[]; live: boolean }> {
+export async function getCatalogue(): Promise<{ chalets: (MockChalet & { priceSymbol?: string; slug?: string; href?: string })[]; live: boolean }> {
   const { properties, live } = await fetchPortalProperties()
   if (!live || properties.length === 0) return { chalets: MOCK_CHALETS, live: false }
   return { chalets: properties.map(toCard), live: true }
