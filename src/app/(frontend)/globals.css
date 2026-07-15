@@ -470,7 +470,9 @@ button{font-family:inherit}
 .pop .apply:hover{background:var(--rose)}
 .pop .clr{background:none;border:none;color:var(--muted);cursor:pointer;font-family:'Proxima Nova','Inter';font-size:.72rem;text-decoration:underline}
 .pop-dest{width:min(560px,92vw);max-height:72vh;overflow-y:auto}
-.dest-all{display:block;width:100%;text-align:left;border:none;background:none;cursor:pointer;padding:.85rem 1.2rem;font-family:'Proxima Nova','Inter';font-size:.82rem;color:var(--plum);border-bottom:1px solid var(--line)}
+/* Matches the search-field value text exactly (Ben, 2026-07-15) — buttons
+   don't inherit the body's 300 weight or letter-spacing on their own. */
+.dest-all{display:block;width:100%;text-align:left;border:none;background:none;cursor:pointer;padding:.85rem 1.2rem;font-family:'Proxima Nova','Inter';font-size:.85rem;font-weight:300;letter-spacing:inherit;color:var(--plum);border-bottom:1px solid var(--line)}
 .dest-all:hover{background:var(--warm)}
 .dcountry{border-bottom:1px solid var(--line)}
 .dcountry:last-child{border-bottom:none}
