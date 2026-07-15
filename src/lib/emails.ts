@@ -136,8 +136,7 @@ export function renderEnquiryAutoReply(o: EnquiryEmailInput): { subject: string;
       <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">Thank you for reaching out to Vertige. Your enquiry has been received and one of our advisors is reviewing it now — we&rsquo;ll come back to you shortly with availability and a considered recommendation.</p>
       ${chaletBlock}
       <p style="color:#4a4450;font-size:15.5px;margin:0 0 18px">If your plans are urgent, call us on <span style="color:${NAVY};white-space:nowrap">+44 20 7131 0270</span> — every day, 8am to midnight.</p>
-      <p style="color:#4a4450;font-size:15.5px;margin:0 0 6px">We look forward to planning your week in the mountains.</p>
-      <p style="font-family:${SERIF};font-style:italic;color:${NAVY};font-size:17px;margin:14px 0 0">Vertige</p>
+      <p style="color:#4a4450;font-size:15.5px;margin:0">We look forward to planning your week in the mountains.</p>
     </div>`
   return {
     subject: 'Thank you for your enquiry — we’ll be in touch shortly',
