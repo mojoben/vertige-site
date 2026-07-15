@@ -30,6 +30,19 @@ const IC: Record<string, string> = {
  lamp:'<path d="M10 3h4l1 4a3 3 0 0 1-6 0z"/><path d="M12 11v9M9 21h6"/>',
  shuttle:'<path d="M4 6h16v9H4zM4 15v3M20 15v3M4 11h16M7 18v.01M17 18v.01"/>',
  ski:'<path d="M8 3v14M12 3v14M6 20l12-3"/>',
+ elevator:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 3v18"/><path d="M8 14v-4M8 10l-1.5 1.5M8 10l1.5 1.5M16 10v4M16 14l-1.5-1.5M16 14l1.5-1.5"/>',
+ towels:'<path d="M4 4h10a2.5 2.5 0 0 1 0 5H4zM4 6.5h7.5"/><path d="M20 9.5H10a2.5 2.5 0 0 0 0 5h10zM20 12h-7.5"/><path d="M4 15h10a2.5 2.5 0 0 1 0 5H4zM4 17.5h7.5"/>',
+ gym:'<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="6" y="6.5" width="3.5" height="11" rx="1"/><rect x="14.5" y="6.5" width="3.5" height="11" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><path d="M9.5 12h5"/>',
+ chef:'<path d="M4 15a8 8 0 0 1 16 0z"/><path d="M12 7V5M10.5 5h3M3 18h18"/>',
+ games:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.5 8.5v.01M15.5 8.5v.01M12 12v.01M8.5 15.5v.01M15.5 15.5v.01"/>',
+ bowling:'<circle cx="12" cy="12" r="8"/><path d="M10 8v.01M13.5 7.5v.01M13.5 11v.01"/>',
+ book:'<path d="M4 5a2 2 0 0 1 2-2h6v18H6a2 2 0 0 0-2 2z"/><path d="M20 5a2 2 0 0 0-2-2h-6v18h6a2 2 0 0 1 2 2z"/>',
+ garden:'<path d="M12 21v-8"/><path d="M12 13c0-3-2-5-5-5 0 3 2 5 5 5z"/><path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5z"/>',
+ music:'<path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/>',
+ link:'<path d="M11 5l1.5-1.5a4 4 0 0 1 5.7 5.7L16.5 11"/><path d="M13 19l-1.5 1.5a4 4 0 0 1-5.7-5.7L7.5 13"/><path d="M9 15l6-6"/>',
+ sofa:'<path d="M4 11V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M3 11h18v6H3z"/><path d="M5 17v2M19 17v2"/>',
+ snow:'<path d="M12 3v18M5 6.5l14 11M19 6.5l-14 11"/>',
+ art:'<rect x="4" y="4" width="16" height="16"/><path d="M7 15l3-4 2 2.5L14 11l3 4"/><path d="M9 8v.01"/>',
  def:'<path d="M5 12h14"/>'
 }
 
@@ -47,29 +60,48 @@ const AMEN: Record<string, string> = {
 
 export function pick(t: string): string {
   t = t.toLowerCase()
+  if (t.includes('glass lift')) return 'elevator'
   if (t.includes('glass')) return 'window'
-  if (t.includes('wine') || t.includes('cellar')) return 'bottle'
-  if (t.includes('cinema')) return 'cinema'
+  if (t.includes('wine') || t.includes('cellar') || /\bbar\b/.test(t)) return 'bottle'
+  if (t.includes('bowling')) return 'bowling'
+  if (t.includes('casino') || t.includes('poker') || t.includes('games') || t.includes('gaming') || t.includes('snooker') || t.includes('billiard') || t.includes('chess') || t.includes('foosball') || t.includes('xbox')) return 'games'
+  if (t.includes('library') || t.includes('reading') || t.includes('book')) return 'book'
+  if (t.includes('nightclub') || t.includes('disco') || t.includes('music')) return 'music'
+  if (t.includes('pairs with') || t.includes('connected') || t.includes('two of')) return 'link'
+  if (t.includes('garden')) return 'garden'
+  if (t.includes('snow machine') || t.includes('snow-making')) return 'snow'
+  if (/\bart\b/.test(t)) return 'art'
+  if (t.includes('cinema') || t.includes('movie')) return 'cinema'
   if (t.includes('kitchen')) return 'kitchen'
   if (t.includes('dining')) return 'dining'
   if (t.includes('sitting') || t.includes('hearth') || t.includes('fire')) return 'fire'
   if (t.includes('underfloor') || t.includes('heating')) return 'heat'
   if (t.includes('hot tub') || t.includes('jacuzzi') || t.includes('pool')) return 'bath'
-  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage')) return 'heat'
-  if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('boot')) return 'ski'
+  if (t.includes('gym') || t.includes('fitness') || t.includes('wellbeing') || t.includes('well-being')) return 'gym'
+  if (t.includes('housekeep') || t.includes('linen') || t.includes('towel') || t.includes('turndown')) return 'towels'
+  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage') || t.includes('meditation')) return 'heat'
+  if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out') || t.includes('ski pass') || t.includes('boot')) return 'ski'
+  if (t.includes('chef') || t.includes('catered') || t.includes('cook')) return 'chef'
   if (t.includes('dressing')) return 'hanger'
   if (t.includes('shower') || t.includes('rain')) return 'shower'
   if (t.includes('bath') || t.includes('suite') || t.includes('wc') || t.includes('basin')) return 'bath'
-  if (t.includes('balcony') || t.includes('terrace')) return 'balcony'
+  if (t.includes('balcon') || t.includes('terrace')) return 'balcony'
+  if (t.includes('panoramic') || t.includes('bay window')) return 'window'
+  if (t.includes('vaulted') || t.includes('salon') || t.includes('living') || t.includes('lounge') || t.includes('snug')) return 'sofa'
+  if (t.includes('newly') || t.includes('renovat') || t.includes('rated')) return 'child'
   if (t.includes('view') || t.includes('mountain') || t.includes('piste')) return 'mountain'
   if (t.includes('child') || t.includes('nanny')) return 'child'
   if (t.includes('king') || t.includes('bed') || t.includes('bunk') || t.includes('twin') || t.includes('double') || t.includes('super')) return 'bed'
   if (t.includes('restaurant')) return 'restaurant'
   if (t.includes('aerodrome') || t.includes('airport') || t.includes('sion') || t.includes('geneva') || t.includes('gva')) return 'plane'
   if (t.includes('heli')) return 'heli'
+  if (t.includes('cable car') || t.includes('cablecar')) return 'gondola'
+  // "Lift" on a chalet page is the in-chalet elevator unless the wording is
+  // clearly the ski infrastructure (nearest lift, chairlift, ski lift…).
+  if (t.includes('elevator') || (t.includes('lift') && !/ski|chair|drag|nearest|close|walk|gondola|pass/.test(t))) return 'elevator'
   if (t.includes('lift') || t.includes('gondola') || t.includes('médran') || t.includes('medran')) return 'gondola'
-  if (t.includes('village') || t.includes('centre') || t.includes('center')) return 'lamp'
-  if (t.includes('shuttle') || t.includes('bus')) return 'shuttle'
+  if (t.includes('village') || t.includes('centre') || t.includes('center') || t.includes('heart of') || t.includes('route des')) return 'lamp'
+  if (t.includes('shuttle') || t.includes('bus') || t.includes('chauffeur') || t.includes('driver') || t.includes('transfer')) return 'shuttle'
   return 'def'
 }
 
