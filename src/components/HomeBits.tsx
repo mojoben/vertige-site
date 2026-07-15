@@ -130,6 +130,7 @@ export function HeroSearch() {
   const [dep, setDep] = useState<Date | null>(null)
   const [pop, setPop] = useState<'dest' | 'guests' | 'beds' | 'cal' | null>(null)
   const [popPos, setPopPos] = useState({ left: 0, top: 0 })
+  const [destMax, setDestMax] = useState<number | undefined>(undefined)
   const [openCountry, setOpenCountry] = useState<string | null>(null)
   const [calStart, setCalStart] = useState(() => new Date(HS_CAL_MIN.y, HS_CAL_MIN.m, 1))
 
@@ -147,6 +148,9 @@ export function HeroSearch() {
     if (wr.left + left + w > innerWidth - 12) left = innerWidth - 12 - w - wr.left
     if (wr.left + left < 12) left = 12 - wr.left
     setPopPos({ left, top: fr.bottom - wr.top + 2 })
+    // The destination list is the tall one — cap it to the space below the
+    // bar so it scrolls internally rather than running off-screen.
+    if (name === 'dest') setDestMax(Math.max(280, innerHeight - fr.bottom - 28))
     setPop(name)
   }
   useEffect(() => {
@@ -244,7 +248,7 @@ export function HeroSearch() {
         <button onClick={go}>Search</button>
       </div>
 
-      <div className={`pop anchored pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stop}>
+      <div className={`pop anchored pop-dest${pop === 'dest' ? ' on' : ''}`} style={{ ...popPos, maxHeight: destMax, overflowY: 'auto' }} onClick={stop}>
         <div className="pop-head">Where would you like to ski?</div>
         <button className="dest-all" onClick={() => { setDest(null); setPop(null) }}>All the Alps</button>
         {COUNTRIES.map((c) => (

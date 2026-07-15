@@ -923,7 +923,10 @@ button{font-family:inherit}
 .homepage .arrowlink:hover{color:var(--rose);border-color:var(--rose)}
 /* hero — explicit display/em resets where the generic .hero rules differ */
 .homepage h1 em,.homepage h2 em,.homepage h3 em{color:inherit}
-.homepage .hero{position:relative;height:100vh;min-height:640px;overflow:hidden;color:#fff;display:block}
+/* overflow stays visible so the search popovers can extend past the hero
+   edge (the video is inset:0/cover — it can't spill anyway). */
+.homepage .hero{position:relative;height:100vh;min-height:640px;color:#fff;display:block}
+.homepage .hero .hvideo,.homepage .hero .hslide{clip-path:inset(0)}
 .homepage .hero .wrap{display:block;padding-bottom:0}
 .homepage .hbottom .wrap{display:flex;flex-direction:row;justify-content:space-between;align-items:flex-end}
 .homepage .hslide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.4s ease}
