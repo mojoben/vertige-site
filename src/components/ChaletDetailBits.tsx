@@ -111,17 +111,21 @@ export function WeekPicker({ weeks, selStart, selSpan, onPick, placeholder = 'Se
     return () => document.removeEventListener('click', close)
   }, [])
 
-  // A start week at the end of a month (e.g. Marmottière's 29 Nov season
-  // opener) needs the NEXT month on screen to pick the extension week —
-  // follow the selection so the 6th/13th are clickable (Ben, 2026-07-15).
-  useEffect(() => {
-    if (selStart < 0) return
-    const follow = weeks[selStart + (selSpan === 1 ? 1 : selSpan - 1)] ?? weeks[selStart]
+  // Pick handling (Ben, 2026-07-15): an arrival click advances the calendar
+  // to the month holding the departure options (a 29 Nov opener needs
+  // December on screen — and again on RE-picking the same arrival); a
+  // departure click completes the selection and closes the picker. Reopen
+  // via the field to change dates.
+  const handlePick = (wi: number) => {
+    const isDeparture =
+      selStart >= 0 && (wi === selStart + 1 || (wi === selStart + 2 && weekOK(selStart + 1)))
+    onPick(wi)
+    if (isDeparture) { setOpen(false); return }
+    const follow = weeks[Math.min(wi + 1, weeks.length - 1)]
     const dt = d(follow.s)
     const idx = months.findIndex((m) => m.y === dt.getFullYear() && m.m === dt.getMonth())
     if (idx >= 0) setMi(idx)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selStart, selSpan])
+  }
 
   const cal = (() => {
     if (!open || !months.length) return null
@@ -145,7 +149,7 @@ export function WeekPicker({ weeks, selStart, selSpan, onPick, placeholder = 'Se
       if (isStart) cls += ' sel-day'
       if (inRange) cls += ' inrange'
       if (isEnd) cls += ' end'
-      cells.push(<span key={dn} className={cls} onClick={isStart ? () => onPick(wi) : undefined}>{dn}</span>)
+      cells.push(<span key={dn} className={cls} onClick={isStart ? () => handlePick(wi) : undefined}>{dn}</span>)
     }
     return (
       <div className="cal" onClick={(e) => e.stopPropagation()}>
