@@ -60,6 +60,7 @@ export const IC: Record<string, string> = {
  chefhat:'<path d="M8 9.8a3.6 3.6 0 1 1 .5-7.1 4.6 4.6 0 0 1 7 0 3.6 3.6 0 1 1 .5 7.1V14H8z"/><path d="M8 17h8M10.5 10.8v1.8M13.5 10.8v1.8"/><path d="M8 14h8"/>',
  bunk:'<path d="M4 3v18M20 3v18"/><path d="M4 8h16M4 11h16M4 16h16M4 19h16"/><path d="M6.5 6.5h3M6.5 14.5h3"/>',
  familybed:'<path d="M2 19v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M2 17h12M2 19v1M14 19v1"/><path d="M17.5 4v16M22 4v16M17.5 7.5H22M17.5 12H22M17.5 16.5H22"/>',
+ chauffeur:'<path d="M5.5 12c-.7-4.2 2.6-7.5 6.5-7.5s7.2 3.3 6.5 7.5"/><path d="M5 12h13.5v3.2H5z"/><path d="M5 15.2c4.8 2.7 10.2 2.5 14.6.2"/><path d="M14.8 9.3v.01"/>',
  van:'<path d="M2 7h12l6 4v5h-2.5M2 7v9h2.5M2 12h18"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M9 16.5h5"/>',
  skier:'<circle cx="15" cy="4.3" r="1.8"/><path d="M13.5 7l-4.5 2.8 3.5 2.6-3 4.2"/><path d="M13.5 7l3.4 1.4-1.4 4-3-1"/><path d="M5.5 12.5l2 5.5"/><path d="M2.5 18.3c6.5 2.7 13 2.4 19-1.3"/>',
  vaulted:'<path d="M2 15.5L12 4.5l10 11"/><path d="M5.2 15.5L12 8l6.8 7.5"/><path d="M7.5 13h9"/><path d="M4 15.5V18M20 15.5V18"/>',
@@ -80,6 +81,8 @@ export const AMEN: Record<string, string> = {
 
 export function pick(t: string): string {
   t = t.toLowerCase()
+  if (t.includes('vaulted')) return 'vaulted'
+  if (t.includes('chauffeur') || t.includes('driver')) return 'chauffeur'
   if (t.includes('pool room') || t.includes('playroom') || t.includes('play room')) return 'cube'
   if (t.includes('car lift') || t.includes('turning plate')) return 'car'
   if (t.includes('family suite')) return 'familybed'
@@ -142,7 +145,6 @@ export function pick(t: string): string {
   if (t.includes('bath') || t.includes('suite') || t.includes('wc') || t.includes('basin')) return 'bath'
   if (t.includes('balcon') || t.includes('terrace')) return 'balcony'
   if (t.includes('panoramic') || t.includes('bay window')) return 'window'
-  if (t.includes('vaulted')) return 'vaulted'
   if (t.includes('salon') || t.includes('living') || t.includes('lounge') || t.includes('snug')) return 'sofa'
   if (t.includes('newly') || t.includes('renovat') || t.includes('rated')) return 'child'
   if (t.includes('view') || t.includes('mountain') || t.includes('piste')) return 'mountain'
@@ -157,7 +159,7 @@ export function pick(t: string): string {
   if (t.includes('elevator') || (t.includes('lift') && !/ski|chair|drag|nearest|close|walk|gondola|pass/.test(t))) return 'elevator'
   if (t.includes('lift') || t.includes('gondola') || t.includes('médran') || t.includes('medran')) return 'gondola'
   if (t.includes('route des')) return 'lamp'
-  if (t.includes('shuttle') || t.includes('bus') || t.includes('chauffeur') || t.includes('driver') || t.includes('transfer')) return 'van'
+  if (t.includes('shuttle') || t.includes('bus') || t.includes('transfer')) return 'van'
   return 'def'
 }
 
