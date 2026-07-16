@@ -15,7 +15,7 @@ export const IC: Record<string, string> = {
  kitchen:'<rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16"/><path d="M7.5 7.5v.01M10.5 7.5v.01M13.5 7.5v.01M16.5 7.5v.01"/><rect x="7" y="13" width="10" height="4"/>',
  cinema:'<path d="M3 6h18v12H3zM7 6v12M17 6v12M3 12h4M17 12h4"/>',
  window:'<path d="M4 4h16v16H4zM12 4v16M4 12h16"/>',
- bottle:'<path d="M10 3h4v3l1 3v11a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V9l1-3z"/>',
+ bottle:'<path d="M8 3h8c.5 3-.3 5.5-1.8 7a4.3 4.3 0 0 1-4.4 0C8.3 8.5 7.5 6 8 3z"/><path d="M8.3 7.5c2.4 1.3 5 1.3 7.4 0"/><path d="M12 11.5V19M8.5 21h7M12 19l-2.5 2M12 19l2.5 2"/>',
  heat:'<path d="M6 20V11M6 11c-1-1-1-2 0-3M12 20V11M12 11c-1-1-1-2 0-3M18 20V11M18 11c-1-1-1-2 0-3"/>',
  child:'<path d="M12 4l1.7 3.5 3.8.5-2.7 2.7.6 3.8L12 12.7 8.6 14.5l.6-3.8L6.5 8l3.8-.5z"/>',
  plane:'<path d="M21 15l-8-3V5.5a1.5 1.5 0 0 0-3 0V12l-8 3v2l8-2v3l-2 1.5V21l3.5-1 3.5 1v-1.5L13 18v-3z"/>',
@@ -111,7 +111,7 @@ export function pick(t: string): string {
   if (t.includes('underfloor') || t.includes('heating')) return 'heat'
   if (t.includes('gym') || t.includes('fitness') || t.includes('wellbeing') || t.includes('well-being')) return 'gym'
   if (t.includes('housekeep') || t.includes('linen') || t.includes('towel') || t.includes('turndown')) return 'towels'
-  if (t.includes('spa') || t.includes('wellness')) return 'spa'
+  if (/\bspa\b/.test(t) || t.includes('wellness')) return 'spa'
   if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('relaxation')) return 'heat'
   if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out') || t.includes('ski pass') || t.includes('boot')) return 'ski'
   if (t.includes('chef') || t.includes('butler') || t.includes('catered') || t.includes('cook')) return 'chefhat'
