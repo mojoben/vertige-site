@@ -33,7 +33,6 @@ const IC: Record<string, string> = {
  elevator:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 3v18"/><path d="M8 14v-4M8 10l-1.5 1.5M8 10l1.5 1.5M16 10v4M16 14l-1.5-1.5M16 14l1.5-1.5"/>',
  towels:'<path d="M4 4h10a2.5 2.5 0 0 1 0 5H4zM4 6.5h7.5"/><path d="M20 9.5H10a2.5 2.5 0 0 0 0 5h10zM20 12h-7.5"/><path d="M4 15h10a2.5 2.5 0 0 1 0 5H4zM4 17.5h7.5"/>',
  gym:'<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="6" y="6.5" width="3.5" height="11" rx="1"/><rect x="14.5" y="6.5" width="3.5" height="11" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><path d="M9.5 12h5"/>',
- chef:'<path d="M4 15a8 8 0 0 1 16 0z"/><path d="M12 7V5M10.5 5h3M3 18h18"/>',
  games:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.5 8.5v.01M15.5 8.5v.01M12 12v.01M8.5 15.5v.01M15.5 15.5v.01"/>',
  bowling:'<circle cx="12" cy="12" r="8"/><path d="M10 8v.01M13.5 7.5v.01M13.5 11v.01"/>',
  book:'<path d="M4 5a2 2 0 0 1 2-2h6v18H6a2 2 0 0 0-2 2z"/><path d="M20 5a2 2 0 0 0-2-2h-6v18h6a2 2 0 0 1 2 2z"/>',
@@ -52,6 +51,21 @@ const IC: Record<string, string> = {
  laundry:'<rect x="5" y="3" width="14" height="18" rx="1"/><circle cx="12" cy="13" r="4"/><path d="M8 6h.01M11 6h.01"/>',
  coffee:'<path d="M5 9h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2"/><path d="M8.5 5c0-1 .5-1 .5-2M12 5c0-1 .5-1 .5-2"/>',
  sound:'<rect x="6" y="3" width="12" height="18" rx="1"/><circle cx="12" cy="15" r="3.5"/><circle cx="12" cy="7.5" r="1.5"/>',
+ cube:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+ spa:'<path d="M12 12.5c-1.6-2.4-1.6-4.9 0-7.5 1.6 2.6 1.6 5.1 0 7.5z"/><path d="M12 12.5c-3-.8-4.7-2.6-5-5.3 2.7.3 4.4 2 5 5.3z"/><path d="M12 12.5c3-.8 4.7-2.6 5-5.3-2.7.3-4.4 2-5 5.3z"/><path d="M4.5 15.5c1.7 3 4.3 4.5 7.5 4.5s5.8-1.5 7.5-4.5"/>',
+ pool:'<path d="M8.5 13V5a1.5 1.5 0 0 1 3 0M14 13V5a1.5 1.5 0 0 1 3 0"/><path d="M8.5 7.5H14M8.5 10.5H14"/><path d="M3 16c1.5 1.1 3 1.1 4.5 0s3-1.1 4.5 0 3 1.1 4.5 0 3-1.1 4.5 0"/><path d="M3 19.5c1.5 1.1 3 1.1 4.5 0s3-1.1 4.5 0 3 1.1 4.5 0 3-1.1 4.5 0"/>',
+ hottub:'<rect x="4" y="11" width="16" height="7" rx="1"/><path d="M7.5 11v7M11.5 11v7M15.5 11v7"/><path d="M8 8c.6-1 .6-2 0-3M12 8c.6-1 .6-2 0-3M16 8c.6-1 .6-2 0-3"/>',
+ hiddeneye:'<path d="M3 12c2.5-4 6-6 9-6s6.5 2 9 6c-2.5 4-6 6-9 6s-6.5-2-9-6z"/><circle cx="12" cy="12" r="2.8"/><path d="M4.5 20L19.5 4"/>',
+ pin:'<path d="M12 21s-7-6.6-7-11a7 7 0 0 1 14 0c0 4.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+ map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+ massage:'<path d="M8 6c0-1.7 1.2-2.8 2.8-2.8 1.2 0 1.9.7 3 .7 1 0 1.7-.4 2.4-1.1.5 1.8-.1 3.3-1.8 4.1L10 9.2"/><path d="M3 16c4.5-2.8 13.5-2.8 18 0"/><path d="M9.5 19c1.7.4 3.3.4 5 0"/>',
+ meditation:'<circle cx="12" cy="5" r="1.9"/><path d="M8.5 13c.7-2.5 1.9-3.8 3.5-3.8s2.8 1.3 3.5 3.8"/><path d="M4.5 13.5c1.5.9 2.7.5 4-1.5M19.5 13.5c-1.5.9-2.7.5-4-1.5"/><path d="M8 18.7c-.9-1.4 0-2.7 1.8-3l2.2 1 2.2-1c1.8.3 2.7 1.6 1.8 3-2.6.7-5.4.7-8 0z"/>',
+ wc:'<rect x="3" y="6" width="18" height="12" rx="1"/><path d="M6.5 10l1 4 1.2-3 1.2 3 1-4"/><path d="M17.3 10.7a2.2 2.2 0 1 0 0 2.6"/>',
+ chefhat:'<path d="M8 9.8a3.6 3.6 0 1 1 .5-7.1 4.6 4.6 0 0 1 7 0 3.6 3.6 0 1 1 .5 7.1V14H8z"/><path d="M8 17h8M10.5 10.8v1.8M13.5 10.8v1.8"/><path d="M8 14h8"/>',
+ bunk:'<path d="M4 3v18M20 3v18"/><path d="M4 8h16M4 11h16M4 16h16M4 19h16"/><path d="M6.5 6.5h3M6.5 14.5h3"/>',
+ familybed:'<path d="M2 19v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M2 17h12M2 19v1M14 19v1"/><path d="M17.5 4v16M22 4v16M17.5 7.5H22M17.5 12H22M17.5 16.5H22"/>',
+ van:'<path d="M2 7h12l6 4v5h-2.5M2 7v9h2.5M2 12h18"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M9 16.5h5"/>',
+ skier:'<circle cx="15" cy="4.3" r="1.8"/><path d="M13.5 7l-4.5 2.8 3.5 2.6-3 4.2"/><path d="M13.5 7l3.4 1.4-1.4 4-3-1"/><path d="M5.5 12.5l2 5.5"/><path d="M2.5 18.3c6.5 2.7 13 2.4 19-1.3"/>',
  def:'<path d="M5 12h14"/>'
 }
 
@@ -69,6 +83,20 @@ const AMEN: Record<string, string> = {
 
 export function pick(t: string): string {
   t = t.toLowerCase()
+  if (t.includes('pool room') || t.includes('playroom') || t.includes('play room')) return 'cube'
+  if (t.includes('car lift') || t.includes('turning plate')) return 'car'
+  if (t.includes('family suite')) return 'familybed'
+  if (t.includes('bunk')) return 'bunk'
+  if (t.includes('hot tub') || t.includes('jacuzzi')) return 'hottub'
+  if (t.includes('pool') || t.includes('swimming')) return 'pool'
+  if (t.includes('massage')) return 'massage'
+  if (t.includes('meditation') || t.includes('yoga')) return 'meditation'
+  if (t.includes('neighbour')) return 'hiddeneye'
+  if (t.includes('heart of')) return 'pin'
+  if (t.includes('in-town') || t.includes('village') || t.includes('centre') || t.includes('center')) return 'map'
+  if (/\bwc\b/.test(t) || t.includes('toilet')) return 'wc'
+  if (t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out')) return 'skier'
+  if (t.includes('panoramic') && (t.includes('view') || t.includes('mountain'))) return 'mountain'
   if (t.includes('glass lift')) return 'elevator'
   if (t.includes('glass')) return 'window'
   if (t.includes('wine') || t.includes('cellar') || /\bbar\b/.test(t)) return 'bottle'
@@ -85,12 +113,12 @@ export function pick(t: string): string {
   if (t.includes('dining')) return 'dining'
   if (t.includes('sitting') || t.includes('hearth') || t.includes('fire')) return 'fire'
   if (t.includes('underfloor') || t.includes('heating')) return 'heat'
-  if (t.includes('hot tub') || t.includes('jacuzzi') || t.includes('pool')) return 'bath'
   if (t.includes('gym') || t.includes('fitness') || t.includes('wellbeing') || t.includes('well-being')) return 'gym'
   if (t.includes('housekeep') || t.includes('linen') || t.includes('towel') || t.includes('turndown')) return 'towels'
-  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('spa') || t.includes('wellness') || t.includes('massage') || t.includes('meditation') || t.includes('relaxation')) return 'heat'
+  if (t.includes('spa') || t.includes('wellness')) return 'spa'
+  if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('relaxation')) return 'heat'
   if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out') || t.includes('ski pass') || t.includes('boot')) return 'ski'
-  if (t.includes('chef') || t.includes('catered') || t.includes('cook')) return 'chef'
+  if (t.includes('chef') || t.includes('butler') || t.includes('catered') || t.includes('cook')) return 'chefhat'
   if (t.includes('garage') || t.includes('parking')) return 'car'
   if (t.includes('office') || t.includes('bureau') || t.includes('desk') || t.includes('study') || t.includes('conference')) return 'desk'
   if (/\btv\b/.test(t) || t.includes('television') || t.includes('projector') || t.includes('flat-screen')) return 'tv'
@@ -120,7 +148,7 @@ export function pick(t: string): string {
   if (t.includes('newly') || t.includes('renovat') || t.includes('rated')) return 'child'
   if (t.includes('view') || t.includes('mountain') || t.includes('piste')) return 'mountain'
   if (t.includes('child') || t.includes('nanny')) return 'child'
-  if (t.includes('king') || t.includes('queen') || t.includes('bed') || t.includes('bunk') || t.includes('twin') || t.includes('double') || t.includes('super')) return 'bed'
+  if (t.includes('king') || t.includes('queen') || t.includes('bed') || t.includes('twin') || t.includes('double') || t.includes('super')) return 'bed'
   if (t.includes('restaurant')) return 'restaurant'
   if (t.includes('aerodrome') || t.includes('airport') || t.includes('sion') || t.includes('geneva') || t.includes('gva')) return 'plane'
   if (t.includes('heli')) return 'heli'
@@ -129,8 +157,8 @@ export function pick(t: string): string {
   // clearly the ski infrastructure (nearest lift, chairlift, ski lift…).
   if (t.includes('elevator') || (t.includes('lift') && !/ski|chair|drag|nearest|close|walk|gondola|pass/.test(t))) return 'elevator'
   if (t.includes('lift') || t.includes('gondola') || t.includes('médran') || t.includes('medran')) return 'gondola'
-  if (t.includes('village') || t.includes('centre') || t.includes('center') || t.includes('heart of') || t.includes('route des')) return 'lamp'
-  if (t.includes('shuttle') || t.includes('bus') || t.includes('chauffeur') || t.includes('driver') || t.includes('transfer')) return 'shuttle'
+  if (t.includes('route des')) return 'lamp'
+  if (t.includes('shuttle') || t.includes('bus') || t.includes('chauffeur') || t.includes('driver') || t.includes('transfer')) return 'van'
   return 'def'
 }
 

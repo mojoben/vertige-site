@@ -39,10 +39,10 @@ function emify(s: string): React.ReactNode {
 // Location-spec icons keyed by the registry's slot keys (prototype linework).
 const LOC_ICONS: Record<string, React.ReactNode> = {
   lift: <path d="M3 5l18-2M8 8l1.5 4h5L19 8M7 12h10v6H7zM12 12v6" />,
-  village: <><path d="M12 21s-7-6.6-7-11a7 7 0 0 1 14 0c0 4.4-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></>,
+  village: <><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z" /><path d="M9 4v14M15 6v14" /></>,
   restaurant: <><path d="M7 3v7a2 2 0 0 0 4 0V3M9 10v11" /><path d="M16 3c-1.4 0-2.2 1.6-2.2 4S15 11 16 11v10" /></>,
   airport: <path d="M21 15l-8-3V5.5a1.5 1.5 0 0 0-3 0V12l-8 3v2l8-2v3l-2 1.5V21l3.5-1 3.5 1v-1.5L13 18v-3z" />,
-  transfers: <><path d="M3 17v-4l2-5h14l2 5v4" /><path d="M3 13h18" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M9 17h6" /></>,
+  transfers: <><path d="M2 7h12l6 4v5h-2.5M2 7v9h2.5M2 12h18" /><circle cx="7" cy="16.5" r="1.8" /><circle cx="16.5" cy="16.5" r="1.8" /><path d="M9 16.5h5" /></>,
   piste: <path d="M3 19l6-9 3.5 4.5L15 11l6 8z" />,
 }
 
