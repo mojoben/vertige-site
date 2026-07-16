@@ -66,6 +66,7 @@ const IC: Record<string, string> = {
  familybed:'<path d="M2 19v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M2 17h12M2 19v1M14 19v1"/><path d="M17.5 4v16M22 4v16M17.5 7.5H22M17.5 12H22M17.5 16.5H22"/>',
  van:'<path d="M2 7h12l6 4v5h-2.5M2 7v9h2.5M2 12h18"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/><path d="M9 16.5h5"/>',
  skier:'<circle cx="15" cy="4.3" r="1.8"/><path d="M13.5 7l-4.5 2.8 3.5 2.6-3 4.2"/><path d="M13.5 7l3.4 1.4-1.4 4-3-1"/><path d="M5.5 12.5l2 5.5"/><path d="M2.5 18.3c6.5 2.7 13 2.4 19-1.3"/>',
+ vaulted:'<path d="M2 15.5L12 4.5l10 11"/><path d="M5.2 15.5L12 8l6.8 7.5"/><path d="M7.5 13h9"/><path d="M4 15.5V18M20 15.5V18"/>',
  def:'<path d="M5 12h14"/>'
 }
 
@@ -144,7 +145,8 @@ export function pick(t: string): string {
   if (t.includes('bath') || t.includes('suite') || t.includes('wc') || t.includes('basin')) return 'bath'
   if (t.includes('balcon') || t.includes('terrace')) return 'balcony'
   if (t.includes('panoramic') || t.includes('bay window')) return 'window'
-  if (t.includes('vaulted') || t.includes('salon') || t.includes('living') || t.includes('lounge') || t.includes('snug')) return 'sofa'
+  if (t.includes('vaulted')) return 'vaulted'
+  if (t.includes('salon') || t.includes('living') || t.includes('lounge') || t.includes('snug')) return 'sofa'
   if (t.includes('newly') || t.includes('renovat') || t.includes('rated')) return 'child'
   if (t.includes('view') || t.includes('mountain') || t.includes('piste')) return 'mountain'
   if (t.includes('child') || t.includes('nanny')) return 'child'
