@@ -37,6 +37,7 @@ export const IC: Record<string, string> = {
  sofa:'<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 11h1.5a1 1 0 0 1 1 1v2h13v-2a1 1 0 0 1 1-1H21v6H3z"/><path d="M12 6v8M5 17v1.7M19 17v1.7"/>',
  snow:'<path d="M12 3v18M5 6.5l14 11M19 6.5l-14 11"/>',
  art:'<rect x="4" y="4" width="16" height="16"/><path d="M7 15l3-4 2 2.5L14 11l3 4"/><path d="M9 8v.01"/>',
+ caropen:'<path d="M3 15.5v-2.5l2.2-1.2 2-3.3h7.6l2.4 3.3 3.8 1.2v2.5h-2.2"/><circle cx="7.5" cy="16" r="1.8"/><circle cx="16.5" cy="16" r="1.8"/><path d="M9.3 16h5.4M3 16h2.7"/>',
  car:'<path d="M2 8.5L12 3l10 5.5"/><path d="M6.5 15l1.5-3h8l1.5 3"/><path d="M4.5 18.5v-2A1.5 1.5 0 0 1 6 15h12a1.5 1.5 0 0 1 1.5 1.5v2"/><circle cx="8" cy="18.5" r="1.7"/><circle cx="16" cy="18.5" r="1.7"/>',
  desk:'<path d="M3 8h18M4 8v10M20 8v10M13 8v10M13 11h7M13 14h7"/>',
  tv:'<rect x="3" y="5" width="18" height="12" rx="1"/><path d="M9 21h6M12 17v4"/>',
@@ -115,6 +116,7 @@ export function pick(t: string): string {
   if (t.includes('sauna') || t.includes('hammam') || t.includes('steam') || t.includes('relaxation')) return 'heat'
   if (t.includes('ski room') || t.includes('ski-in') || t.includes('ski in') || t.includes('ski-out') || t.includes('ski out') || t.includes('ski pass') || t.includes('boot')) return 'ski'
   if (t.includes('chef') || t.includes('butler') || t.includes('catered') || t.includes('cook')) return 'chefhat'
+  if (t.includes('parking') && !/garage|covered|underground|indoor/.test(t)) return 'caropen'
   if (t.includes('garage') || t.includes('parking')) return 'car'
   if (t.includes('office') || t.includes('bureau') || t.includes('desk') || t.includes('study') || t.includes('conference')) return 'desk'
   if (/\btv\b/.test(t) || t.includes('television') || t.includes('projector') || t.includes('flat-screen')) return 'tv'
