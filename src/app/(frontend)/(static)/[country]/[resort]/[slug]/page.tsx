@@ -5,7 +5,7 @@ import { fetchPortalProperties, fetchPortalAvailability, fetchPortalContent, cha
 import { SITE } from '@/lib/site'
 import { Pt, PointIcon, AmenIcon } from '@/components/ChaletIcons'
 import {
-  SubnavSpy, BookingCard, Availability, ReserveForm, ScheduleCall, Gallery,
+  SubnavSpy, BookingCard, Availability, ReserveForm, ScheduleCall, Gallery, MapEmbed,
 } from '@/components/ChaletDetailBits'
 import { mockWeeks, type Week } from '@/lib/weeks'
 
@@ -428,29 +428,18 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
               </div>
             )}
           </div>
-          <div className="mapcard">
+          {/* Live embed fades in with no placeholder behind it and no
+              open-in-Google-Maps link (Ben, 2026-07-16); chalets without an
+              embed keep the quiet placeholder card. */}
+          <div className={`mapcard${process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY && p?.latitude != null && p?.longitude != null ? ' has-embed' : ''}`}>
             {process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY && p?.latitude != null && p?.longitude != null ? (
-              <iframe
-                className="gembed"
+              <MapEmbed
                 title={`Map — ${c.name}`}
                 src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY}&q=${p.latitude},${p.longitude}&zoom=13&maptype=roadmap`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
               />
             ) : (
               <div className="mk">✦</div>
             )}
-            <a
-              className="gmap"
-              href={`https://www.google.com/maps/search/?api=1&query=${
-                p?.latitude != null && p?.longitude != null
-                  ? `${p.latitude},${p.longitude}`
-                  : encodeURIComponent(`${c.name}, ${c.resort}, ${c.country}`)
-              }`}
-              target="_blank"
-              rel="noopener"
-            >Open in Google Maps ↗</a>
           </div>
         </div></div></section>
 

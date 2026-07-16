@@ -492,3 +492,21 @@ export function Gallery({ images, name }: { images: string[]; name: string }) {
     </>
   )
 }
+
+// ── Map embed ────────────────────────────────────────────────────────────────
+// Fades in when the (lazily loaded) Google embed has actually painted —
+// no placeholder map behind it, no hard swap (Ben, 2026-07-16).
+export function MapEmbed({ src, title }: { src: string; title: string }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <iframe
+      className={`gembed${loaded ? ' in' : ''}`}
+      title={title}
+      src={src}
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      allowFullScreen
+      onLoad={() => setLoaded(true)}
+    />
+  )
+}

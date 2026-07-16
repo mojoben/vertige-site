@@ -1,5 +1,6 @@
 import React from 'react'
 import { Footer } from '@/components/Footer'
+import { LazyImageFade } from '@/components/LazyImageFade'
 import './globals.css'
 
 export const metadata = {
@@ -19,6 +20,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         {/* Chrome (header/nav/search) is rendered by the route-group layouts:
             (overlay) = fixed transparent-over-hero; (light) = sticky white
             (destination/listing pages, so tabs/filterbar can stack beneath). */}
+        <LazyImageFade />
         {children}
         <Footer />
       </body>
