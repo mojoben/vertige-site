@@ -446,7 +446,7 @@ button{font-family:inherit}
 .chk:last-child{margin-bottom:0}
 .chk input{appearance:none;-webkit-appearance:none;width:17px;height:17px;border:1px solid #c3bfb6;flex:0 0 auto;margin-top:2px;cursor:pointer;position:relative;background:#fff}
 .chk input:checked{background:var(--plum);border-color:var(--plum)}
-.chk input:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.chk input:checked::after{content:"";position:absolute;left:50%;top:45%;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:translate(-50%,-50%) rotate(45deg)}
 .chk .desc{display:block;color:var(--muted);font-size:.75rem;margin-top:.15rem}
 .stepper{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;font-family:'Proxima Nova','Inter';font-size:.86rem}
 .stepper:last-child{margin-bottom:0}
