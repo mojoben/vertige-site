@@ -1,5 +1,6 @@
 import 'server-only'
 import { unstable_cache } from 'next/cache'
+import { deriveAttrs } from './attr-map'
 import { sharedDb } from './shared-db'
 import { MOCK_CHALETS, type MockChalet } from './mock-chalets'
 
@@ -20,6 +21,7 @@ export interface PortalProperty {
   resortSlug: string | null
   country: string | null
   countryIso: string | null
+  contentLabels?: string[]
   sleeps: number
   bedrooms: number
   tier: 'Reserve' | 'Privé'
@@ -121,8 +123,13 @@ const toProperty = (r: PropertyRow): PortalProperty => ({
 const loadProperties = unstable_cache(
   async (): Promise<PortalProperty[] | null> => {
     try {
-      const res = await sharedDb().query<PropertyRow>('SELECT * FROM web.property_public_v ORDER BY name')
-      return res.rows.map(toProperty)
+      const res = await sharedDb().query<PropertyRow & { _kf: unknown; _am: unknown; _int: unknown; _ext: unknown; _ls: unknown }>(
+        `SELECT p.*, c.key_features AS _kf, c.amenities AS _am, c.interior AS _int, c.exterior AS _ext, c.location_specs AS _ls
+           FROM web.property_public_v p
+           LEFT JOIN web.property_content_v c ON c.slug = p.slug
+          ORDER BY p.name`,
+      )
+      return res.rows.map((r) => ({ ...toProperty(r), contentLabels: flattenLabels(r) }))
     } catch {
       return null
     }
@@ -130,6 +137,18 @@ const loadProperties = unstable_cache(
   ['web-property-public'],
   { revalidate: 300 },
 )
+
+// Every free-text label on a chalet's content — the input for the master
+// filter attributes (attr-map.ts).
+function flattenLabels(r: { _kf: unknown; _am: unknown; _int: unknown; _ext: unknown; _ls: unknown }): string[] {
+  const out: string[] = []
+  for (const f of (r._kf as { label: string }[] | null) ?? []) out.push(f.label)
+  for (const a of (r._am as { name: string; items: string[] }[] | null) ?? []) { out.push(a.name); out.push(...(a.items ?? [])) }
+  for (const g of ((r._int as { groups?: { points: string[] }[] } | null)?.groups ?? [])) out.push(...(g.points ?? []))
+  out.push(...(((r._ext as { points?: string[] } | null)?.points) ?? []))
+  for (const l of (r._ls as { label: string; value: string }[] | null) ?? []) out.push(`${l.label} ${l.value}`)
+  return out
+}
 
 export async function fetchPortalProperties(): Promise<{ properties: PortalProperty[]; live: boolean }> {
   const properties = await loadProperties()
@@ -312,7 +331,7 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     // grows a per-day model (the portal keeps the true changeover day).
     co: p.changeoverDay === 'sun' ? 'Sun' : 'Sat',
     chips: p.features.slice(0, 2),
-    attrs: toAttrs(p.features),
+    attrs: [...new Set([...toAttrs(p.features), ...deriveAttrs(p.contentLabels ?? [])])],
     mx,
     my,
     priceSymbol: sym(p.currency),

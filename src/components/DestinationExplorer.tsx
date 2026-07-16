@@ -55,7 +55,7 @@ const CHK_GROUPS: ChkGroup[] = [
     opts: [
       { v: 'chef', label: 'Private chef' }, { v: 'fireplace', label: 'Open fireplace' },
       { v: 'cinema', label: 'Cinema room' }, { v: 'ski-room', label: 'Ski room & boot warmers' },
-      { v: 'cellar', label: 'Wine cellar' },
+      { v: 'cellar', label: 'Wine cellar' }, { v: 'bar', label: 'Bar' },
     ],
   },
   {
