@@ -1490,3 +1490,8 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
    LazyImageFade in the frontend layout (Ben, 2026-07-16). */
 img.lf{opacity:0}
 img.lf-in{opacity:1;transition:opacity .6s ease}
+
+/* Icon-audit dev page */
+.audit-icn{width:17px;height:17px;stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;align-self:center}
+.audit-icn.lg{width:30px;height:30px;stroke:var(--plum)}
+.audit-icn.bad{stroke:#c0392b}
