@@ -42,26 +42,28 @@ type ChkGroup = { grp?: string; title: string; f: 'tier' | 'country' | 'resorts'
 // scoped — built dynamically below), property type, ski access, chalet
 // features, wellness, and The Collection last.
 const CHK_GROUPS: ChkGroup[] = [
-  { title: 'Property type', f: 'ptype', opts: ['Chalet', 'Apartment', 'Penthouse', 'Lodge'].map((v) => ({ v, label: v })) },
+  // Two classes only (Ben, 2026-07-16): penthouses file under Apartment,
+  // lodges under Chalet — the mapping happens in toCard().
+  { title: 'Property type', f: 'ptype', opts: ['Chalet', 'Apartment'].map((v) => ({ v, label: v })) },
   {
     title: 'Ski access', f: 'attr',
     opts: [
       { v: 'ski-in', label: 'Ski-in / ski-out' }, { v: 'near-slopes', label: 'Slopes within walking distance' },
-      { v: 'near-lifts', label: 'Close to the lifts' }, { v: 'piste-view', label: 'Piste & mountain views' },
+      { v: 'near-lifts', label: 'Close to the lifts' },
     ],
   },
   {
     grp: 'features', title: 'Chalet features', f: 'attr',
     opts: [
-      { v: 'chef', label: 'Private chef' }, { v: 'fireplace', label: 'Open fireplace' },
+      { v: 'chef', label: 'Private chef' },
       { v: 'cinema', label: 'Cinema room' }, { v: 'ski-room', label: 'Ski room & boot warmers' },
-      { v: 'cellar', label: 'Wine cellar' }, { v: 'bar', label: 'Bar' },
+      { v: 'bar', label: 'Bar' },
     ],
   },
   {
     title: 'Wellness', f: 'attr',
     opts: [
-      { v: 'indoor-pool', label: 'Indoor pool' }, { v: 'hot-tub', label: 'Hot tub' },
+      { v: 'indoor-pool', label: 'Pool' }, { v: 'hot-tub', label: 'Hot tub' },
       { v: 'spa', label: 'Spa & sauna' }, { v: 'gym', label: 'Gym' },
     ],
   },

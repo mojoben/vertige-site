@@ -319,7 +319,9 @@ export function toCard(p: PortalProperty): MockChalet & { priceSymbol: string; s
     name: p.name,
     resort: p.resort ?? '—',
     country: p.country ?? '—',
-    ptype: (['Chalet', 'Apartment', 'Penthouse', 'Lodge'].includes(p.propertyType) ? p.propertyType : 'Chalet') as 'Chalet' | 'Apartment' | 'Penthouse' | 'Lodge',
+    // Two classes: penthouses count as Apartment, lodges (and everything
+    // else, incl. 'Chalet (two chalets)') as Chalet (Ben, 2026-07-16).
+    ptype: (/penthouse|apartment|appartement|flat/i.test(p.propertyType) ? 'Apartment' : 'Chalet') as 'Chalet' | 'Apartment',
     guests: p.sleeps,
     beds: p.bedrooms,
     baths: p.bathrooms ?? p.bedrooms, // fall back to bedrooms until bathrooms is filled
