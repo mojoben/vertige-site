@@ -58,20 +58,21 @@ export default async function HomePage() {
       {/* DISCOVER YOUR PERFECT */}
       <section><div className="wrap">
         <div className="disc-head reveal"><h2>Discover your <em>perfect</em> destination</h2><p className="sub">Resorts and chalets matched to how your group skis and the week you want to have.</p></div>
-        <div className="reveal">
-          <CarouselRow step={300}>
-            {([
-              ['Switzerland', '/images/chalets/ext-04.webp'],
-              ['France', '/images/chalets/ext-08.webp'],
-              ['Austria', '/images/chalets/ext-11.webp'],
-              ['Italy', '/images/chalets/ext-12.webp'],
-            ] as const).map(([name, img]) => (
-              <Link key={name} className="dcard" href={`/${name.toLowerCase()}`}>
-                <div className="im" style={{ backgroundImage: `url(${img})` }} />
-                <div className="t"><h3>{name}</h3><div className="c">{countOf(name)} chalets</div></div>
-              </Link>
-            ))}
-          </CarouselRow>
+        {/* Four countries = a fixed grid (4 across, landscape 2+2 below
+            980px). Revert to <CarouselRow step={300}> when more countries
+            join (Ben, 2026-07-17). */}
+        <div className="reveal dgrid">
+          {([
+            ['Switzerland', '/images/chalets/ext-04.webp'],
+            ['France', '/images/chalets/ext-08.webp'],
+            ['Austria', '/images/chalets/ext-11.webp'],
+            ['Italy', '/images/chalets/ext-12.webp'],
+          ] as const).map(([name, img]) => (
+            <Link key={name} className="dcard" href={`/${name.toLowerCase()}`}>
+              <div className="im" style={{ backgroundImage: `url(${img})` }} />
+              <div className="t"><h3>{name}</h3><div className="c">{countOf(name)} chalets</div></div>
+            </Link>
+          ))}
         </div>
       </div></section>
 

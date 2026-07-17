@@ -1007,7 +1007,16 @@ button{font-family:inherit}
 .homepage .carbtn{position:absolute;top:38%;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(252,249,245,.9);cursor:pointer;color:var(--plum);z-index:5}
 .homepage .carbtn.prev{left:-10px}.homepage .carbtn.next{right:-10px}
 .homepage .carbtn:hover{border-color:var(--plum)}
-/* destinations carousel */
+/* destinations grid — 4 across while there are 4 countries; landscape 2+2
+   below 980px (revert to the carousel when more countries join) */
+.homepage .dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem}
+.homepage .dgrid .dcard{flex:none;width:auto}
+@media(max-width:980px){
+  .homepage .dgrid{grid-template-columns:1fr 1fr;gap:1.2rem}
+  .homepage .dgrid .dcard{aspect-ratio:16/10}
+  .homepage .dgrid .dcard .t h3{font-size:1.35rem}
+  .homepage .dgrid .dcard .t{padding-bottom:1.1rem}
+}
 .homepage .dcard{flex:0 0 clamp(270px,27vw,350px);scroll-snap-align:start;aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;color:#fff}
 .homepage .dcard .im{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.2s}
 .homepage .dcard:hover .im{transform:scale(1.05)}
