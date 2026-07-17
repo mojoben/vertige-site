@@ -89,8 +89,8 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
         <div className="t">Our advisors can be reached on <b>{SITE.phone}</b><span>{SITE.phoneHours}</span></div>
       </div>
       <div className="nf-row"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg><Link href="/contact" onClick={closeNav}>Contact us</Link></div>
-      <div className="nf-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M9.1 9a3 3 0 1 1 4.5 2.6c-.9.5-1.6 1.2-1.6 2.4" /><path d="M12 17h.01" /></svg><Link href="/faq" onClick={closeNav}>FAQ &amp; help</Link></div>
-      <div className="nf-row"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="14" y2="18" /></svg><Link href="/sitemap" onClick={closeNav}>Sitemap</Link></div>
+      <div className="nf-row nf-xtra"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M9.1 9a3 3 0 1 1 4.5 2.6c-.9.5-1.6 1.2-1.6 2.4" /><path d="M12 17h.01" /></svg><Link href="/faq" onClick={closeNav}>FAQ &amp; Help</Link></div>
+      <div className="nf-row nf-xtra"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="14" y2="18" /></svg><Link href="/sitemap" onClick={closeNav}>Sitemap</Link></div>
       <div className="nf-lang"><a href="#">English · GBP</a></div>
     </div>
   )

@@ -48,7 +48,7 @@ export default function SitemapPage() {
           </div>
           <div className="smcol"><h3>Help</h3>
             <Link href="/contact">Contact us</Link>
-            <Link href="/faq">FAQ &amp; help</Link>
+            <Link href="/faq">FAQ &amp; Help</Link>
             <Link href="/sitemap">Sitemap</Link>
           </div>
           <div className="smcol"><h3>Legal</h3>

@@ -125,6 +125,16 @@ button{font-family:inherit}
 .navfoot .nf-row .t{font-family:'Proxima Nova','Inter';font-size:.82rem;color:var(--ink);line-height:1.5}
 .navfoot .nf-row .t b{display:block;font-weight:400;color:var(--plum);white-space:nowrap;margin-top:.1rem}
 .navfoot .nf-row .t span{display:block;color:var(--muted);font-size:.74rem;margin-top:.1rem}
+/* compressed screens: the footer must never swallow the nav links —
+   drop the secondary rows and tighten spacing (Ben, 2026-07-17) */
+@media(max-height:760px){
+  .navfoot{padding-top:1rem;padding-bottom:1rem;gap:.75rem}
+  .navfoot .nf-xtra{display:none}
+}
+@media(max-height:620px){
+  .navfoot .nf-row .t span{display:none}
+  .navlinks{padding-top:1.2rem;gap:.9rem}
+}
 .navfoot .nf-row a{font-family:'Proxima Nova','Inter';font-size:.9rem;color:var(--plum)}
 .navfoot .nf-lang{font-family:'Proxima Nova','Inter';font-size:.78rem;letter-spacing:0.04em}
 .navfoot .nf-lang a{color:var(--plum);border-bottom:1px solid #cfc9bd;padding-bottom:2px}
