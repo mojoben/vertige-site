@@ -296,3 +296,71 @@ export function HeroSearch() {
     </div>
   )
 }
+
+// ── Home chalet carousel — destination-page cards on the plum band ─────────
+// (Ben, 2026-07-17: same card as /destinations, text colours inverted for
+// the purple background — CSS under `.chalets .pc` in globals.css.)
+import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
+
+type HomeCardChalet = {
+  name: string; resort: string; country: string; guests: number; beds: number
+  baths: number; from: number; to: number; tier: string; img: string
+  chips: string[]; priceSymbol?: string; slug?: string; href?: string
+}
+
+const cardPrice = (c: HomeCardChalet, n: number) =>
+  `${c.priceSymbol ?? '€'}${n >= 1000 ? (n / 1000).toFixed(0) + 'k' : n}`
+
+export function HomeChaletCarousel({ chalets }: { chalets: HomeCardChalet[] }) {
+  const [tick, setTick] = useState(0)
+  const [toast, setToast] = useState<string | null>(null)
+  useEffect(() => setTick(1), []) // wishlist state is client-side only
+  const saved = (c: HomeCardChalet) => tick > 0 && isSaved(c.slug ?? c.name)
+  const toggleSave = (e: React.MouseEvent, c: HomeCardChalet) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const slug = c.slug ?? c.name
+    if (isSaved(slug)) {
+      removeItemEverywhere(slug)
+      setToast('Removed from your list')
+    } else {
+      const list = addItem({
+        slug,
+        name: c.name,
+        loc: `${c.resort}, ${c.country}`,
+        meta: `${c.guests} guests · ${c.beds} bedrooms`,
+        price: c.from > 0 ? `From ${cardPrice(c, c.from)} per week` : 'Price on request',
+        img: c.img,
+      })
+      setToast(list ? `Saved to ${list.name}` : 'Already on your list')
+    }
+    setTick((t) => t + 1)
+    setTimeout(() => setToast(null), 1800)
+  }
+
+  return (
+    <>
+      <CarouselRow step={460}>
+        {chalets.map((c) => (
+          <Link key={c.name} className="pc" href={c.href ?? '/destinations'} target="_blank" rel="noopener">
+            <div className="im" style={{ backgroundImage: `url(${c.img})` }}>
+              <div
+                className={`heart${saved(c) ? ' saved' : ''}`}
+                role="button"
+                aria-label="Save to wishlist"
+                onClick={(e) => toggleSave(e, c)}
+              >{saved(c) ? '♥' : '♡'}</div>
+            </div>
+            <h3>{c.name}</h3>
+            <div className="loc">{c.resort}, {c.country}</div>
+            <div className="meta">{c.guests} guests · {c.beds} bedrooms · {c.baths} bathrooms</div>
+            <div className="chips">{c.chips.map((x) => <span key={x} className="chip">{x}</span>)}</div>
+            <div className="price">{c.from > 0 ? <>From {cardPrice(c, c.from)} to {cardPrice(c, c.to)} per week</> : 'Price on request'}</div>
+            <div className="tier">{c.tier} Collection {c.tier === 'Privé' ? '◆◆' : '◆'}</div>
+          </Link>
+        ))}
+      </CarouselRow>
+      {toast && <div className="wltoast" style={{ display: 'block' }}>{toast}</div>}
+    </>
+  )
+}

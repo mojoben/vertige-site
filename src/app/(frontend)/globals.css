@@ -1036,6 +1036,16 @@ button{font-family:inherit}
 .homepage .chalets .gold-head p a{color:#fbf8f4;border-bottom-color:rgba(255,255,255,.35)}
 .homepage .chalets .ccard h3{color:#fbf8f4}
 .homepage .chalets .ccard .specs{color:#b3afa7}
+/* destination-page cards on the plum band — same .pc markup as
+   /destinations, text colours inverted (Ben, 2026-07-17) */
+.homepage .chalets .pc{flex:0 0 clamp(300px,34vw,440px);scroll-snap-align:start}
+.homepage .chalets .pc h3{color:#fbf8f4}
+.homepage .chalets .pc .loc{color:#c9c5be}
+.homepage .chalets .pc .meta{color:#c9c5be}
+.homepage .chalets .pc .chip{color:#fbf8f4;border-color:rgba(255,255,255,.3)}
+.homepage .chalets .pc .price{color:#fbf8f4;border-top-color:rgba(255,255,255,.25)}
+.homepage .chalets .pc .tier{color:#d9a0a3}
+.homepage .chalets .pc .heart{background:rgba(255,255,255,.9)}
 /* gold centred heading */
 .homepage .gold-head{text-align:center;margin-bottom:2.6rem}
 .homepage .gold-head h2{color:var(--plum);font-size:clamp(1.8rem,3vw,2.4rem);line-height:1.14}

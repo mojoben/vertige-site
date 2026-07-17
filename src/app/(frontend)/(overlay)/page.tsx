@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { getCatalogue } from '@/lib/portal-client'
-import { CarouselRow, CtaBand, HomeFx, HeroSearch } from '@/components/HomeBits'
+import { CtaBand, HomeFx, HeroSearch, HomeChaletCarousel } from '@/components/HomeBits'
 
 // Home — faithful port of vertige-proto-home-mockup.html (confirmed as the
 // canonical home, Ben 2026-07-11). Featured chalet + chalet carousel are fed
@@ -82,16 +82,10 @@ export default async function HomePage() {
           <h2>Chalets you will <em>fall in love</em> with</h2>
           <p>A selection of the chalets worth booking — across <Link href="/switzerland">Switzerland</Link>, <Link href="/france">France</Link> and <Link href="/austria">Austria</Link>, from grand catered chalets to modern apartments. Let us find your match.</p>
         </div>
+        {/* Destination-page cards, colours inverted for the plum band
+            (Ben, 2026-07-17) — .chalets .pc overrides in globals.css. */}
         <div className="reveal">
-          <CarouselRow step={460}>
-            {carousel.map((c) => (
-              <Link key={c.name} className="ccard" href={chaletHref(c)}>
-                <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
-                <h3>{c.name}</h3>
-                <div className="specs">{c.resort} · {c.country} · Sleeps {c.guests}{c.chips?.[0] ? ` · ${c.chips[0]}` : ''}</div>
-              </Link>
-            ))}
-          </CarouselRow>
+          <HomeChaletCarousel chalets={carousel.map((c) => ({ ...c, href: chaletHref(c) }))} />
         </div>
       </div></section>
 
