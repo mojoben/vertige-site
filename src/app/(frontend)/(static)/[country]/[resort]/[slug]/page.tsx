@@ -9,6 +9,13 @@ import {
 } from '@/components/ChaletDetailBits'
 import { mockWeeks, type Week } from '@/lib/weeks'
 
+// ⚠ PAIRED SURFACE (Ben, 2026-07-18): the native app's chalet page
+// (vertige-app repo, app/chalet/[slug].tsx — served the same content via
+// /api/app/chalets/[slug]) mirrors this page section-for-section. Any
+// change to sections, content blocks or ordering here MUST be replicated
+// there in the same piece of work.
+
+
 // Chalet detail at its canonical URL /{country}/{resort}/{chalet-slug}
 // (Ben, 2026-07-15 — destination-nested for SEO; legacy /chalets/{slug}
 // 308s here). Faithful port of vertige-proto-chalet-detail-alt.html ("the
