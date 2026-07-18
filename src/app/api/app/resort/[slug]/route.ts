@@ -23,9 +23,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
 
   // Related reading: the resort's own guide first, then journal articles
   // that mention it.
-  const reading: { title: string; dek: string; href: string; img: string; read?: string }[] = []
+  const reading: { slug: string; title: string; dek: string; href: string; img: string; read?: string }[] = []
   if ((guides as { slug: string }[]).some((g) => g.slug === slug)) {
     reading.push({
+      slug: `${slug}-guide`,
       title: `The Vertige guide to ${dest.name}`,
       dek: content.heroSub,
       href: `/journal/guide/${slug}-guide`,
@@ -35,7 +36,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const nameLc = dest.name.toLowerCase()
   for (const a of articles as unknown as Article[]) {
     if (`${a.title} ${a.dek}`.toLowerCase().includes(nameLc)) {
-      reading.push({ title: a.title, dek: a.dek, href: `/journal/${a.slug}`, img: `/images/chalets/${a.hero}.webp`, read: String(a.read) })
+      reading.push({ slug: a.slug, title: a.title, dek: a.dek, href: `/journal/${a.slug}`, img: `/images/chalets/${a.hero}.webp`, read: String(a.read) })
     }
   }
 
