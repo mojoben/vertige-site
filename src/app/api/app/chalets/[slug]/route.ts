@@ -25,14 +25,20 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     {
       ...appChalet(p, toCard(p)),
       gallery: p.images.map((i) => i.url),
+      exclusive: p.exclusive,
       overview: content?.overview ?? null,
       keyFeatures: content?.keyFeatures ?? [],
+      amenities: content?.amenities ?? [],
+      interior: content?.interior ?? null,
+      bedroomsIntro: content?.bedroomsIntro ?? null,
+      exterior: content?.exterior ?? null,
       locationIntro: content?.locationIntro ?? null,
       locationSpecs: content?.locationSpecs ?? [],
       rooms: (content?.rooms ?? []).map((r) => ({
         name: r.name,
         beds: r.beds ?? '',
         ensuite: r.ensuite,
+        description: r.description ?? null,
         points: r.points,
       })),
       weeks: (avail?.weeks ?? []).map((w) => ({
