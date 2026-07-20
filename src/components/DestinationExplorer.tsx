@@ -161,7 +161,7 @@ export function DestinationExplorer({
   const passes = (c: MockChalet, st: FilterState) => {
     if (st.tier.length && !st.tier.includes(c.tier)) return false
     if (st.country.length && !st.country.includes(c.country)) return false
-    if (st.resorts.length && !st.resorts.includes(c.resort)) return false
+    if (st.resorts.length && !st.resorts.some((r) => resortMatch(c, r))) return false
     if (st.destCountry && c.country !== st.destCountry) return false
     // An explicit resort tick widens beyond the page's own resort — the
     // panel's Resort group is how you pull in siblings, so it overrides the
@@ -218,28 +218,29 @@ export function DestinationExplorer({
   const clearFilters = () =>
     set({ tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '', adults: 0, children: 0, arr: null, dep: null })
 
-  // Filter groups, built for the current scope (Ben, 2026-07-13):
-  // · location is contextual — countries at catalogue level; when scoped to
-  //   a country (or a resort within one), that country's resorts instead
-  // · Chalet features + Wellness offer only what the chalets in scope
-  //   actually have — no filter that can't match anything. Scoped by
-  //   destination only, so options don't vanish as you tick them.
+  // Filter groups, built for the current scope (Ben, 2026-07-20):
+  // · location is contextual — resort pages carry no resort group (the page
+  //   IS the resort); country pages list every canonical resort in that
+  //   country (resorts without chalets grey out, they don't hide); the open
+  //   catalogue offers countries
+  // · everything else offers only what the chalets in scope actually have —
+  //   no filter that can't match anything. Scoped by destination only, so
+  //   options don't vanish as you tick them.
   const chkGroups = useMemo(() => {
-    const scopeCountry = s.destCountry
-      ?? (s.destResort ? chalets.find((c) => resortMatch(c, s.destResort!))?.country ?? null : null)
     const inScope = chalets.filter((c) =>
       (!s.destCountry || c.country === s.destCountry) && (!s.destResort || resortMatch(c, s.destResort)))
-    const location: ChkGroup = scopeCountry
-      ? {
-          title: 'Resort', f: 'resorts',
-          opts: Array.from(new Set(chalets.filter((c) => c.country === scopeCountry).map((c) => c.resort)))
-            .sort().map((v) => ({ v, label: v })),
-        }
-      : { title: 'Country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) }
+    const location: ChkGroup | null = s.destResort
+      ? null
+      : s.destCountry
+        ? {
+            title: 'Resort', f: 'resorts',
+            opts: (COUNTRIES.find((c) => c.name === s.destCountry)?.resorts ?? []).map((r) => ({ v: r.name, label: r.name })),
+          }
+        : { title: 'Country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) }
     const availAttrs = new Set(inScope.flatMap((c) => c.attrs ?? []))
     const availPtype = new Set<string>(inScope.map((c) => c.ptype))
     const availTier = new Set<string>(inScope.map((c) => c.tier))
-    return [location, ...CHK_GROUPS]
+    return [...(location ? [location] : []), ...CHK_GROUPS]
       .map((g) => {
         if (g.f === 'attr') return { ...g, opts: g.opts.filter((o) => availAttrs.has(o.v)) }
         if (g.f === 'ptype') return { ...g, opts: g.opts.filter((o) => availPtype.has(o.v)) }
@@ -546,11 +547,9 @@ export function DestinationExplorer({
               <span>{s.arr && s.dep ? `${s.arr.getDate()} ${MON[s.arr.getMonth()]} – ${s.dep.getDate()} ${MON[s.dep.getMonth()]}` : 'Dates'}</span>
             </button>
             <button className={`fbtn fpop${s.adults + s.children > 0 ? ' has' : ''}`} onClick={(e) => openPop('guests', e)}>
-              <svg className="fic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
               <span>{s.adults + s.children > 0 ? guestsTxt : 'Guests'}</span>
             </button>
             <button className={`fbtn fpop${s.beds > 0 || s.baths > 0 ? ' has' : ''}`} onClick={(e) => openPop('beds', e)}>
-              <svg className="fic" viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18h18M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" /></svg>
               <span>{s.beds > 0 || s.baths > 0 ? [s.beds > 0 ? `${s.beds}+ bd` : null, s.baths > 0 ? `${s.baths}+ ba` : null].filter(Boolean).join(' · ') : 'Bed & bath'}</span>
             </button>
             <button className={`fbtn${s.bfrom || s.bto ? ' has' : ''}`} onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>
