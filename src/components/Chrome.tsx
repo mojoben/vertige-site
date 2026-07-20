@@ -207,7 +207,12 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
             <img className="logo-dark" src="/images/vertige-logo.png" alt="Vertige" />
           </Link>
           <div className="right">
-            <span className="ph">☏ {SITE.phone}</span>
+            {/* Number on wide screens; a tap-to-call handset icon once the
+                header tightens (Ben, 2026-07-20) */}
+            <a className="ph" href={`tel:${SITE.phone.replace(/\s/g, '')}`} aria-label={`Call us on ${SITE.phone}`}>
+              <svg className="ph-ic" viewBox="0 0 24 24"><path d="M6.5 3.3l2.4 2.4c.6.6.6 1.5 0 2.1l-1 1c-.3.3-.4.8-.2 1.2a13 13 0 0 0 6.3 6.3c.4.2.9.1 1.2-.2l1-1c.6-.6 1.5-.6 2.1 0l2.4 2.4c.6.6.6 1.5 0 2.1l-1 1c-1 1-2.4 1.4-3.7 1-6-1.9-10.7-6.6-12.6-12.6-.4-1.3 0-2.7 1-3.7l1-1c.6-.6 1.5-.6 2.1 0z" /></svg>
+              <span className="ph-num">{SITE.phone}</span>
+            </a>
             <button className="hicon" onClick={openSearch} aria-label="Search">
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
             </button>
