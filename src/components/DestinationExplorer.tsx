@@ -112,6 +112,15 @@ export function DestinationExplorer({
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [moreResorts, setMoreResorts] = useState(false)
   const [sortBy, setSortBy] = useState<'rec' | 'hi' | 'lo'>('rec')
+  // Short sort labels under 640px so the results bar keeps to one line
+  const [narrow, setNarrow] = useState(false)
+  useEffect(() => {
+    const mq = matchMedia('(max-width: 640px)')
+    const upd = () => setNarrow(mq.matches)
+    upd()
+    mq.addEventListener('change', upd)
+    return () => mq.removeEventListener('change', upd)
+  }, [])
   const [activePin, setActivePin] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
   const fbodyRef = useRef<HTMLDivElement>(null)
@@ -571,9 +580,9 @@ export function DestinationExplorer({
           </div>
           <div className="fmeta"><span><b>{list.length}</b> chalets</span><label className="sort">Sort by:{' '}
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'rec' | 'hi' | 'lo')}>
-                <option value="rec">Recommended</option>
-                <option value="hi">Price high to low</option>
-                <option value="lo">Price low to high</option>
+                <option value="rec">{narrow ? 'Rec' : 'Recommended'}</option>
+                <option value="hi">{narrow ? 'High-Low' : 'Price high to low'}</option>
+                <option value="lo">{narrow ? 'Low-High' : 'Price low to high'}</option>
               </select>
             </label></div>
         </div></div>
