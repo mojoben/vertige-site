@@ -676,7 +676,7 @@ export function DestinationExplorer({
           ))}
         </div>
         <div className="ffoot">
-          <button className="btn erase" onClick={clearFilters}>Erase all</button>
+          <button className="btn erase" onClick={clearFilters}>Clear all</button>
           <button className="btn" onClick={() => setFiltersOpen(false)}>See {list.length} chalets</button>
         </div>
       </aside>
