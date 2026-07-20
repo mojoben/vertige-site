@@ -111,6 +111,7 @@ export function DestinationExplorer({
   const [openCountry, setOpenCountry] = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [moreResorts, setMoreResorts] = useState(false)
+  const [sortBy, setSortBy] = useState<'rec' | 'hi' | 'lo'>('rec')
   const [activePin, setActivePin] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
   const fbodyRef = useRef<HTMLDivElement>(null)
@@ -178,7 +179,12 @@ export function DestinationExplorer({
     return (c.co === 'Sat' ? 6 : 0) === st.arr.getDay()
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const list = useMemo(() => chalets.filter((c) => passes(c, s)), [s, chalets])
+  const unsorted = useMemo(() => chalets.filter((c) => passes(c, s)), [s, chalets])
+  const list = useMemo(() => {
+    if (sortBy === 'rec') return unsorted
+    const val = (c: CatalogueChalet) => (c.from > 0 ? c.from : sortBy === 'lo' ? Infinity : -Infinity)
+    return [...unsorted].sort((a, b) => (sortBy === 'hi' ? val(b) - val(a) : val(a) - val(b)))
+  }, [unsorted, sortBy])
 
   // Would this state tweak still return results? Drives greying-out of
   // options that would dead-end at 0 (Ben, 2026-07-19).
@@ -563,7 +569,13 @@ export function DestinationExplorer({
             </button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="features"]')?.scrollIntoView({ block: 'start' }), 200) }}>Features</button>
           </div>
-          <div className="fmeta"><span><b>{list.length}</b> chalets</span><span className="sort">Sort by: Recommended ⌄</span></div>
+          <div className="fmeta"><span><b>{list.length}</b> chalets</span><label className="sort">Sort by:{' '}
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'rec' | 'hi' | 'lo')}>
+                <option value="rec">Recommended</option>
+                <option value="hi">Price high to low</option>
+                <option value="lo">Price low to high</option>
+              </select>
+            </label></div>
         </div></div>
 
         <div className="rlayout">

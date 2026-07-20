@@ -397,6 +397,8 @@ button{font-family:inherit}
 .fmeta{display:flex;align-items:center;gap:1rem;font-family:'Proxima Nova','Inter';font-size:.72rem;color:var(--muted)}
 .fmeta b{color:var(--plum);font-weight:400}
 .fmeta .sort{cursor:pointer}
+.fmeta .sort select{appearance:none;-webkit-appearance:none;background:transparent url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f2330' stroke-width='1.6'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") right center/11px no-repeat;border:none;padding:0 15px 0 2px;font:inherit;color:inherit;cursor:pointer}
+.fmeta .sort select:focus{outline:none}
 /* results + map */
 .rlayout{display:grid;grid-template-columns:minmax(0,1fr) clamp(340px,42%,780px)}
 @media(max-width:960px){.rlayout{grid-template-columns:1fr}.mapcol{display:none}}
