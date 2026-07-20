@@ -11,7 +11,8 @@
 
 import Link from 'next/link'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { COUNTRIES } from '@/lib/destinations'
+import { useRouter } from 'next/navigation'
+import { COUNTRIES, destinationPath } from '@/lib/destinations'
 import { gbp, type MockChalet } from '@/lib/mock-chalets'
 import { addItem, isSaved, removeItemEverywhere } from '@/lib/wishlist'
 
@@ -103,6 +104,7 @@ export function DestinationExplorer({
     tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '',
     destCountry: initialCountry, destResort: resortName, arr: null, dep: null, flex: true, adults: 0, children: 0,
   })
+  const router = useRouter()
   const [pop, setPop] = useState<PopName>(null)
   const [popPos, setPopPos] = useState({ left: 0, top: 0 })
   const [calStart, setCalStart] = useState(() => new Date(CAL_MIN.y, CAL_MIN.m, 1))
@@ -154,26 +156,49 @@ export function DestinationExplorer({
   }
   // Sat/Sun flexible-changeover rule: flex ON (default) includes BOTH
   // changeover days so a Sat→Sat pick also surfaces Sun-changeover chalets.
-  const dateOK = (c: MockChalet) => {
-    if (!s.arr || !s.dep) return true
-    if (s.flex) return true
-    return (c.co === 'Sat' ? 6 : 0) === s.arr.getDay()
-  }
-  const list = useMemo(() => chalets.filter((c) => {
-    if (s.tier.length && !s.tier.includes(c.tier)) return false
-    if (s.country.length && !s.country.includes(c.country)) return false
-    if (s.resorts.length && !s.resorts.includes(c.resort)) return false
-    if (s.destCountry && c.country !== s.destCountry) return false
-    if (s.destResort && !resortMatch(c, s.destResort)) return false
-    if (s.ptype.length && !s.ptype.includes(c.ptype)) return false
-    if (s.attr.length && !s.attr.every((a) => c.attrs.includes(a))) return false
-    if (c.beds < s.beds || c.baths < s.baths) return false
-    const g = s.adults + s.children; if (g && c.guests < g) return false
-    const bf = +s.bfrom || 0; const bt = +s.bto || Infinity
+  // One predicate serves the results list AND facet counting (the greyed-
+  // out options below), so the two can never disagree.
+  const passes = (c: MockChalet, st: FilterState) => {
+    if (st.tier.length && !st.tier.includes(c.tier)) return false
+    if (st.country.length && !st.country.includes(c.country)) return false
+    if (st.resorts.length && !st.resorts.includes(c.resort)) return false
+    if (st.destCountry && c.country !== st.destCountry) return false
+    if (st.destResort && !resortMatch(c, st.destResort)) return false
+    if (st.ptype.length && !st.ptype.includes(c.ptype)) return false
+    if (st.attr.length && !st.attr.every((a) => c.attrs.includes(a))) return false
+    if (c.beds < st.beds || c.baths < st.baths) return false
+    const g = st.adults + st.children; if (g && c.guests < g) return false
+    const bf = +st.bfrom || 0; const bt = +st.bto || Infinity
     if (c.from < bf || c.from > bt) return false
-    return dateOK(c)
+    if (!st.arr || !st.dep || st.flex) return true
+    return (c.co === 'Sat' ? 6 : 0) === st.arr.getDay()
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const list = useMemo(() => chalets.filter((c) => passes(c, s)), [s, chalets])
+
+  // Would this state tweak still return results? Drives greying-out of
+  // options that would dead-end at 0 (Ben, 2026-07-19).
+  const countWith = (patch: Partial<FilterState>) => {
+    const st = { ...s, ...patch }
+    let n = 0
+    for (const c of chalets) if (passes(c, st)) n++
+    return n
+  }
+  // Adding to an empty OR-group narrows; adding to a non-empty one widens —
+  // so an unchecked box is a dead end only when selecting it yields zero.
+  const optDead = (fkey: 'tier' | 'country' | 'resorts' | 'ptype' | 'attr', v: string) =>
+    !s[fkey].includes(v) && countWith({ [fkey]: [...s[fkey], v] } as Partial<FilterState>) === 0
+
+  // How many chalets exist in the destination scope alone (no user filters)?
+  // Separates "collection coming" from "you filtered everything away".
+  const scopeCount = useMemo(
+    () => chalets.filter((c) => (!s.destCountry || c.country === s.destCountry) && (!s.destResort || resortMatch(c, s.destResort))).length,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [s])
+    [chalets, s.destCountry, s.destResort],
+  )
+
+  const clearFilters = () =>
+    set({ tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '', adults: 0, children: 0, arr: null, dep: null })
 
   // Filter groups, built for the current scope (Ben, 2026-07-13):
   // · location is contextual — countries at catalogue level; when scoped to
@@ -226,16 +251,44 @@ export function DestinationExplorer({
     // stopPropagation alone would close the pop in the same batch it opens).
     const close = (e: MouseEvent) => {
       const t = e.target as Element | null
-      if (t?.closest?.('.pop') || t?.closest?.('.srch .f') || t?.closest?.('.fbtn.fdates')) return
+      if (t?.closest?.('.pop') || t?.closest?.('.srch .f') || t?.closest?.('.fbtn.fpop')) return
       setPop(null)
     }
     document.addEventListener('click', close)
     return () => document.removeEventListener('click', close)
   }, [])
 
-  // Search handoff from the home hero (?dest&adults&children&beds&arr&dep) —
-  // applied post-mount so SSR and hydration agree.
+  // Filters persist across destination pages (Ben, 2026-07-19: change
+  // Zermatt → Davos in the bar and your filters follow). Session-scoped.
+  const restored = useRef(false)
   useEffect(() => {
+    if (!restored.current) return
+    try {
+      const { tier, ptype, attr, beds, baths, bfrom, bto, adults, children, flex, arr, dep } = s
+      sessionStorage.setItem('vg-filters', JSON.stringify({
+        tier, ptype, attr, beds, baths, bfrom, bto, adults, children, flex,
+        arr: arr ? arr.toISOString() : null, dep: dep ? dep.toISOString() : null,
+      }))
+    } catch {}
+  }, [s])
+
+  // Search handoff from the home hero (?dest&adults&children&beds&arr&dep) —
+  // applied post-mount so SSR and hydration agree. Session-stored filters
+  // restore first; explicit URL params win over them.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('vg-filters')
+      if (raw) {
+        const v = JSON.parse(raw)
+        set({
+          tier: v.tier ?? [], ptype: v.ptype ?? [], attr: v.attr ?? [],
+          beds: v.beds ?? 0, baths: v.baths ?? 0, bfrom: v.bfrom ?? '', bto: v.bto ?? '',
+          adults: v.adults ?? 0, children: v.children ?? 0, flex: v.flex ?? true,
+          arr: v.arr ? new Date(v.arr) : null, dep: v.dep ? new Date(v.dep) : null,
+        })
+      }
+    } catch {}
+    restored.current = true
     const q = new URLSearchParams(location.search)
     const p: Partial<FilterState> = {}
     const dest = q.get('dest')
@@ -367,7 +420,7 @@ export function DestinationExplorer({
               Destination · Guests · Bedrooms · Dates (single range picker). */}
           <div className={`f${pop === 'dest' ? ' active' : ''}`} onClick={(e) => openPop('dest', e)}><label>Destination</label><span>{s.destResort || s.destCountry || 'The Alps'}</span></div>
           <div className={`f${pop === 'guests' ? ' active' : ''}`} onClick={(e) => openPop('guests', e)}><label>Guests</label><span>{guestsTxt}</span></div>
-          <div className={`f${pop === 'beds' ? ' active' : ''}`} onClick={(e) => openPop('beds', e)}><label>Bedrooms</label><span>{s.beds > 0 ? `${s.beds}+` : 'Any'}</span></div>
+          <div className={`f${pop === 'beds' ? ' active' : ''}`} onClick={(e) => openPop('beds', e)}><label>Bed &amp; bath</label><span>{s.beds > 0 || s.baths > 0 ? [s.beds > 0 ? `${s.beds}+ bd` : null, s.baths > 0 ? `${s.baths}+ ba` : null].filter(Boolean).join(' · ') : 'Any'}</span></div>
           <div className={`f${pop === 'cal' ? ' active' : ''}`} onClick={(e) => openPop('cal', e)}><label>Dates</label><span>{s.arr && s.dep ? `${fmtD(s.arr)} — ${fmtD(s.dep)}` : s.arr ? `${fmtD(s.arr)} — ?` : 'Add dates'}</span></div>
           <button onClick={() => { setPop(null); scrollToId('chalets') }}>Search</button>
         </div>
@@ -375,18 +428,18 @@ export function DestinationExplorer({
       {/* Popovers — absolute inside the wrap, latched to the bar */}
       <div className={`pop anchored pop-dest${pop === 'dest' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
         <div className="pop-head">Where would you like to ski?</div>
-        <button className="dest-all" onClick={() => { set({ destCountry: null, destResort: null }); setPop(null) }}>All the Alps</button>
+        <button className="dest-all" onClick={() => { setPop(null); if (resortName || initialCountry) router.push('/chalets'); else set({ destCountry: null, destResort: null }) }}>All the Alps</button>
         {COUNTRIES.map((c) => (
           <div key={c.slug} className={`dcountry${openCountry === c.name ? ' open' : ''}`}>
             <button className="dch" onClick={() => setOpenCountry(openCountry === c.name ? null : c.name)}>
               <span>{c.name}</span><span className="cc">{c.resorts.length} resorts ⌄</span>
             </button>
             <div className="drs">
-              <button className="rall" onClick={() => { set({ destCountry: c.name, destResort: null }); setPop(null) }}>All of {c.name} →</button>
+              <button className="rall" onClick={() => { setPop(null); if (resortName || initialCountry) router.push(`/${c.slug}`); else set({ destCountry: c.name, destResort: null }) }}>All of {c.name} →</button>
               <div className="rlab">Signature resorts</div>
-              <div className="rlist">{c.resorts.filter((r) => r.tier === 1).map((r) => <button key={r.slug} className="rbtn" onClick={() => { set({ destCountry: c.name, destResort: r.name }); setPop(null) }}>{r.name}</button>)}</div>
+              <div className="rlist">{c.resorts.filter((r) => r.tier === 1).map((r) => <button key={r.slug} className="rbtn" onClick={() => { setPop(null); if (resortName || initialCountry) router.push(destinationPath(c.slug, r.slug)); else set({ destCountry: c.name, destResort: r.name }) }}>{r.name}</button>)}</div>
               <div className="rlab">More in {c.name}</div>
-              <div className="rlist">{c.resorts.filter((r) => r.tier === 2).map((r) => <button key={r.slug} className="rbtn" onClick={() => { set({ destCountry: c.name, destResort: r.name }); setPop(null) }}>{r.name}</button>)}</div>
+              <div className="rlist">{c.resorts.filter((r) => r.tier === 2).map((r) => <button key={r.slug} className="rbtn" onClick={() => { setPop(null); if (resortName || initialCountry) router.push(destinationPath(c.slug, r.slug)); else set({ destCountry: c.name, destResort: r.name }) }}>{r.name}</button>)}</div>
             </div>
           </div>
         ))}
@@ -415,7 +468,7 @@ export function DestinationExplorer({
             <div className="ctrl">
               <button disabled={s[k] <= 0} onClick={() => set({ [k]: Math.max(0, s[k] - 1) } as Partial<FilterState>)}>−</button>
               <span className="v">{s[k]}</span>
-              <button onClick={() => set({ [k]: s[k] + 1 } as Partial<FilterState>)}>+</button>
+              <button disabled={countWith({ [k]: s[k] + 1 } as Partial<FilterState>) === 0} onClick={() => set({ [k]: s[k] + 1 } as Partial<FilterState>)}>+</button>
             </div>
           </div>
         ))}
@@ -423,15 +476,17 @@ export function DestinationExplorer({
       </div>
 
       <div className={`pop anchored pop-guests${pop === 'beds' ? ' on' : ''}`} style={popPos} onClick={stopAll}>
-        <div className="pop-head">How many bedrooms?</div>
-        <div className="gr">
-          <div><div className="gn">Bedrooms</div><div className="gs">Minimum</div></div>
-          <div className="ctrl">
-            <button disabled={s.beds <= 0} onClick={() => set({ beds: Math.max(0, s.beds - 1) })}>−</button>
-            <span className="v">{s.beds > 0 ? `${s.beds}+` : 'Any'}</span>
-            <button onClick={() => set({ beds: s.beds + 1 })}>+</button>
+        <div className="pop-head">Bedrooms &amp; bathrooms</div>
+        {([['beds', 'Bedrooms'], ['baths', 'Bathrooms']] as const).map(([k, n]) => (
+          <div key={k} className="gr">
+            <div><div className="gn">{n}</div><div className="gs">Minimum</div></div>
+            <div className="ctrl">
+              <button disabled={s[k] <= 0} onClick={() => set({ [k]: Math.max(0, s[k] - 1) } as Partial<FilterState>)}>−</button>
+              <span className="v">{s[k] > 0 ? `${s[k]}+` : 'Any'}</span>
+              <button disabled={countWith({ [k]: s[k] + 1 } as Partial<FilterState>) === 0} onClick={() => set({ [k]: s[k] + 1 } as Partial<FilterState>)}>+</button>
+            </div>
           </div>
-        </div>
+        ))}
         <div className="gfoot"><button className="apply" onClick={() => setPop(null)}>Apply</button></div>
       </div>
       </div></div></div>
@@ -462,12 +517,19 @@ export function DestinationExplorer({
 
         <div className="filterbar"><div className="in">
           <div className="fbtns">
-            <button className={`fbtn fdates${s.arr && s.dep ? ' has' : ''}`} onClick={(e) => openPop('cal', e)}>
+            <button className={`fbtn fdates fpop${s.arr && s.dep ? ' has' : ''}`} onClick={(e) => openPop('cal', e)}>
               <svg className="fic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="1" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
               <span>{s.arr && s.dep ? `${s.arr.getDate()} ${MON[s.arr.getMonth()]} – ${s.dep.getDate()} ${MON[s.dep.getMonth()]}` : 'Dates'}</span>
             </button>
+            <button className={`fbtn fpop${s.adults + s.children > 0 ? ' has' : ''}`} onClick={(e) => openPop('guests', e)}>
+              <svg className="fic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
+              <span>{s.adults + s.children > 0 ? guestsTxt : 'Guests'}</span>
+            </button>
+            <button className={`fbtn fpop${s.beds > 0 || s.baths > 0 ? ' has' : ''}`} onClick={(e) => openPop('beds', e)}>
+              <svg className="fic" viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18h18M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" /></svg>
+              <span>{s.beds > 0 || s.baths > 0 ? [s.beds > 0 ? `${s.beds}+ bd` : null, s.baths > 0 ? `${s.baths}+ ba` : null].filter(Boolean).join(' · ') : 'Bed & bath'}</span>
+            </button>
             <button className="fbtn" onClick={() => setFiltersOpen(true)}>☰ All filters</button>
-            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="rooms"]')?.scrollIntoView({ block: 'start' }), 200) }}>Rooms</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>Price</button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="features"]')?.scrollIntoView({ block: 'start' }), 200) }}>Features</button>
           </div>
@@ -487,11 +549,24 @@ export function DestinationExplorer({
               )}
             </div>
             <div className="rgrid">
-              {list.length
-                ? list.map(chaletCard)
-                : <div className="rempty">{resortName || initialCountry
+              {list.length ? (
+                list.map(chaletCard)
+              ) : scopeCount === 0 ? (
+                <div className="rempty">{resortName || initialCountry
                   ? <>We are finalising the Vertige collection in {resortName ?? initialCountry} for the coming season. Share your dates and party size and our team will send a hand-picked shortlist within a day.</>
-                  : <>No chalets match these filters yet. Try widening your search, or let our team curate a bespoke selection for you.</>}</div>}
+                  : <>No chalets match these filters yet. Try widening your search, or let our team curate a bespoke selection for you.</>}</div>
+              ) : (
+                <div className="rempty-filters">
+                  <svg viewBox="0 0 64 64" className="rf-art">
+                    <path d="M6 46 22 20l8 12 6-8 14 22" />
+                    <path d="M36 24l0-14M36 10l9 3-9 3" />
+                    <path d="M2 52h60" strokeDasharray="2 4" />
+                  </svg>
+                  <h3>That&rsquo;s one filter too many.</h3>
+                  <p>Nothing matches everything at once — ease one filter, or start fresh and we&rsquo;ll show you the full collection again.</p>
+                  <button className="btn" onClick={clearFilters}>Clear the filters</button>
+                </div>
+              )}
             </div>
           </div>
           <div className="mapcol">
@@ -535,7 +610,7 @@ export function DestinationExplorer({
               <div key={k} className="stepper"><span>{n}</span><div className="ctrl">
                 <button onClick={() => set({ [k]: Math.max(0, s[k] - 1) } as Partial<FilterState>)}>−</button>
                 <span className="v">{s[k]}</span>
-                <button onClick={() => set({ [k]: s[k] + 1 } as Partial<FilterState>)}>+</button>
+                <button disabled={countWith({ [k]: s[k] + 1 } as Partial<FilterState>) === 0} onClick={() => set({ [k]: s[k] + 1 } as Partial<FilterState>)}>+</button>
               </div></div>
             ))}
           </div>
@@ -549,14 +624,20 @@ export function DestinationExplorer({
           {chkGroups.map((g) => (
             <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
-              {g.opts.map((o) => (
-                <label key={o.v} className="chk"><input type="checkbox" checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} /><span>{o.label}</span></label>
-              ))}
+              {g.opts.map((o) => {
+                const dead = optDead(g.f, o.v)
+                return (
+                  <label key={o.v} className={`chk${dead ? ' dead' : ''}`} title={dead ? 'No chalets match with your current filters' : undefined}>
+                    <input type="checkbox" disabled={dead} checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} />
+                    <span>{o.label}</span>
+                  </label>
+                )
+              })}
             </div>
           ))}
         </div>
         <div className="ffoot">
-          <button className="btn erase" onClick={() => set({ tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '' })}>Erase all</button>
+          <button className="btn erase" onClick={clearFilters}>Erase all</button>
           <button className="btn" onClick={() => setFiltersOpen(false)}>See {list.length} chalets</button>
         </div>
       </aside>

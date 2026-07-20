@@ -1470,6 +1470,14 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 .wlmodal .shareopt{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:1rem 1.1rem;margin-bottom:.8rem;cursor:pointer;color:var(--plum);font-family:'Proxima Nova','Inter';font-size:.7rem;letter-spacing:.14em;text-transform:uppercase}
 .wlmodal .shareopt:hover{border-color:var(--rose);color:var(--rose)}
 .wlmodal .shareopt svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+/* dead-end filter options (would give 0 results) + too-many-filters state */
+.chk.dead{opacity:.35;cursor:not-allowed}
+.chk.dead input{cursor:not-allowed}
+.stepper .ctrl button:disabled,.pop .ctrl button:disabled{opacity:.3;cursor:not-allowed}
+.rempty-filters{grid-column:1/-1;text-align:center;padding:3.5rem 2rem;background:#fff;border:1px solid var(--line)}
+.rempty-filters .rf-art{width:74px;height:74px;stroke:var(--plum);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1.2rem}
+.rempty-filters h3{font-size:1.5rem;margin-bottom:.5rem}
+.rempty-filters p{font-family:'Proxima Nova','Inter';font-size:.85rem;color:var(--muted);max-width:38ch;margin:0 auto 1.4rem}
 .wltoast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--plum);color:#fff;padding:.75rem 1.2rem;font-family:'Proxima Nova','Inter';font-size:.8rem;letter-spacing:.04em;z-index:400;box-shadow:0 10px 30px rgba(31,35,48,.28);display:none}
 /* header heart: count badge + mini-panel (HANDOFF 09 §2.2) */
 .hdr .wishwrap{position:relative;display:inline-flex}
