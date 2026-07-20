@@ -667,7 +667,7 @@ export function DestinationExplorer({
                     <input type="checkbox" disabled={dead} checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} />
                     <span>{o.label}</span>
                     {dead && (
-                      <span className="whyi" title="Greyed out because no chalet offers this in combination with your current filters — ease dates, guests or another filter to unlock it.">?</span>
+                      <span className="whyi" data-tip="No chalet matches this together with your current filters — ease dates, guests or another filter to unlock it.">?</span>
                     )}
                   </label>
                 )
