@@ -37,7 +37,7 @@ interface FilterState {
   adults: number; children: number
 }
 
-type ChkGroup = { grp?: string; title: string; f: 'tier' | 'country' | 'resorts' | 'ptype' | 'attr'; opts: { v: string; label: React.ReactNode }[] }
+type ChkGroup = { grp?: string; title: string; f: 'tier' | 'country' | 'resorts' | 'ptype' | 'attr'; opts: { v: string; label: React.ReactNode; off?: boolean }[] }
 // Panel order (Ben, 2026-07-13): rooms + price first (rendered separately),
 // then location (country at catalogue level; that country's resorts when
 // scoped — built dynamically below), property type, ski access, chalet
@@ -110,6 +110,7 @@ export function DestinationExplorer({
   const [calStart, setCalStart] = useState(() => new Date(CAL_MIN.y, CAL_MIN.m, 1))
   const [openCountry, setOpenCountry] = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [moreResorts, setMoreResorts] = useState(false)
   const [activePin, setActivePin] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
   const fbodyRef = useRef<HTMLDivElement>(null)
@@ -234,7 +235,12 @@ export function DestinationExplorer({
       : s.destCountry
         ? {
             title: 'Resort', f: 'resorts',
-            opts: (COUNTRIES.find((c) => c.name === s.destCountry)?.resorts ?? []).map((r) => ({ v: r.name, label: r.name })),
+            // Resorts without any chalets collapse behind "Show other
+            // resorts" (Ben, 2026-07-20) — flagged off, rendered on demand.
+            opts: (COUNTRIES.find((c) => c.name === s.destCountry)?.resorts ?? []).map((r) => ({
+              v: r.name, label: r.name,
+              off: !chalets.some((c) => c.country === s.destCountry && resortMatch(c, r.name)),
+            })),
           }
         : { title: 'Country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) }
     const availAttrs = new Set(inScope.flatMap((c) => c.attrs ?? []))
@@ -657,23 +663,34 @@ export function DestinationExplorer({
             </div>
           </div>
           )}
-          {chkGroups.map((g) => (
+          {chkGroups.map((g) => {
+            const shown = g.opts.filter((o) => !o.off || moreResorts)
+            const hidden = g.opts.length - g.opts.filter((o) => !o.off).length
+            return (
             <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
-              {g.opts.map((o) => {
-                const dead = optDead(g.f, o.v)
+              {shown.map((o) => {
+                const dead = o.off || optDead(g.f, o.v)
                 return (
                   <label key={o.v} className={`chk${dead ? ' dead' : ''}`}>
                     <input type="checkbox" disabled={dead} checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} />
                     <span>{o.label}</span>
                     {dead && (
-                      <span className="whyi" data-tip="No chalet matches this together with your current filters — ease dates, guests or another filter to unlock it.">?</span>
+                      <span className="whyi" data-tip={o.off
+                        ? 'No chalets in this resort yet — our collection here is still growing.'
+                        : 'No chalet matches this together with your current filters — ease dates, guests or another filter to unlock it.'}>?</span>
                     )}
                   </label>
                 )
               })}
+              {hidden > 0 && (
+                <button type="button" className="chkmore" onClick={() => setMoreResorts((m) => !m)}>
+                  {moreResorts ? 'Show fewer resorts' : `Show ${hidden} more resorts`}
+                  <svg viewBox="0 0 24 24" style={{ transform: moreResorts ? 'rotate(180deg)' : undefined }}><path d="M6 9l6 6 6-6" /></svg>
+                </button>
+              )}
             </div>
-          ))}
+          )})}
         </div>
         <div className="ffoot">
           <button className="btn erase" onClick={clearFilters}>Clear all</button>

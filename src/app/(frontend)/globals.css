@@ -1480,6 +1480,8 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 .chk .whyi::after{content:attr(data-tip);position:absolute;right:-4px;bottom:calc(100% + 9px);width:216px;background:var(--dark);color:#fff;font-size:.72rem;font-weight:300;letter-spacing:0;text-transform:none;line-height:1.55;padding:.6rem .75rem;opacity:0;visibility:hidden;transition:opacity .15s;pointer-events:none;z-index:40;text-align:left}
 .chk .whyi::before{content:'';position:absolute;right:1px;bottom:calc(100% + 4px);border:5px solid transparent;border-top-color:var(--dark);opacity:0;visibility:hidden;transition:opacity .15s;pointer-events:none;z-index:40}
 .chk .whyi:hover::after,.chk .whyi:hover::before{opacity:1;visibility:visible}
+.chkmore{display:inline-flex;align-items:center;gap:.4rem;margin-top:.15rem;padding:0;background:none;border:none;font-family:'Proxima Nova','Inter';font-size:.82rem;color:var(--plum);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.chkmore svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.5;fill:none;transition:transform .15s}
 
 /* Price slider — dual-handle range bounded to the page's prices */
 .pslider{padding:.35rem .1rem 0}
