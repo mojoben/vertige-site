@@ -163,7 +163,10 @@ export function DestinationExplorer({
     if (st.country.length && !st.country.includes(c.country)) return false
     if (st.resorts.length && !st.resorts.includes(c.resort)) return false
     if (st.destCountry && c.country !== st.destCountry) return false
-    if (st.destResort && !resortMatch(c, st.destResort)) return false
+    // An explicit resort tick widens beyond the page's own resort — the
+    // panel's Resort group is how you pull in siblings, so it overrides the
+    // destination scope rather than intersecting with it (dead end otherwise).
+    if (st.destResort && !st.resorts.length && !resortMatch(c, st.destResort)) return false
     if (st.ptype.length && !st.ptype.includes(c.ptype)) return false
     if (st.attr.length && !st.attr.every((a) => c.attrs.includes(a))) return false
     if (c.beds < st.beds || c.baths < st.baths) return false
@@ -197,6 +200,21 @@ export function DestinationExplorer({
     [chalets, s.destCountry, s.destResort],
   )
 
+  // Price slider bounds: the priced chalets that pass every filter EXCEPT
+  // price itself — so the range always reflects what's actually on the page
+  // and tightens as other filters apply (Ben, 2026-07-19).
+  const priceBounds = useMemo(() => {
+    const priced = chalets.filter((c) => c.from > 0 && passes(c, { ...s, bfrom: '', bto: '' }))
+    if (!priced.length) return null
+    const lo = Math.floor(Math.min(...priced.map((c) => c.from)) / 1000) * 1000
+    const hi = Math.ceil(Math.max(...priced.map((c) => c.from)) / 1000) * 1000
+    return { lo, hi: Math.max(hi, lo + 1000), sym: priced[0].priceSymbol ?? '€' }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chalets, s.tier, s.country, s.resorts, s.destCountry, s.destResort, s.ptype, s.attr, s.beds, s.baths, s.adults, s.children, s.arr, s.dep, s.flex])
+  const fmtK = (v: number) => `${priceBounds?.sym ?? '€'}${Math.round(v / 1000)}k`
+  const effLo = priceBounds ? Math.min(Math.max(+s.bfrom || priceBounds.lo, priceBounds.lo), priceBounds.hi) : 0
+  const effHi = priceBounds ? Math.max(Math.min(+s.bto || priceBounds.hi, priceBounds.hi), effLo) : 0
+
   const clearFilters = () =>
     set({ tier: [], country: [], resorts: [], ptype: [], attr: [], beds: 0, baths: 0, bfrom: '', bto: '', adults: 0, children: 0, arr: null, dep: null })
 
@@ -219,10 +237,15 @@ export function DestinationExplorer({
         }
       : { title: 'Country', f: 'country', opts: ['France', 'Switzerland', 'Austria', 'Italy'].map((v) => ({ v, label: v })) }
     const availAttrs = new Set(inScope.flatMap((c) => c.attrs ?? []))
+    const availPtype = new Set<string>(inScope.map((c) => c.ptype))
+    const availTier = new Set<string>(inScope.map((c) => c.tier))
     return [location, ...CHK_GROUPS]
-      .map((g) => (g.f === 'attr' && (g.grp === 'features' || g.title === 'Wellness')
-        ? { ...g, opts: g.opts.filter((o) => availAttrs.has(o.v)) }
-        : g))
+      .map((g) => {
+        if (g.f === 'attr') return { ...g, opts: g.opts.filter((o) => availAttrs.has(o.v)) }
+        if (g.f === 'ptype') return { ...g, opts: g.opts.filter((o) => availPtype.has(o.v)) }
+        if (g.f === 'tier') return { ...g, opts: g.opts.filter((o) => availTier.has(o.v)) }
+        return g
+      })
       .filter((g) => g.opts.length > 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chalets, s.destCountry, s.destResort])
@@ -517,6 +540,7 @@ export function DestinationExplorer({
 
         <div className="filterbar"><div className="in">
           <div className="fbtns">
+            <button className="fbtn" onClick={() => setFiltersOpen(true)}>☰ All filters</button>
             <button className={`fbtn fdates fpop${s.arr && s.dep ? ' has' : ''}`} onClick={(e) => openPop('cal', e)}>
               <svg className="fic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="1" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
               <span>{s.arr && s.dep ? `${s.arr.getDate()} ${MON[s.arr.getMonth()]} – ${s.dep.getDate()} ${MON[s.dep.getMonth()]}` : 'Dates'}</span>
@@ -529,8 +553,9 @@ export function DestinationExplorer({
               <svg className="fic" viewBox="0 0 24 24"><path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18h18M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" /></svg>
               <span>{s.beds > 0 || s.baths > 0 ? [s.beds > 0 ? `${s.beds}+ bd` : null, s.baths > 0 ? `${s.baths}+ ba` : null].filter(Boolean).join(' · ') : 'Bed & bath'}</span>
             </button>
-            <button className="fbtn" onClick={() => setFiltersOpen(true)}>☰ All filters</button>
-            <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>Price</button>
+            <button className={`fbtn${s.bfrom || s.bto ? ' has' : ''}`} onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="budget"]')?.scrollIntoView({ block: 'start' }), 200) }}>
+              {s.bfrom || s.bto ? `${fmtK(effLo)} – ${fmtK(effHi)}` : 'Price'}
+            </button>
             <button className="fbtn" onClick={() => { setFiltersOpen(true); setTimeout(() => fbodyRef.current?.querySelector('[data-grp="features"]')?.scrollIntoView({ block: 'start' }), 200) }}>Features</button>
           </div>
           <div className="fmeta"><span><b>{list.length}</b> chalets</span><span className="sort">Sort by: Recommended ⌄</span></div>
@@ -614,22 +639,37 @@ export function DestinationExplorer({
               </div></div>
             ))}
           </div>
+          {priceBounds && (
           <div className="fgrp" data-grp="budget">
-            <h4>Price per week (£)</h4>
-            <div className="budget">
-              <div><label>From</label><input type="number" value={s.bfrom} placeholder="0" onChange={(e) => set({ bfrom: e.target.value })} /></div>
-              <div><label>To</label><input type="number" value={s.bto} placeholder="Any" onChange={(e) => set({ bto: e.target.value })} /></div>
+            <h4>Price per week</h4>
+            <div className="pslider">
+              <div className="ps-vals"><span>{fmtK(effLo)}</span><span>{fmtK(effHi)}</span></div>
+              <div className="ps-track">
+                <div className="ps-fill" style={{
+                  left: `${((effLo - priceBounds.lo) / (priceBounds.hi - priceBounds.lo)) * 100}%`,
+                  right: `${100 - ((effHi - priceBounds.lo) / (priceBounds.hi - priceBounds.lo)) * 100}%`,
+                }} />
+                <input type="range" min={priceBounds.lo} max={priceBounds.hi} step={1000} value={effLo}
+                  onChange={(e) => { const v = Math.min(+e.target.value, effHi - 1000); set({ bfrom: v <= priceBounds.lo ? '' : String(v) }) }} />
+                <input type="range" min={priceBounds.lo} max={priceBounds.hi} step={1000} value={effHi}
+                  onChange={(e) => { const v = Math.max(+e.target.value, effLo + 1000); set({ bto: v >= priceBounds.hi ? '' : String(v) }) }} />
+              </div>
+              <div className="ps-note">Weekly prices in {resortName ?? initialCountry ?? 'the current view'} run {fmtK(priceBounds.lo)}–{fmtK(priceBounds.hi)} with your other filters.</div>
             </div>
           </div>
+          )}
           {chkGroups.map((g) => (
             <div key={g.title} className="fgrp" data-grp={g.grp}>
               <h4>{g.title}</h4>
               {g.opts.map((o) => {
                 const dead = optDead(g.f, o.v)
                 return (
-                  <label key={o.v} className={`chk${dead ? ' dead' : ''}`} title={dead ? 'No chalets match with your current filters' : undefined}>
+                  <label key={o.v} className={`chk${dead ? ' dead' : ''}`}>
                     <input type="checkbox" disabled={dead} checked={s[g.f].includes(o.v)} onChange={(e) => toggleF(g.f, o.v, e.target.checked)} />
                     <span>{o.label}</span>
+                    {dead && (
+                      <span className="whyi" title="Greyed out because no chalet offers this in combination with your current filters — ease dates, guests or another filter to unlock it.">?</span>
+                    )}
                   </label>
                 )
               })}

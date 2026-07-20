@@ -1471,8 +1471,21 @@ details.faq .a a{color:var(--rose);border-bottom:1px solid var(--rose)}
 .wlmodal .shareopt:hover{border-color:var(--rose);color:var(--rose)}
 .wlmodal .shareopt svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 /* dead-end filter options (would give 0 results) + too-many-filters state */
-.chk.dead{opacity:.35;cursor:not-allowed}
+.chk.dead{opacity:.45;cursor:not-allowed}
 .chk.dead input{cursor:not-allowed}
+.chk .whyi{flex:0 0 auto;width:15px;height:15px;margin-left:auto;border:1px solid var(--muted);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;line-height:1;color:var(--muted);cursor:help;opacity:1}
+
+/* Price slider — dual-handle range bounded to the page's prices */
+.pslider{padding:.35rem .1rem 0}
+.ps-vals{display:flex;justify-content:space-between;font-size:.82rem;color:var(--dark);margin-bottom:.55rem}
+.ps-track{position:relative;height:18px}
+.ps-track::before{content:'';position:absolute;left:0;right:0;top:8px;height:2px;background:var(--line)}
+.ps-fill{position:absolute;top:8px;height:2px;background:var(--plum)}
+.ps-track input[type=range]{position:absolute;left:0;top:0;width:100%;height:18px;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none}
+.ps-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;margin-top:2px;background:#fff;border:1.5px solid var(--plum);border-radius:0;pointer-events:auto;cursor:grab}
+.ps-track input[type=range]::-moz-range-thumb{width:14px;height:14px;background:#fff;border:1.5px solid var(--plum);border-radius:0;pointer-events:auto;cursor:grab}
+.ps-track input[type=range]:focus{outline:none}
+.ps-note{font-size:.72rem;color:var(--muted);margin-top:.6rem;line-height:1.5}
 .stepper .ctrl button:disabled,.pop .ctrl button:disabled{opacity:.3;cursor:not-allowed}
 .rempty-filters{grid-column:1/-1;text-align:center;padding:3.5rem 2rem;background:#fff;border:1px solid var(--line)}
 .rempty-filters .rf-art{width:74px;height:74px;stroke:var(--plum);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1.2rem}
