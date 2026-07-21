@@ -31,7 +31,6 @@ const TABS: { f: string; label: string }[] = [
 
 export function JournalIndexGrid({ cards }: { cards: JournalCard[] }) {
   const [f, setF] = useState('all')
-  const n = cards.filter((c) => f === 'all' || catKey(c.cat) === f).length
 
   return (
     <>
@@ -42,7 +41,6 @@ export function JournalIndexGrid({ cards }: { cards: JournalCard[] }) {
             <button key={t.f} className={`tab${f === t.f ? ' on' : ''}`} onClick={() => setF(t.f)}>{t.label}</button>
           ))}
         </div>
-        <div className="cnt">{n < 10 ? `0${n}` : n}{n === 1 ? ' Entry' : ' Entries'}</div>
       </div></nav>
 
       <section className="jgrid"><div className="wrap">
