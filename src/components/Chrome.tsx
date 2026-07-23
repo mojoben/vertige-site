@@ -102,6 +102,15 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
       <nav className={`navpanel${navOpen ? ' on' : ''}`} aria-label="Main menu">
         <div className="nv nv-main">
           <div className="navtop"><button className="navx" onClick={closeNav} aria-label="Close menu">×</button></div>
+          {/* Mobile-only CTA cluster — Book + Search live here so the compact
+              header can stay Menu · logo · phone/wishlist (Ben, 2026-07-21) */}
+          <div className="nvcta">
+            <Link className="nvbook" href="/contact" onClick={closeNav}>Book your stay</Link>
+            <button className="nvsearch" onClick={() => { closeNav(); openSearch() }}>
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+              Search chalets
+            </button>
+          </div>
           <div className="navlinks">
             <button className="nvlink" onClick={() => showPanel('dest')}>Destinations</button>
             <button className="nvlink" onClick={() => showPanel('insp')}>Inspiration</button>

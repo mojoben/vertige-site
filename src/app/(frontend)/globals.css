@@ -88,6 +88,23 @@ button{font-family:inherit}
 .hdr.scrolled .brand .logo-dark{display:block}
 @media(max-width:960px){.hdr .right .ph .ph-num{display:none}.hdr .right .ph .ph-ic{display:block}}
 
+/* Nav CTA cluster — hidden on desktop (the header carries Book + Search there) */
+.nvcta{display:none}
+
+/* Mobile header (Ben, 2026-07-21): Menu · centred uncompressed logo ·
+   phone + wishlist. Book + Search relocate into the mega nav. */
+@media(max-width:768px){
+  .hdr .wrap{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+  .hdr .brand img{max-width:none}
+  .hdr .right{gap:1.25rem}
+  .hdr .right .book,.hdr .right .hicon:not(.wish){display:none}
+  .nvcta{display:flex;flex-direction:column;gap:.6rem;padding:0 1.6rem 1.4rem}
+  .nvcta .nvbook{background:var(--plum);color:#fff;text-align:center;text-decoration:none;padding:.95rem 1.7rem;font-family:'Proxima Nova','Inter';font-size:.75rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:300}
+  .nvcta .nvbook:active{background:var(--rose)}
+  .nvcta .nvsearch{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;background:none;border:1px solid var(--line);color:var(--plum);padding:.9rem 1.7rem;font-family:'Proxima Nova','Inter';font-size:.75rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:300;cursor:pointer}
+  .nvcta .nvsearch svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+}
+
 /* ── Slide-out left nav ────────────────────────────────────────────────── */
 .navov{position:fixed;inset:0;z-index:200;background:rgba(31,35,48,.45);opacity:0;visibility:hidden;transition:.3s}
 .navov.on{opacity:1;visibility:visible}
