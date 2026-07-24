@@ -44,7 +44,7 @@ export default async function HomePage() {
             <svg className="he-sprig he-sprig-l" viewBox="0 0 120 200" aria-hidden="true"><path d="M60 4v192M60 40l-34-20M60 40l34-20M60 78l-40-24M60 78l40-24M60 116l-44-26M60 116l44-26M60 154l-38-22M60 154l38-22" /></svg>
             <div className="he-copy reveal">
               <span className="he-eye">Welcome to Vertige</span>
-              <h2>The height of Alpine living,<br />in a setting that <em>earns it</em></h2>
+              <h2>The height of Alpine living, in a setting that <em>earns it</em></h2>
               <p>You can book a chalet with anyone. The reason people come back is everything that happens after — the chalet, the mountain, and the people you share it with.</p>
               <p>We don&rsquo;t hand you a list and wish you luck. We ask the questions that matter — how you ski, who&rsquo;s coming, what you loved last time — and make a recommendation you can trust.</p>
               <Link className="he-badge" href="/approach" aria-label="Discover the Vertige approach">
