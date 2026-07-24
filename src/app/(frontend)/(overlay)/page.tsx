@@ -33,26 +33,53 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* WELCOME — editorial collage (Ben, 2026-07-21, replacing the centred
+          intro + offset duo). Asymmetric overlapping imagery, a rotating
+          "discover more" badge, faint alpine line-art. */}
       <div className="fadewrap">
-        {/* CENTRED INTRO */}
-        <section><div className="wrap"><div className="cintro reveal">
-          <h2>The height of Alpine living,<br />in a setting that <em>earns it</em></h2>
-          <div className="rule" />
-          <p>You can book a chalet with anyone. The reason people come back is everything that happens after — the chalet, the mountain, and the people you share it with.</p>
-        </div></div></section>
+        <section className="hedit"><div className="wrap">
 
-        {/* OFFSET DUO */}
-        <section style={{ paddingTop: 0 }}><div className="wrap"><div className="duo reveal">
-          <div className="leftimg px"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/liv-02.webp)' }} /></div>
-          <div className="right">
-            <div className="topimg px"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/ext-13.webp)' }} /></div>
-            <div className="tx">
+          {/* ── Block 1: welcome ── */}
+          <div className="he-welcome">
+            <svg className="he-sprig he-sprig-l" viewBox="0 0 120 200" aria-hidden="true"><path d="M60 4v192M60 40l-34-20M60 40l34-20M60 78l-40-24M60 78l40-24M60 116l-44-26M60 116l44-26M60 154l-38-22M60 154l38-22" /></svg>
+            <div className="he-copy reveal">
+              <span className="he-eye">Welcome to Vertige</span>
+              <h2>The height of Alpine living,<br />in a setting that <em>earns it</em></h2>
+              <p>You can book a chalet with anyone. The reason people come back is everything that happens after — the chalet, the mountain, and the people you share it with.</p>
               <p>We don&rsquo;t hand you a list and wish you luck. We ask the questions that matter — how you ski, who&rsquo;s coming, what you loved last time — and make a recommendation you can trust.</p>
-              <p>Curation over volume, insider knowledge, and a level of service you feel in the small things. Some of the best things we do never appear on an invoice.</p>
-              <Link className="arrowlink" href="/approach">Discover the Vertige approach ›</Link>
+              <Link className="he-badge" href="/approach" aria-label="Discover the Vertige approach">
+                <svg className="he-badge-ring" viewBox="0 0 120 120" aria-hidden="true">
+                  <defs><path id="he-badge-path" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" /></defs>
+                  <text><textPath href="#he-badge-path" startOffset="0">Discover more · Discover more · </textPath></text>
+                </svg>
+                <svg className="he-badge-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </Link>
+            </div>
+            <div className="he-media">
+              <div className="he-hero px"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/ext-13.webp)' }} /></div>
+              <div className="he-sub px reveal"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/liv-02.webp)' }} /></div>
             </div>
           </div>
-        </div></div></section>
+
+          {/* ── Block 2: the approach ── */}
+          <div className="he-concept">
+            <svg className="he-sprig he-sprig-r" viewBox="0 0 120 200" aria-hidden="true"><path d="M60 4v192M60 40l-34-20M60 40l34-20M60 78l-40-24M60 78l40-24M60 116l-44-26M60 116l44-26M60 154l-38-22M60 154l38-22" /></svg>
+            <div className="he-lead reveal">
+              <span className="he-eye">The Vertige approach</span>
+              <h3>Curation over volume, insider knowledge, and a level of service you feel in the small things — some of the best things we do never appear on an <em>invoice</em>.</h3>
+            </div>
+            <div className="he-wide px reveal"><div className="pxi" style={{ backgroundImage: 'url(/images/hero.jpg)' }} /></div>
+            <div className="he-lower">
+              <div className="he-portrait px reveal"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/ext-07.webp)' }} /></div>
+              <div className="he-note reveal">
+                <p>We match you to the chalet and the week that fit — how you ski, who&rsquo;s coming, and what you loved last time — then plan the details that make it seamless.</p>
+                <Link className="arrowlink" href="/approach">Discover the Vertige approach ›</Link>
+              </div>
+              <div className="he-dish px reveal"><div className="pxi" style={{ backgroundImage: 'url(/images/chalets/din-01.webp)' }} /></div>
+            </div>
+          </div>
+
+        </div></section>
       </div>
 
       {/* DISCOVER YOUR PERFECT */}
