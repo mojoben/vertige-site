@@ -16,17 +16,35 @@ import { sendEmail } from '@/lib/send-email'
 //               the earlier HTTP forward to /api/public/enquiries.
 //   4. EMAIL  → auto-response + internal alert (TODO: needs the transactional
 //               provider creds — Resend/Postmark/SES per 03 §5)
-// If the database is unreachable the record stays `portalSync: pending` for
-// retry — the submission is never dropped.
+// If the shared-DB insert fails the record is stamped portalSync 'failed'
+// and /api/cron/retry-leads re-drives it — the submission is never dropped.
 
 const TYPES = new Set(['trip', 'owner', 'newsletter', 'chalet-request', 'wishlist', 'wishlist-share'])
 const EMAIL_RE = /.+@.+\..+/
+
+// Per-IP sliding-window rate limit (in-memory — one instance on Render;
+// Turnstile lands with its site key). 8 submissions / 10 min per IP.
+const RL_WINDOW = 10 * 60_000
+const RL_MAX = 8
+const rlHits = new Map<string, number[]>()
+function rateLimited(ip: string): boolean {
+  const now = Date.now()
+  const hits = (rlHits.get(ip) ?? []).filter((t) => now - t < RL_WINDOW)
+  hits.push(now)
+  rlHits.set(ip, hits)
+  if (rlHits.size > 5000) {
+    for (const [k, v] of rlHits) if (v.every((t) => now - t >= RL_WINDOW)) rlHits.delete(k)
+  }
+  return hits.length > RL_MAX
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null)
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
 
   // ── 1. Validate + spam ────────────────────────────────────────────────
+  const ip = (request.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim()
+  if (rateLimited(ip)) return NextResponse.json({ error: 'Too many requests — please try again shortly.' }, { status: 429 })
   if (typeof body.website === 'string' && body.website.trim() !== '') {
     // Honeypot filled → silently accept and drop (03 §4).
     return NextResponse.json({ ok: true })

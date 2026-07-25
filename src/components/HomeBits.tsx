@@ -117,7 +117,10 @@ import { COUNTRIES } from '@/lib/destinations'
 const HS_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const HS_DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const hsFmt = (d: Date) => `${HS_DOWS[d.getDay()]} ${d.getDate()} ${HS_MON[d.getMonth()]}`
-const HS_CAL_MIN = { y: 2026, m: 11 } // Dec 2026, matching the explorer
+const _hsNow = new Date()
+const HS_CAL_MIN = _hsNow > new Date(2026, 11, 1)
+  ? { y: _hsNow.getFullYear(), m: _hsNow.getMonth() }
+  : { y: 2026, m: 11 } // season floor rolls forward with the calendar
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
 export function HeroSearch() {

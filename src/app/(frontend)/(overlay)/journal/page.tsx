@@ -4,6 +4,7 @@ import articles from '@/content/journal_articles.json'
 import guides from '@/content/t1_guides_rich.json'
 import { COUNTRY_CONTENT, resortImage } from '@/lib/country-content'
 import { JournalIndexGrid, type JournalCard } from '@/components/JournalIndexGrid'
+import { NewsletterForm } from '@/components/NewsletterForm'
 
 // The Journal index — everything findable in one place (Ben, 2026-07-14):
 // the 16 worked-up articles PLUS all 30 destination guides (26 resort + 4
@@ -100,7 +101,7 @@ export default function JournalIndexPage() {
         <div className="jn-eye">§ Correspondence</div>
         <h2>The Journal, <em>by post.</em></h2>
         <p>A printed edition of the quarterly, dispatched to two hundred addresses each season. Enter yours to be considered.</p>
-        <form className="jn-form"><input placeholder="your@address.com" /><button className="btn" type="submit">Subscribe →</button></form>
+        <NewsletterForm variant="journal" />
       </div></section>
     </div>
   )

@@ -25,7 +25,10 @@ const price = (c: CatalogueChalet, n: number) =>
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DOWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const fmtD = (d: Date) => `${DOWS[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`
-const CAL_MIN = { y: 2026, m: 11 } // Dec 2026, as the prototype
+const _now = new Date()
+const CAL_MIN = _now > new Date(2026, 11, 1)
+  ? { y: _now.getFullYear(), m: _now.getMonth() }
+  : { y: 2026, m: 11 } // season floor rolls forward with the calendar
 
 type PopName = 'dest' | 'cal' | 'guests' | 'beds' | null
 

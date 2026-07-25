@@ -1,10 +1,12 @@
 import { FactStrip } from '@/components/FactStrip'
+import { notFound } from 'next/navigation'
 import { RESORT_FACTS } from '@/lib/facts-data'
 
 // DEV-ONLY component preview (not linked from anywhere): renders the fact
 // strip at the top of the page for design review. Remove before deploy or
 // gate behind an env flag.
 export default function FactStripPreview() {
+  if (process.env.NODE_ENV === 'production') notFound() // dev-only preview
   return (
     <div style={{ padding: '120px 0 60px' }}>
       <div className="wrap">

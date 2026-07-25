@@ -180,7 +180,7 @@ export default async function HomePage() {
             {([
               ['Why a chalet, not a hotel', 'September 21, 2026', '/images/09.jpg', '/journal/journal-chalet-vs-hotel'],
               ['Verbier or Zermatt? Two Swiss icons compared', 'September 12, 2026', '/images/03.jpg', '/journal/g4-verbier-vs-zermatt'],
-              ['The multi-generational ski week, done properly', 'September 4, 2026', '/images/16.jpg', '/journal/journal-multi-generational-ski-holidays'],
+              ['The multi-generational ski week, done properly', 'September 4, 2026', '/images/16.jpg', '/journal/journal-multi-generational-ski-weeks'],
             ] as const).map(([title, date, img, href]) => (
               <Link key={href} className="jart reveal" href={href}>
                 <h3>{title}</h3><div className="date">{date}</div>

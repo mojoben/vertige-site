@@ -1,4 +1,5 @@
 import React from 'react'
+import { notFound } from 'next/navigation'
 import { sharedDb } from '@/lib/shared-db'
 import { PointIcon } from '@/components/ChaletIcons'
 import { pick } from '@/components/chalet-icon-map'
@@ -24,6 +25,7 @@ interface Row {
 interface Usage { count: number; chalets: Set<string>; surfaces: Set<string> }
 
 export default async function IconAuditPage() {
+  if (process.env.NODE_ENV === 'production') notFound() // dev-only preview
   let rows: Row[] = []
   let rooms: { slug: string; points: string[] }[] = []
   try {

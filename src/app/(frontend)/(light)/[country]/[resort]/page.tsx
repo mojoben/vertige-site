@@ -1,4 +1,5 @@
 import React from 'react'
+import { resortImage } from '@/lib/country-content'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { COUNTRIES, ALL_DESTINATIONS } from '@/lib/destinations'
@@ -27,7 +28,9 @@ export default async function DestinationPage({ params }: { params: Promise<{ co
   if (!country || !resort) notFound()
 
   const content = getDestContent(resort.slug, resort.name)
-  const hero = `/images/destinations/${resort.slug}-hero.jpg`
+  // Hero falls back to the country ski image for resorts whose own
+  // photography hasn't landed yet (16 of 55 at last count).
+  const hero = resortImage(resort.slug, country.slug)
   // Live chalets from the res portal (mock fallback when unreachable — 03 §2).
   const { chalets } = await getCatalogue()
 

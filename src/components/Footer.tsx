@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { NewsletterForm } from '@/components/NewsletterForm'
 import { SITE } from '@/lib/site'
 
 // Dark footer — ported from the flagship prototype. Links normalised to real
@@ -37,12 +38,8 @@ export function Footer() {
             </div>
             <div className="fgroup">
               <div className="flabel">Social Media</div>
-              <div className="flist">
-                <a href="#">Instagram</a>
-                <a href="#">Facebook</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">YouTube</a>
-              </div>
+              {/* Social links return when the profiles go live — dead
+                  placeholders removed (2026-07-25). */}
             </div>
           </div>
         </div>
@@ -51,10 +48,7 @@ export function Footer() {
             <h3>Begin your ascent with <em>Vertige</em>.</h3>
             <p>Join our private circle for first access to new seasonal collections.</p>
           </div>
-          <div className="fp-bot">
-            <div className="field"><label>Email</label><input placeholder="" /></div>
-            <button>Subscribe</button>
-          </div>
+          <NewsletterForm variant="footer" />
         </div>
       </div>
       <div className="fbottom">

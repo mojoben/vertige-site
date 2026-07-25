@@ -5,6 +5,7 @@ import articles from '@/content/journal_articles.json'
 import { ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { Share, TocSpy } from '@/components/ArticleBits'
 import { SITE } from '@/lib/site'
+import { NewsletterForm } from '@/components/NewsletterForm'
 
 // Journal article — faithful port of vertige-proto-journal-{slug}.html.
 // The 15 articles were extracted from the prototype pages into
@@ -157,7 +158,7 @@ export default async function JournalArticlePage({ params }: { params: Promise<{
         <div className="jn-eye">§ Correspondence</div>
         <h2>The Journal, <em>by post.</em></h2>
         <p>A printed edition of the quarterly, dispatched to two hundred addresses each season. Enter yours to be considered.</p>
-        <form className="jn-form"><input placeholder="your@address.com" /><button className="btn" type="submit">Subscribe →</button></form>
+        <NewsletterForm variant="journal" />
       </div></section>
     </>
   )

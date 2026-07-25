@@ -7,6 +7,7 @@ import { getCountryContent, COUNTRY_CONTENT, resortImage } from '@/lib/country-c
 import { getCatalogue } from '@/lib/portal-client'
 import { Share, TocSpy } from '@/components/ArticleBits'
 import { SITE } from '@/lib/site'
+import { NewsletterForm } from '@/components/NewsletterForm'
 
 // Destination guide article — faithful port of vertige-proto-guide-{slug}.html
 // (the flagship article layout; 26 Tier-1 guides from t1_guides_rich.json, the
@@ -54,7 +55,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const dest = ALL_DESTINATIONS.find((d) => d.slug === resortSlug)
   if (!g || !dest) notFound()
 
-  const hero = `/images/destinations/${resortSlug}-hero.jpg`
+  const hero = resortImage(resortSlug, dest.countrySlug)
   const destUrl = destinationPath(dest.countrySlug, dest.slug)
 
   // Sandwich chalets: live portal chalets in this resort only — a resort
@@ -227,7 +228,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="jn-eye">§ Correspondence</div>
         <h2>The Journal, <em>by post.</em></h2>
         <p>A printed edition of the quarterly, dispatched to two hundred addresses each season. Enter yours to be considered.</p>
-        <form className="jn-form"><input placeholder="your@address.com" /><button className="btn" type="submit">Subscribe →</button></form>
+        <NewsletterForm variant="journal" />
       </div></section>
     </>
   )
@@ -388,7 +389,7 @@ function CountryGuide({ c }: { c: import('@/lib/country-content').CountryContent
         <div className="jn-eye">§ Correspondence</div>
         <h2>The Journal, <em>by post.</em></h2>
         <p>A printed edition of the quarterly, dispatched to two hundred addresses each season. Enter yours to be considered.</p>
-        <form className="jn-form"><input placeholder="your@address.com" /><button className="btn" type="submit">Subscribe →</button></form>
+        <NewsletterForm variant="journal" />
       </div></section>
     </>
   )

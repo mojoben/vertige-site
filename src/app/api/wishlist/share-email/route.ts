@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { sendEmail } from '@/lib/send-email'
 import { renderShareWishlistEmail } from '@/lib/emails'
 
 // POST /api/wishlist/share-email — the direct send (HANDOFF 09 §6): Vertige
@@ -60,9 +61,16 @@ export async function POST(request: Request) {
     overrideAccess: true,
   })
 
-  // 2. SEND — transactional provider pending creds (03 §5). The rendered
-  // email is stored above so the send can be replayed once wired.
-  // TODO(resend/postmark/ses): send { to: friendEmail, from: hello@vertigeski.com, subject, html }
+  // 2. SEND via Graph (recorded no-op until the AZURE_*/MAIL_SENDER env
+  // vars land — the rendered email is stored above for replay). Suppressed
+  // addresses are never sent to.
+  const suppressed = await payload.find({
+    collection: 'suppressions',
+    where: { email: { equals: friendEmail.trim().toLowerCase() } },
+    limit: 1,
+  })
+  if (suppressed.docs[0]) return NextResponse.json({ ok: true, sent: false, reason: 'suppressed' })
 
-  return NextResponse.json({ ok: true })
+  const result = await sendEmail({ to: friendEmail, subject, html })
+  return NextResponse.json({ ok: true, sent: result.sent })
 }

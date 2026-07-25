@@ -32,7 +32,7 @@ export default async function ChaletsPage() {
           <span className="eyebrow">Start your search</span>
           <h2>Not sure where to <em>begin</em>?</h2>
           <p>Tell us how your group skis, who&rsquo;s coming and the week you have in mind — our team will hand-pick a shortlist of chalets and plan every detail, from instructors and childcare to the tables worth booking.</p>
-          <a className="btn" href="#">Speak to our team</a>
+          <a className="btn" href="/contact">Speak to our team</a>
         </div>
         <div className="pcta-im" style={{ backgroundImage: 'url(/images/cta-man.jpg)' }} />
       </div></section>
