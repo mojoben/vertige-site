@@ -310,7 +310,7 @@ export function BookingCard({
 }
 
 // ── Prices & availability (week rows by month) ──────────────────────────────
-export function Availability({ weeks, sym }: { weeks: Week[]; sym: string }) {
+export function Availability({ weeks, sym, minNights = 7 }: { weeks: Week[]; sym: string; minNights?: number }) {
   const months = useMemo(() => {
     const out: { y: number; m: number }[] = []
     for (const w of weeks) {
@@ -346,7 +346,7 @@ export function Availability({ weeks, sym }: { weeks: Week[]; sym: string }) {
           const gi = weeks.indexOf(w)
           return (
             <div key={w.s} className="avrow">
-              <div className="wk">{afd(d(w.s))} → {afd(d(w.e))}<small>Min. 7 nights</small></div>
+              <div className="wk">{afd(d(w.s))} → {afd(d(w.e))}<small>Min. {minNights} nights</small></div>
               {w.status === 'a' && w.price != null
                 ? <div className="pr"><b>{money(w.price)}</b><small>for 7 nights</small></div>
                 : w.status === 'un'

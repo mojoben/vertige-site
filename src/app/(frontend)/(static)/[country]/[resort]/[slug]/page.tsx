@@ -8,6 +8,7 @@ import {
   SubnavSpy, BookingCard, Availability, ReserveForm, ScheduleCall, Gallery, MapEmbed,
 } from '@/components/ChaletDetailBits'
 import { mockWeeks, type Week } from '@/lib/weeks'
+import { resortImage } from '@/lib/country-content'
 
 // ⚠ PAIRED SURFACE (Ben, 2026-07-18): the native app's chalet page
 // (vertige-app repo, app/chalet/[slug].tsx — served the same content via
@@ -101,6 +102,12 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
     notFound()
   }
 
+  // No-false-representation: a live chalet only ever shows its own imagery.
+  // No photos yet → the resort's destination hero stands in (clearly scenic,
+  // not passed off as the chalet), and the gallery is the real set, however
+  // small.
+  const countrySlug = p?.countryIso ? { FR: 'france', CH: 'switzerland', AT: 'austria', IT: 'italy' }[p.countryIso] : null
+  const destHero = p ? resortImage(p.resortSlug ?? '', countrySlug ?? 'france') : SAMPLE.hero
   const c = p
     ? {
         name: p.name,
@@ -113,8 +120,8 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         from: p.weeklyFrom ?? 0,
         to: p.weeklyTo ?? p.weeklyFrom ?? 0,
         tier: p.tier,
-        hero: p.images[0]?.url ?? SAMPLE.hero,
-        gallery: p.images.length >= 3 ? p.images.map((i) => i.url) : SAMPLE.gallery,
+        hero: p.images[0]?.url ?? destHero,
+        gallery: p.images.map((i) => i.url),
         changeover: (p.changeoverDay === 'sun' ? 'Sun' : 'Sat') as 'Sat' | 'Sun',
       }
     : SAMPLE
@@ -122,14 +129,20 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
   // Approved editorial content (null → interim sample throughout).
   const content: PortalContent | null = p ? await fetchPortalContent(p.slug) : null
   const rooms = content?.rooms?.length ? content.rooms : null
-  // Section images: live gallery shots where available, prototype otherwise.
-  const gimg = (i: number, fallback: string) => (p && c.gallery[i]) || fallback
+  // Section images: live chalets cycle their own shots (hero when none) —
+  // prototype photos back only the sample page.
+  const gimg = (i: number, fallback: string) =>
+    p ? (c.gallery.length ? c.gallery[i % c.gallery.length] : c.hero) : fallback
 
   // Weeks: REAL availability + pricing from the portal engine for live
-  // chalets (Dec 2026 → mid-Apr 2027 season window); prototype mock otherwise.
+  // chalets over a rolling year (no hardcoded season window). A live chalet
+  // with no priced weeks shows the on-enquiry state — never fabricated
+  // prices. The prototype mock backs only the sample page.
   let weeks: Week[] = []
   if (p) {
-    const av = await fetchPortalAvailability(p.slug, '2026-12-01', '2027-04-18')
+    const from = new Date().toISOString().slice(0, 10)
+    const to = new Date(Date.now() + 365 * 86400_000).toISOString().slice(0, 10)
+    const av = await fetchPortalAvailability(p.slug, from, to)
     if (av?.weeks?.length) {
       weeks = av.weeks.map((w) => ({
         s: w.startISO,
@@ -138,8 +151,9 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         status: !w.available ? 'un' : w.price == null ? 'req' : 'a',
       }))
     }
+  } else {
+    weeks = mockWeeks(c.changeover)
   }
-  if (!weeks.length) weeks = mockWeeks(c.changeover)
 
   // Chalets without rates yet (portal onboarding in progress) show On request.
   const priced = c.from > 0
@@ -202,6 +216,14 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
                 <h2>{emify(content.overview.headline)}</h2>
                 {content.overview.paragraphs.map((para, i) => <p key={i}>{para}</p>)}
               </>
+            ) : p ? (
+              <>
+                <h2>At home in <em>{c.resort}</em>.</h2>
+                {p.summary
+                  ? <p>{p.summary}</p>
+                  : <p>{c.name} sleeps {c.guests} guests across {c.beds} en suite bedrooms in {c.resort}, {c.country}.</p>}
+                <p>Full photography, floor plans and this season&rsquo;s details are available from our team — and every Vertige stay includes hands-on concierge support before and during your week.</p>
+              </>
             ) : (
               <>
                 <h2>Alpine grandeur, held <em>above the valley</em>.</h2>
@@ -230,13 +252,19 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         </div></div></section>
 
         {/* KEY FEATURES */}
-        {(content ? !!content.keyFeatures?.length || !!content.amenities?.length : true) && (
+        {(content ? !!content.keyFeatures?.length || !!content.amenities?.length : (!p || p.features.length > 0)) && (
         <section id="keyfeatures"><div className="wrap">
           <h2 className="kf-title">Key features</h2>
           {content?.keyFeatures?.length ? (
             <div className="kf">
               {content.keyFeatures.map((f) => (
                 <div key={f.label} className="k"><PointIcon label={f.label} className="" /><span>{f.label}{f.sub && <small>{f.sub}</small>}</span></div>
+              ))}
+            </div>
+          ) : !content && p ? (
+            <div className="kf">
+              {p.features.map((fl) => (
+                <div key={fl} className="k"><PointIcon label={fl} className="" /><span>{fl}</span></div>
               ))}
             </div>
           ) : !content && (
@@ -251,7 +279,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
               <div className="k"><svg viewBox="0 0 24 24"><path d="M7 3v6a5 5 0 0 0 10 0V3" /><path d="M12 14v5M8 21h8" /></svg><span>Wine cellar</span></div>
             </div>
           )}
-          {(content ? !!content.amenities?.length : true) && (
+          {(content ? !!content.amenities?.length : !p) && (
           <details className="amtoggle">
             <summary>View full features &amp; amenities <span className="pm">+</span></summary>
             <div className="amwrap">
@@ -278,7 +306,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         )}
 
         {/* CHAPTER II — INTERIOR */}
-        {(content ? !!content.interior : true) && (
+        {(content ? !!content.interior : !p) && (
         <section id="interior"><div className="wrap"><div className="grid2">
           <div className="plate">
             <div className="ph"><div className="im" style={{ backgroundImage: `url(${gimg(1, '/images/chalets/liv-08.webp')})` }} /></div>
@@ -310,13 +338,13 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         )}
 
         {/* CHAPTER III — BEDROOMS */}
-        {(content ? !!rooms : true) && (
+        {(content ? !!rooms : !p) && (
         <section id="bedrooms"><div className="wrap">
           <div className="centerhead">
             <div className="chapter c">Bedrooms</div>
             <h2>{c.beds} suites, <em>{c.beds} aspects</em> on the mountains.</h2>
             <div className="rule-c" />
-            <p>{content?.bedroomsIntro ?? 'Every bedroom is en suite and oriented to the light. The master claims the top floor with a private balcony above the pistes.'}</p>
+            {(content?.bedroomsIntro || !p) && <p>{content?.bedroomsIntro ?? 'Every bedroom is en suite and oriented to the light. The master claims the top floor with a private balcony above the pistes.'}</p>}
           </div>
           {rooms ? (
             <>
@@ -359,7 +387,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
       </div>
 
       {/* CHAPTER IV — EXTERIOR */}
-      {(content ? !!content.exterior : true) && (
+      {(content ? !!content.exterior : !p) && (
       <section className="exhero" id="exterior">
         <div className="bg" style={{ backgroundImage: `url(${gimg(2, '/images/chalets/liv-19.webp')})` }} />
         <div className="tx"><div className="expanel">
@@ -396,7 +424,12 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
           <p className="intro-p">Every Vertige stay includes a core of hands-on service; the Privé Collection adds a dedicated concierge and private chef, with further support available on request.</p>
         </div>
         <div className="svc">
-          <div className="svcgroup"><p className="gh">In-home services</p><div className="svclist"><div className="s"><span className="tk">✓</span>Ski pass delivery</div><div className="s"><span className="tk">✓</span>Welcome hamper &amp; first-day basics</div></div></div>
+          <div className="svcgroup"><p className="gh">In-home services</p><div className="svclist">
+            {(p?.serviceInclusions
+              ? p.serviceInclusions.split(/\r?\n|·|;/).map((x) => x.trim()).filter(Boolean)
+              : ['Ski pass delivery', 'Welcome hamper & first-day basics']
+            ).map((x) => <div key={x} className="s"><span className="tk">✓</span>{x}</div>)}
+          </div></div>
           <div className="svcgroup"><p className="gh">Privé Collection services</p><div className="svclist"><div className="s"><span className="tk">✓</span>Dedicated concierge, before &amp; during</div><div className="s"><span className="tk">✓</span>Private chef (catered basis)</div><div className="s"><span className="tk">✓</span>Daily housekeeping</div><div className="s"><span className="tk">✓</span>Personalised welcome</div><div className="s"><span className="tk">✓</span>Airport transfers</div><div className="s"><span className="tk">✓</span>Restaurant reservations</div></div></div>
         </div>
       </div></div></section>
@@ -417,14 +450,16 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         <section id="location"><div className="wrap"><div className="locgrid">
           <div>
             <h2>Location</h2>
-            <p>{content?.locationIntro ?? `A quiet position in ${c.resort} — skis on at the door, the village a short walk below.`}</p>
+            <p>{content?.locationIntro ?? (p
+              ? `${c.name} sits in ${c.resort}, ${c.country} — our team can walk you through the exact position, aspect and access.`
+              : `A quiet position in ${c.resort} — skis on at the door, the village a short walk below.`)}</p>
             {content?.locationSpecs?.length ? (
               <div className="locspecs">
                 {content.locationSpecs.map((s) => (
                   <div key={s.key}><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS[s.key] ?? LOC_ICONS.piste}</svg><div className="sl">{s.label}</div><div className="sv">{s.value}</div></div>
                 ))}
               </div>
-            ) : !content && (
+            ) : !content && !p && (
               <div className="locspecs">
                 <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.lift}</svg><div className="sl">Nearest lift</div><div className="sv">3-min walk</div></div>
                 <div><svg className="licn" viewBox="0 0 24 24">{LOC_ICONS.village}</svg><div className="sl">Village centre</div><div className="sv">8-min walk · 3-min drive</div></div>
@@ -457,7 +492,7 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
 
         {/* PRICES & AVAILABILITY */}
         <section id="prices"><div className="wrap">
-          <Availability weeks={weeks} sym={c.sym} />
+          <Availability weeks={weeks} sym={c.sym} minNights={p?.minNights ?? 7} />
         </div></section>
 
         {/* RESERVE */}
@@ -484,10 +519,10 @@ export default async function ChaletDetailPage({ params }: { params: Promise<{ c
         <h2>Good to <em>know</em>.</h2>
         <div className="acc">
           <details><summary>How does the booking process work? <span className="pm">+</span></summary><div className="ac"><p>Choose a chalet, then speak to your Vertige advisor. Once we confirm availability, you confirm the booking and its terms. A deposit secures it; from there the concierge builds the week around you.</p></div></details>
-          <details><summary>How do I pay for my stay? <span className="pm">+</span></summary><div className="ac"><p>A deposit is due within three business days of confirming. The balance is due 84 days before the start of your stay.</p></div></details>
-          <details><summary>Will I be asked for a security deposit? <span className="pm">+</span></summary><div className="ac"><p>Yes — a refundable security deposit, specified in your agreement, held against any damage and returned after a full inspection.</p></div></details>
+          <details><summary>How do I pay for my stay? <span className="pm">+</span></summary><div className="ac"><p>A 30% deposit secures your booking at checkout, payable by card or bank transfer. The remaining balance is due 56 days before arrival.</p></div></details>
+          <details><summary>Will I be asked for a security deposit? <span className="pm">+</span></summary><div className="ac"><p>Yes — a card pre-authorisation (not a charge) is taken around three days before arrival and released within five business days of departure, subject to chalet inspection.</p></div></details>
           <details><summary>Early check-in or late check-out? <span className="pm">+</span></summary><div className="ac"><p>Standard check-in is 4pm and check-out 10am. Earlier or later may be possible depending on the week — ask your advisor in advance.</p></div></details>
-          <details><summary>What are the cancellation terms? <span className="pm">+</span></summary><div className="ac"><p>Up to 84 days before arrival: 25% of the total. Between 83 days and check-in: 100%. Speak to your advisor for the full terms.</p></div></details>
+          <details><summary>What are the cancellation terms? <span className="pm">+</span></summary><div className="ac"><p>Cancellation terms are set out in your booking agreement and confirmed before you pay — your advisor will walk you through them.</p></div></details>
         </div>
       </div></section>
 

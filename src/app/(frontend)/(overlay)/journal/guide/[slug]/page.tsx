@@ -57,18 +57,13 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const hero = `/images/destinations/${resortSlug}-hero.jpg`
   const destUrl = destinationPath(dest.countrySlug, dest.slug)
 
-  // Sandwich chalets: live portal chalets in this resort; prototype-style
-  // sample cards otherwise (replaced as real chalets are imported).
+  // Sandwich chalets: live portal chalets in this resort only — a resort
+  // with none yet shows an honest collection CTA, never invented cards.
   const { chalets } = await getCatalogue()
   const inResort = chalets.filter((c) => {
     const a = c.resort.toLowerCase(); const b = g.name.toLowerCase()
     return a.includes(b) || b.includes(a)
   }).slice(0, 3)
-  const sampleCards = [
-    { name: `Chalet ${g.name} I`, img: '/images/chalets/ext-02.webp', guests: 12, beds: 6 },
-    { name: `Chalet ${g.name} II`, img: '/images/chalets/ext-03.webp', guests: 10, beds: 5 },
-    { name: `Chalet ${g.name} III`, img: '/images/chalets/ext-04.webp', guests: 8, beds: 4 },
-  ]
 
   const sections = [
     { id: 's1', title: 'The skiing', body: g.skiing },
@@ -146,20 +141,24 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                 <div className="g"><h4>The village</h4><p>{firstSentence(g.town)}</p></div>
                 <div className="g"><h4>Why go</h4><p>{firstSentence(g.pick)}</p></div>
               </div>
-              <div className="lb-head"><h3>Handpicked chalets in {g.name}</h3></div>
-              <div className="lb-cards">
-                {(inResort.length ? inResort : sampleCards).map((c) => (
-                  <Link key={c.name} className="ccard" href={('href' in c && c.href) || ('slug' in c && c.slug ? `/chalets/${c.slug}` : '/chalets')}>
-                    <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
-                    <h3>{c.name}</h3>
-                    <div className="loc">{g.name}, {g.country}</div>
-                    <div className="meta">{c.guests} guests · {c.beds} bedrooms</div>
-                    <div className="go">View chalet →</div>
-                  </Link>
-                ))}
-              </div>
+              {inResort.length > 0 && (
+                <>
+                  <div className="lb-head"><h3>Handpicked chalets in {g.name}</h3></div>
+                  <div className="lb-cards">
+                    {inResort.map((c) => (
+                      <Link key={c.name} className="ccard" href={c.href ?? (c.slug ? `/chalets/${c.slug}` : '/chalets')}>
+                        <div className="im" style={{ backgroundImage: `url(${c.img})` }} />
+                        <h3>{c.name}</h3>
+                        <div className="loc">{g.name}, {g.country}</div>
+                        <div className="meta">{c.guests} guests · {c.beds} bedrooms</div>
+                        <div className="go">View chalet →</div>
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
               <Link className="btn block" href={destUrl} style={{ marginTop: 'clamp(1.6rem,3vw,2.2rem)', padding: '1.15rem 1.8rem' }}>
-                View all chalets in {g.name}
+                {inResort.length ? `View all chalets in ${g.name}` : `Explore ${g.name} with Vertige`}
               </Link>
             </div>
 

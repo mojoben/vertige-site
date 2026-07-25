@@ -350,10 +350,14 @@ export function chaletPath(p: { slug: string; resortSlug?: string | null; countr
   return country && p.resortSlug ? `/${country}/${p.resortSlug}/${p.slug}` : `/chalets/${p.slug}`
 }
 
-/** The catalogue feed: live shared-DB chalets when reachable, prototype mocks
- *  otherwise (dev fallback — never ship mocks as real inventory). */
+/** The catalogue feed: live shared-DB chalets when reachable. The prototype
+ *  mock set backs DEV ONLY — in production an unreachable/empty feed returns
+ *  an empty catalogue and every surface degrades to its honest empty state
+ *  (never ship mocks as real inventory). */
 export async function getCatalogue(): Promise<{ chalets: (MockChalet & { priceSymbol?: string; slug?: string; href?: string })[]; live: boolean }> {
   const { properties, live } = await fetchPortalProperties()
-  if (!live || properties.length === 0) return { chalets: MOCK_CHALETS, live: false }
+  if (!live || properties.length === 0) {
+    return { chalets: process.env.NODE_ENV === 'production' ? [] : MOCK_CHALETS, live: false }
+  }
   return { chalets: properties.map(toCard), live: true }
 }

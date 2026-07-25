@@ -6,7 +6,7 @@
 // open/close state; the page body stays server-rendered.
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { COUNTRIES, ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { SITE } from '@/lib/site'
 import { WishlistHeaderButton } from '@/components/WishlistBits'
@@ -19,18 +19,14 @@ import { WishlistHeaderButton } from '@/components/WishlistBits'
 //          chalet-detail header (its sticky subnav takes over at top: 0).
 type Variant = 'overlay' | 'solid' | 'light' | 'static'
 
-// Mock search dataset (resorts are real; chalets placeholder until the portal
-// adapter lands — HANDOFF 07 "Site search").
-const SEARCH_DATA = [
-  ...ALL_DESTINATIONS.map((d) => ({
-    n: d.name,
-    s: d.country,
-    h: destinationPath(d.countrySlug, d.slug),
-  })),
-  { n: 'Chalet Aiguille', s: 'Verbier · Switzerland', h: '/chalets' },
-  { n: 'Chalet Bellevarde', s: "Val d'Isère · France", h: '/chalets' },
-  { n: 'Chalet Cervin', s: 'Zermatt · Switzerland', h: '/chalets' },
-]
+// Search seeds with the (static, real) 55 destinations so results are
+// instant, then swaps in the full live index — chalet catalogue + journal —
+// from /api/search-index the first time the overlay opens.
+const SEARCH_SEED = ALL_DESTINATIONS.map((d) => ({
+  n: d.name,
+  s: d.country,
+  h: destinationPath(d.countrySlug, d.slug),
+}))
 
 const BackIcon = () => (
   <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
@@ -41,6 +37,8 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
   const [panels, setPanels] = useState<string[]>([]) // stack of open sub-panels
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [searchData, setSearchData] = useState<{ n: string; s: string; h: string }[]>(SEARCH_SEED)
+  const indexLoaded = useRef(false)
 
   // Header is solid white on every page, hero or not (Ben, 2026-07-14:
   // "really, really clear and visible") — the prototype's transparent-over-
@@ -65,9 +63,18 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
   }
   const showPanel = (id: string) => setPanels((p) => [...p, id])
   const backPanel = (id: string) => setPanels((p) => p.filter((x) => x !== id))
-  const openSearch = () => { setSearchOpen(true); setQuery('') }
+  const openSearch = () => {
+    setSearchOpen(true); setQuery('')
+    if (!indexLoaded.current) {
+      indexLoaded.current = true
+      fetch('/api/search-index')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (d?.items?.length) setSearchData(d.items) })
+        .catch(() => { indexLoaded.current = false })
+    }
+  }
 
-  const results = SEARCH_DATA.filter(
+  const results = searchData.filter(
     (d) => !query.trim()
       || d.n.toLowerCase().includes(query.trim().toLowerCase())
       || d.s.toLowerCase().includes(query.trim().toLowerCase()),
