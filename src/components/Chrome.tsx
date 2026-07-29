@@ -203,7 +203,7 @@ export function Chrome({ variant = 'overlay' }: { variant?: Variant }) {
             <div className="nv-list">
               <Link href="/about" onClick={closeNav}>Our story</Link>
               <Link href="/approach" onClick={closeNav}>What makes us different</Link>
-              <Link href="/about" onClick={closeNav}>Meet the founders</Link>
+              <Link href="/about" onClick={closeNav}>Meet the founder</Link>
             </div>
           </div>
           {navFoot}

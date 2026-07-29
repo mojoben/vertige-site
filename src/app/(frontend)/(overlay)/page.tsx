@@ -139,14 +139,14 @@ export default async function HomePage() {
       {/* OUR STORY (geometric) */}
       <section className="story">
         <div className="wrap"><div className="stage">
-          <div className="im reveal px"><div className="pxi" style={{ backgroundImage: 'url(/images/founders.jpg)', backgroundPosition: '42% center' }} /></div>
+          <div className="im reveal px"><div className="pxi" style={{ backgroundImage: 'url(/images/07.jpg)', backgroundPosition: '42% center' }} /></div>
           <div className="panel reveal">
             <span className="eyebrow">Our story</span>
-            <h2>Two founders, one standard</h2>
-            <p>Vertige was founded by Oli Dannatt and Ben Wood — one who learned the mountain the only way you can, as an instructor in Verbier; the other who builds the brand, the platform and the concierge systems that make a service genuinely seamless rather than merely promised.</p>
-            <p className="quote">&ldquo;We&rsquo;d rather have tens of clients who come back every year than hundreds who book once.&rdquo;</p>
-            <div className="sig">Oli &amp; Ben</div>
-            <Link className="arrowlink" href="/about">Meet Oli &amp; Ben ›</Link>
+            <h2>One founder, one standard</h2>
+            <p>Vertige was founded by Ben Wood — a convert who came to the Alps late and fell for them completely, and who builds the brand, the platform and the concierge systems that make a service genuinely seamless rather than merely promised. Every chalet on the list is there because he would stay in it himself.</p>
+            <p className="quote">&ldquo;I&rsquo;d rather have tens of clients who come back every year than hundreds who book once.&rdquo;</p>
+            <div className="sig">Ben</div>
+            <Link className="arrowlink" href="/about">Meet the founder ›</Link>
           </div>
         </div></div>
       </section>

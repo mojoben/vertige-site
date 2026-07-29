@@ -1,23 +1,25 @@
 import React from 'react'
 import Link from 'next/link'
 
-// Our story — faithful port of vertige-proto-about-alt.html (scoped .abpage).
-// Route: /about (the nav's "Our story" / "Meet the founders" target).
+// Our story — faithful port of vertige-proto-about-alt.html (scoped .abpage),
+// reworked to the single-founder story (Ben, 2026-07-26: Vertige is founded
+// purely by Ben Wood).
+// Route: /about (the nav's "Our story" / "Meet the founder" target).
 
 export const metadata = {
   title: 'Our story — Vertige',
-  description: 'Vertige is a short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — founded by Oli Dannatt and Ben Wood.',
+  description: 'Vertige is a short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — founded by Ben Wood.',
 }
 
 export default function AboutPage() {
   return (
     <div className="abpage">
       {/* Header in the join-the-portfolio treatment (Ben, 2026-07-14). */}
-      <section className="pagehero"><div className="bg" style={{ backgroundImage: 'url(/images/founders.jpg)' }} />
+      <section className="pagehero"><div className="bg" style={{ backgroundImage: 'url(/images/hero.jpg)' }} />
         <div className="wrap">
           <span className="eyebrow">Our story</span>
-          <h1>Two founders, one <em>standard.</em></h1>
-          <p className="sub">A short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — founded by Oli Dannatt and Ben Wood.</p>
+          <h1>One founder, one <em>standard.</em></h1>
+          <p className="sub">A short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — founded by Ben Wood.</p>
         </div>
       </section>
 
@@ -26,61 +28,44 @@ export default function AboutPage() {
         <div className="eyebrow">§ · What we believe</div>
         <div className="grid">
           <h2>The Alps do not need improving. <em>They need someone paying attention.</em></h2>
-          <p className="supp">Vertige is not a directory. It is a short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted by us — matched to your group and looked after from the first enquiry to the last morning on the mountain.</p>
+          <p className="supp">Vertige is not a directory. It is a short, hand-picked collection of the finest chalets across the Alps — every one visited and vetted — matched to your group and looked after from the first enquiry to the last morning on the mountain.</p>
         </div>
       </div></section>
 
-      {/* Founders */}
+      {/* Founder */}
       <section className="fdrs"><div className="wrap">
         <div className="fhead">
           <div>
-            <div className="eyebrow">§ · The founders</div>
-            <h2>Two names <em>on the door.</em></h2>
+            <div className="eyebrow">§ · The founder</div>
+            <h2>One name <em>on the door.</em></h2>
           </div>
-          <div className="note">Two founders, two cities — Norwich and London — and one shared obsession: the mountains, and the chalets worth crossing a continent for.</div>
+          <div className="note">One founder, one obsession: the mountains, and the chalets worth crossing a continent for.</div>
         </div>
         <div className="fgrid">
           <div className="fcard">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <div className="fimg"><img src="/images/17.jpg" alt="Oli Dannatt" /><span className="rn">I</span></div>
-            <div className="role">Co-founder · Chalets &amp; mountain</div>
-            <h3>Oli Dannatt</h3>
-            <p>Fifteen winters deep and counting, Oli knows the resorts of the Alps the way most people know their own street. He came to Vertige from years in the chalet business, and personally visits and vets every property before it joins the collection — if he wouldn&rsquo;t send his own family, it doesn&rsquo;t make the list. Home is Norwich; the season pass is never far from his pocket.</p>
-          </div>
-          <div className="fcard">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <div className="fimg"><img src="/images/07.jpg" alt="Ben Wood" /><span className="rn">II</span></div>
-            <div className="role">Co-founder · Brand &amp; experience</div>
+            <div className="fimg"><img src="/images/07.jpg" alt="Ben Wood" /><span className="rn">I</span></div>
+            <div className="role">Founder</div>
             <h3>Ben Wood</h3>
-            <p>Ben came to skiing later and fell for it completely — and just as hard for the chalets that make a mountain week worth taking. A career in brand and design shaped strong opinions about how a stay should look and feel, from the first enquiry to the last morning. He works from London, and he answers his phone.</p>
+            <p>Ben came to skiing later and fell for it completely — for the mountains, and just as hard for the chalets that make a week in them worth taking. A career in brand and design shaped strong opinions about how a stay should look and feel, from the first enquiry to the last morning; the chalets shaped everything else. He visits and vets every property before it joins the collection — if he wouldn&rsquo;t send his own family, it doesn&rsquo;t make the list. He works from London, and he answers his phone.</p>
           </div>
         </div>
       </div></section>
 
-      {/* Founders quote */}
+      {/* Founder quote */}
       <section className="fq"><div className="wrap">
-        <p>&ldquo;We keep the list short on purpose — short enough that we have skied from, and personally chosen, every chalet on it.&rdquo;</p>
-        <div className="att">Oli &amp; Ben · Founders of Vertige</div>
+        <p>&ldquo;I keep the list short on purpose — short enough that I have skied from, and personally chosen, every chalet on it.&rdquo;</p>
+        <div className="att">Ben Wood · Founder of Vertige</div>
       </div></section>
 
       {/* Timeline */}
       <section className="tl"><div className="wrap">
         <div className="th">
           <div className="eyebrow">§ · Our story</div>
-          <h2>Thirty winters, <em>in four chapters.</em></h2>
+          <h2>From first lift, <em>in three chapters.</em></h2>
         </div>
 
         <div className="chap">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="cim"><img src="/images/07.jpg" alt="The mountain" /></div>
-          <div className="ctx">
-            <div className="yr">The mountain</div>
-            <h3>Fifteen winters, and counting.</h3>
-            <p>Oli has skied since his twenties and never really stopped — a season pass in his pocket most of the year, and a working knowledge of the Alps built one resort, one chalet, one last lift at a time. Chalets became a career long before they became a company.</p>
-          </div>
-        </div>
-
-        <div className="chap rev">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <div className="cim"><img src="/images/13.jpg" alt="The convert" /></div>
           <div className="ctx">
@@ -90,23 +75,23 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="chap">
+        <div className="chap rev">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="cim"><img src="/images/16.jpg" alt="A working introduction" /></div>
+          <div className="cim"><img src="/images/16.jpg" alt="The frustration" /></div>
           <div className="ctx">
-            <div className="yr">2021</div>
-            <h3>A working introduction.</h3>
-            <p>The two met through business — an arrangement with Oli&rsquo;s previous company — and found the conversation kept drifting from the deal to the slopes. They shared one frustration: the best chalets in the Alps were being sold like spreadsheets, often by people who had never set foot in them.</p>
+            <div className="yr">The frustration</div>
+            <h3>Sold like spreadsheets.</h3>
+            <p>The more winters he booked, the clearer one thing became: the best chalets in the Alps were being sold like spreadsheets, often by people who had never set foot in them. The knowledge that mattered — which house suits which group, which week, which village — never seemed to reach the person paying for it.</p>
           </div>
         </div>
 
-        <div className="chap rev">
+        <div className="chap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="cim"><img src="/images/founders.jpg" alt="Today" /></div>
+          <div className="cim"><img src="/images/chalets/ext-05.webp" alt="Today" /></div>
           <div className="ctx">
             <div className="yr">Today</div>
             <h3>One short, hand-picked list.</h3>
-            <p>From Norwich and from London, they built the company they had both wanted as guests: a curated collection of the finest chalets across the Alps — each one chosen by hand, matched to you, and looked after from first enquiry to last morning.</p>
+            <p>So he built the company he had wanted as a guest: a curated collection of the finest chalets across the Alps — each one chosen by hand, matched to you, and looked after from first enquiry to last morning.</p>
           </div>
         </div>
       </div></section>
@@ -136,8 +121,8 @@ export default function AboutPage() {
       {/* Closing */}
       <section className="close"><div className="wrap">
         <div className="rule-c" />
-        <p>&ldquo;If you have read this far, you already know how we feel about the mountains. Write to us — a real person, every time — and we answer, always, within the day.&rdquo;</p>
-        <div className="att">Oli &amp; Ben</div>
+        <p>&ldquo;If you have read this far, you already know how I feel about the mountains. Write to us — a real person, every time — and we answer, always, within the day.&rdquo;</p>
+        <div className="att">Ben</div>
         <div className="row">
           <Link className="btn rose" href="/contact">Speak to the bureau →</Link>
           <Link className="btn ghost" href="/chalets">See the collection</Link>

@@ -108,7 +108,7 @@ export default function ConciergePage() {
         <div className="rtx">
           <div className="eyebrow">§ On the record</div>
           <blockquote>Our guests don&rsquo;t want to be asked what they&rsquo;d like for breakfast on the fourth morning. They want it there — the way they take it, with the paper they read. <em>That is the whole of the job.</em></blockquote>
-          <div className="att">Ben Wood &amp; Oli Dannatt · Founders, Vertige</div>
+          <div className="att">Ben Wood · Founder, Vertige</div>
         </div>
       </div></section>
 
