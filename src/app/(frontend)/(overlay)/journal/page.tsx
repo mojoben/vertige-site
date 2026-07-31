@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import articles from '@/content/journal_articles.json'
-import guides from '@/content/t1_guides_rich.json'
+import { loadArticles, loadResortGuides } from '@/lib/web-content'
 import { COUNTRY_CONTENT, resortImage } from '@/lib/country-content'
 import { JournalIndexGrid, type JournalCard } from '@/components/JournalIndexGrid'
 import { NewsletterForm } from '@/components/NewsletterForm'
@@ -34,8 +33,8 @@ const firstSentence = (s: string) => {
   return i === -1 ? s : s.slice(0, i + 1)
 }
 
-export default function JournalIndexPage() {
-  const arts = articles as A[]
+export default async function JournalIndexPage() {
+  const arts = (await loadArticles()) as unknown as A[]
   const featured = arts.find((a) => a.slug === 'journal-the-journey')
 
   const articleCards: JournalCard[] = arts.map((a) => ({
@@ -47,7 +46,7 @@ export default function JournalIndexPage() {
     read: a.read,
   }))
 
-  const resortGuideCards: JournalCard[] = (guides as G[]).map((g) => ({
+  const resortGuideCards: JournalCard[] = ((await loadResortGuides()) as unknown as G[]).map((g) => ({
     slug: `guide/${g.slug}-guide`,
     cat: 'Destination guides',
     title: `${g.name}: the Vertige guide`,

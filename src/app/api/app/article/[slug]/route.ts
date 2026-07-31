@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import guides from '@/content/t1_guides_rich.json'
-import articles from '@/content/journal_articles.json'
+import { loadResortGuides, loadArticles } from '@/lib/web-content'
 import { ALL_DESTINATIONS } from '@/lib/destinations'
 import { resortImage } from '@/lib/country-content'
 import { appCors } from '../../shape'
@@ -30,7 +29,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
 
   if (slug.endsWith('-guide')) {
     const rslug = slug.replace(/-guide$/, '')
-    const g = (guides as Guide[]).find((x) => x.slug === rslug)
+    const g = ((await loadResortGuides()) as unknown as Guide[]).find((x) => x.slug === rslug)
     const dest = ALL_DESTINATIONS.find((d) => d.slug === rslug)
     if (!g || !dest) return NextResponse.json({ error: 'not found' }, { status: 404, headers: appCors })
     const sections: Section[] = [
@@ -56,7 +55,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     )
   }
 
-  const a = (articles as unknown as Article[]).find((x) => x.slug === slug)
+  const a = ((await loadArticles()) as unknown as unknown as Article[]).find((x) => x.slug === slug)
   if (!a) return NextResponse.json({ error: 'not found' }, { status: 404, headers: appCors })
   return NextResponse.json(
     {

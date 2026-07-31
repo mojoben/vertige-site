@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { getCountryContent, COUNTRY_CONTENT, resortImage } from '@/lib/country-content'
 import { DestinationExplorer } from '@/components/DestinationExplorer'
 import { getCatalogue } from '@/lib/portal-client'
+import { pageCopy } from '@/lib/web-content'
 
 // Country destination page — faithful port of vertige-proto-dest-{country}.html
 // (HANDOFF 08 §1): the resort destination template scoped to a whole country.
@@ -32,12 +33,18 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
 
   const hero = `/images/destinations/_ski-${c.slug}.jpg`
   const { chalets } = await getCatalogue()
+  // CMS copy slots (Website → Pages → country) with the file copy as fallback.
+  const [sub, ov1, ov2] = await Promise.all([
+    pageCopy(`country:${c.slug}`, 'sub', c.sub),
+    pageCopy(`country:${c.slug}`, 'ov1', c.ov1),
+    pageCopy(`country:${c.slug}`, 'ov2', c.ov2),
+  ])
 
   const overview = (
     <section className="dsec" id="overview">
       <h2 className="lead-h">Discover our luxury chalets in <em>{c.name}</em></h2>
-      <p className="lead-p">{c.ov1}</p>
-      <p className="lead-p">{c.ov2}</p>
+      <p className="lead-p">{ov1}</p>
+      <p className="lead-p">{ov2}</p>
     </section>
   )
 
@@ -64,7 +71,7 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
         <div className="wrap">
           <span className="eyebrow">{c.name} · {c.cc}</span>
           <h1>{c.name}</h1>
-          <p className="sub">{c.sub}</p>
+          <p className="sub">{sub}</p>
           <a className="hbtn" href="#chalets">View our {c.name} chalets ↓</a>
         </div>
       </section>

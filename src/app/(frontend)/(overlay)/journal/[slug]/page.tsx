@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import articles from '@/content/journal_articles.json'
+import { loadArticle } from '@/lib/web-content'
 import { ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { Share, TocSpy } from '@/components/ArticleBits'
 import { SITE } from '@/lib/site'
@@ -25,13 +26,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const a = (articles as Article[]).find((x) => x.slug === slug)
+  const a = (await loadArticle(slug)) as unknown as Article | null
   return a ? { title: `${a.title} — Vertige`, description: a.dek } : {}
 }
 
 export default async function JournalArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const a = (articles as Article[]).find((x) => x.slug === slug)
+  const a = (await loadArticle(slug)) as unknown as Article | null
   if (!a) notFound()
 
   const hero = `/images/chalets/${a.hero}.webp`

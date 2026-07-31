@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server'
 import { ALL_DESTINATIONS } from '@/lib/destinations'
 import { getDestContent } from '@/lib/dest-content'
 import { resortImage } from '@/lib/country-content'
-import guides from '@/content/t1_guides_rich.json'
-import articles from '@/content/journal_articles.json'
+import { loadResortGuides, loadArticles } from '@/lib/web-content'
 import { appCors } from '../../shape'
 
 // Resort editorial for the app (Ben, 2026-07-18: the website has the
@@ -18,13 +17,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const dest = ALL_DESTINATIONS.find((d) => d.slug === slug)
   if (!dest) return NextResponse.json({ error: 'not found' }, { status: 404, headers: appCors })
 
-  const content = getDestContent(slug, dest.name)
+  const content = await getDestContent(slug, dest.name)
   const heroImage = resortImage(slug, dest.countrySlug)
 
   // Related reading: the resort's own guide first, then journal articles
   // that mention it.
   const reading: { slug: string; title: string; dek: string; href: string; img: string; read?: string }[] = []
-  if ((guides as { slug: string }[]).some((g) => g.slug === slug)) {
+  if ((await loadResortGuides()).some((g) => g.slug === slug)) {
     reading.push({
       slug: `${slug}-guide`,
       title: `The Vertige guide to ${dest.name}`,
@@ -34,7 +33,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     })
   }
   const nameLc = dest.name.toLowerCase()
-  for (const a of articles as unknown as Article[]) {
+  for (const a of (await loadArticles()) as unknown as Article[]) {
     if (`${a.title} ${a.dek}`.toLowerCase().includes(nameLc)) {
       reading.push({ slug: a.slug, title: a.title, dek: a.dek, href: `/journal/${a.slug}`, img: `/images/chalets/${a.hero}.webp`, read: String(a.read) })
     }

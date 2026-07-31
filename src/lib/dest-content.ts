@@ -1,5 +1,4 @@
-import guides from '@/content/t1_guides_rich.json'
-import { RESORT_FACTS } from './facts-data'
+import { loadResortGuides, loadResortFacts } from './web-content'
 import type { Fact } from './facts'
 
 // Per-resort destination-page content. Verbier carries the exact copy from
@@ -82,9 +81,10 @@ const VERBIER: DestContent = {
 const trim = (s: string | undefined, n: number) =>
   !s ? '' : s.length <= n ? s : s.slice(0, s.lastIndexOf('.', n) + 1) || s.slice(0, n) + '…'
 
-export function getDestContent(slug: string, name: string): DestContent {
-  if (slug === 'verbier') return VERBIER
-  const g = (guides as Guide[]).find((x) => x.slug === slug)
+export async function getDestContent(slug: string, name: string): Promise<DestContent> {
+  const FACTS = await loadResortFacts()
+  if (slug === 'verbier') return { ...VERBIER, gfacts: factsToG(FACTS['verbier']) }
+  const g = ((await loadResortGuides()) as unknown as Guide[]).find((x) => x.slug === slug)
   if (g) {
     const blocks: GuideBlock[] = []
     if (g.skiing) blocks.push({ title: `About skiing in ${name}`, intro: trim(g.when ?? '', 110) || `The mountain and who it suits.`, body: trim(g.skiing, 460), more: `Read the full Vertige guide to skiing in ${name} →` })
@@ -96,7 +96,7 @@ export function getDestContent(slug: string, name: string): DestContent {
       overviewLead: [trim(g.intro, 600) || ''].filter(Boolean).concat([`Our ${name} collection is short and considered — every chalet visited and vetted, and the week planned around it by our team.`]),
       chaletsSub: 'Filter by size, budget, service level and features.',
       guideBlocks: blocks,
-      gfacts: factsToG(RESORT_FACTS[slug]),
+      gfacts: factsToG(FACTS[slug]),
       hasGuide: true,
     }
   }
@@ -108,7 +108,7 @@ export function getDestContent(slug: string, name: string): DestContent {
     ],
     chaletsSub: 'Filter by size, budget, service level and features.',
     guideBlocks: [],
-    gfacts: factsToG(RESORT_FACTS[slug]),
+    gfacts: factsToG(FACTS[slug]),
     hasGuide: false,
   }
 }

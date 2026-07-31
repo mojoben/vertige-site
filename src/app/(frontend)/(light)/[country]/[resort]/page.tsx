@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { COUNTRIES, ALL_DESTINATIONS } from '@/lib/destinations'
 import { getDestContent } from '@/lib/dest-content'
-import { RESORT_FACTS } from '@/lib/facts-data'
+import { loadResortFacts } from '@/lib/web-content'
 import { FactStrip } from '@/components/FactStrip'
 import { DestinationExplorer } from '@/components/DestinationExplorer'
 import { getCatalogue } from '@/lib/portal-client'
@@ -27,7 +27,8 @@ export default async function DestinationPage({ params }: { params: Promise<{ co
   const resort = country?.resorts.find((r) => r.slug === resortSlug)
   if (!country || !resort) notFound()
 
-  const content = getDestContent(resort.slug, resort.name)
+  const content = await getDestContent(resort.slug, resort.name)
+  const RESORT_FACTS = await loadResortFacts()
   // Hero falls back to the country ski image for resorts whose own
   // photography hasn't landed yet (16 of 55 at last count).
   const hero = resortImage(resort.slug, country.slug)

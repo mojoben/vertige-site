@@ -2,6 +2,17 @@ import React from 'react'
 import Link from 'next/link'
 import { getCatalogue } from '@/lib/portal-client'
 import { CtaBand, HomeFx, HeroSearch, HomeChaletCarousel } from '@/components/HomeBits'
+import { pageCopy } from '@/lib/web-content'
+
+// Render a CMS copy slot: *text* → <em>, | → line break.
+function cms(text: string): React.ReactNode {
+  return text.split('|').map((line, li, arr) => (
+    <React.Fragment key={li}>
+      {line.split('*').map((part, pi) => (pi % 2 === 1 ? <em key={pi}>{part}</em> : part))}
+      {li < arr.length - 1 && <br />}
+    </React.Fragment>
+  ))
+}
 
 // Home — faithful port of vertige-proto-home-mockup.html (confirmed as the
 // canonical home, Ben 2026-07-11). Featured chalet + chalet carousel are fed
@@ -9,6 +20,19 @@ import { CtaBand, HomeFx, HeroSearch, HomeChaletCarousel } from '@/components/Ho
 
 export default async function HomePage() {
   const { chalets } = await getCatalogue()
+  // CMS copy slots (Website → Pages → Home) with the coded copy as fallback.
+  const c = async (k: string, fb: string) => pageCopy('home', k, fb)
+  const [heroTitle, heroSnip, welcomeEye, welcomeH2, welcomeP1, welcomeP2, storyH2, storyP, storyQuote] = await Promise.all([
+    c('hero.title', 'The mountain,|made *yours*.'),
+    c('hero.snip', 'A curated portfolio of the finest ski chalets across the Alps — designed for families, groups of friends, and the weeks you come back for.'),
+    c('welcome.eye', 'Welcome to Vertige'),
+    c('welcome.h2', 'The height of Alpine living, in a setting that *earns it*'),
+    c('welcome.p1', 'You can book a chalet with anyone. The reason people come back is everything that happens after — the chalet, the mountain, and the people you share it with.'),
+    c('welcome.p2', "We don't hand you a list and wish you luck. We ask the questions that matter — how you ski, who's coming, what you loved last time — and make a recommendation you can trust."),
+    c('story.h2', 'One founder, one standard'),
+    c('story.p', 'Vertige was founded by Ben Wood — a convert who came to the Alps late and fell for them completely, and who builds the brand, the platform and the concierge systems that make a service genuinely seamless rather than merely promised. Every chalet on the list is there because he would stay in it himself.'),
+    c('story.quote', "I'd rather have tens of clients who come back every year than hundreds who book once."),
+  ])
   const carousel = chalets.slice(0, 4)
   const countOf = (country: string) => chalets.filter((c) => c.country === country).length
 
@@ -27,8 +51,8 @@ export default async function HomePage() {
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
         <div className="wrap">
-          <h1>The mountain,<br />made <em>yours</em>.</h1>
-          <p className="snip">A curated portfolio of the finest ski chalets across the Alps — designed for families, groups of friends, and the weeks you come back for.</p>
+          <h1>{cms(heroTitle)}</h1>
+          <p className="snip">{heroSnip}</p>
           <HeroSearch />
         </div>
       </section>
@@ -43,10 +67,10 @@ export default async function HomePage() {
           <div className="he-welcome">
             <svg className="he-sprig he-sprig-l" viewBox="0 0 120 200" aria-hidden="true"><path d="M60 4v192M60 40l-34-20M60 40l34-20M60 78l-40-24M60 78l40-24M60 116l-44-26M60 116l44-26M60 154l-38-22M60 154l38-22" /></svg>
             <div className="he-copy reveal">
-              <span className="he-eye">Welcome to Vertige</span>
-              <h2>The height of Alpine living, in a setting that <em>earns it</em></h2>
-              <p>You can book a chalet with anyone. The reason people come back is everything that happens after — the chalet, the mountain, and the people you share it with.</p>
-              <p>We don&rsquo;t hand you a list and wish you luck. We ask the questions that matter — how you ski, who&rsquo;s coming, what you loved last time — and make a recommendation you can trust.</p>
+              <span className="he-eye">{welcomeEye}</span>
+              <h2>{cms(welcomeH2)}</h2>
+              <p>{welcomeP1}</p>
+              <p>{welcomeP2}</p>
               <Link className="he-badge" href="/approach" aria-label="Discover the Vertige approach">
                 <svg className="he-badge-ring" viewBox="0 0 120 120" aria-hidden="true">
                   <defs><path id="he-badge-path" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" /></defs>
@@ -142,9 +166,9 @@ export default async function HomePage() {
           <div className="im reveal px"><div className="pxi" style={{ backgroundImage: 'url(/images/07.jpg)', backgroundPosition: '42% center' }} /></div>
           <div className="panel reveal">
             <span className="eyebrow">Our story</span>
-            <h2>One founder, one standard</h2>
-            <p>Vertige was founded by Ben Wood — a convert who came to the Alps late and fell for them completely, and who builds the brand, the platform and the concierge systems that make a service genuinely seamless rather than merely promised. Every chalet on the list is there because he would stay in it himself.</p>
-            <p className="quote">&ldquo;I&rsquo;d rather have tens of clients who come back every year than hundreds who book once.&rdquo;</p>
+            <h2>{cms(storyH2)}</h2>
+            <p>{storyP}</p>
+            <p className="quote">&ldquo;{storyQuote}&rdquo;</p>
             <div className="sig">Ben</div>
             <Link className="arrowlink" href="/about">Meet the founder ›</Link>
           </div>

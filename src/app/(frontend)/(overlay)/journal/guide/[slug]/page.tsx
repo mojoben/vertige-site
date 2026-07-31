@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import guides from '@/content/t1_guides_rich.json'
+import { loadResortGuides, loadGuide } from '@/lib/web-content'
 import { ALL_DESTINATIONS, destinationPath } from '@/lib/destinations'
 import { getCountryContent, COUNTRY_CONTENT, resortImage } from '@/lib/country-content'
 import { getCatalogue } from '@/lib/portal-client'
@@ -19,6 +20,7 @@ interface Guide {
   slug: string; name: string; country: string; cslug: string
   intro: string; skiing: string; town: string; when: string
   getting: string; beyond: string; eating: string; pick: string
+  sections?: { key: string; title: string; body: string }[]
 }
 
 const firstSentence = (s: string) => {
@@ -50,8 +52,15 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   if (!raw.endsWith('-guide')) notFound()
   const resortSlug = raw.replace(/-guide$/, '')
   const countryContent = getCountryContent(resortSlug)
-  if (countryContent) return <CountryGuide c={countryContent} />
-  const g = (guides as Guide[]).find((x) => x.slug === resortSlug)
+  if (countryContent) {
+    // Country guides read the CMS copy when present (file copy as fallback).
+    const cms = await loadGuide(resortSlug)
+    const c = cms
+      ? { ...countryContent, g_intro: cms.intro, g_skiing: cms.skiing, g_town: cms.town, g_when: cms.when, g_getting: cms.getting, g_beyond: cms.beyond, g_eating: cms.eating, g_pick: cms.pick }
+      : countryContent
+    return <CountryGuide c={c} />
+  }
+  const g = ((await loadResortGuides()) as unknown as Guide[]).find((x) => x.slug === resortSlug)
   const dest = ALL_DESTINATIONS.find((d) => d.slug === resortSlug)
   if (!g || !dest) notFound()
 
@@ -66,17 +75,20 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
     return a.includes(b) || b.includes(a)
   }).slice(0, 3)
 
-  const sections = [
-    { id: 's1', title: 'The skiing', body: g.skiing },
-    { id: 's2', title: 'The village and the chalets', body: g.town },
-    { id: 's3', title: 'When to visit', body: g.when },
-    { id: 's4', title: 'Getting there', body: g.getting },
-    { id: 's5', title: 'Beyond the slopes', body: g.beyond, figure: { src: '/images/chalets/liv-10.webp', cap: `Beyond the pistes — the slow afternoons a week in ${g.name} is really about` } },
-    { id: 's6', title: 'Eating and après', body: g.eating, figure: { src: '/images/chalets/din-04.webp', cap: `A long table — lunch on the mountain and dinner in ${g.name}` } },
-  ]
+  // Sections come from the CMS in order, headings editable per guide
+  // (Ben, 2026-07-31). The pick section renders as the Vertige Pick block,
+  // not an article section; figures stay attached to the beyond/eating keys.
+  const FIGURES: Record<string, { src: string; cap: string }> = {
+    beyond: { src: '/images/chalets/liv-10.webp', cap: `Beyond the pistes — the slow afternoons a week in ${g.name} is really about` },
+    eating: { src: '/images/chalets/din-04.webp', cap: `A long table — lunch on the mountain and dinner in ${g.name}` },
+  }
+  type GSec = { key: string; title: string; body: string }
+  const sections = ((g.sections ?? []) as GSec[])
+    .filter((x: GSec) => x.key !== 'pick' && x.body)
+    .map((x: GSec, i: number) => ({ id: x.key || `s${i + 1}`, title: x.title || x.key, body: x.body, figure: FIGURES[x.key] }))
 
   // Related: same country first, then the rest (3 total, prototype pattern).
-  const others = (guides as Guide[]).filter((x) => x.slug !== g.slug)
+  const others = ((await loadResortGuides()) as unknown as Guide[]).filter((x) => x.slug !== g.slug)
   const related = [...others.filter((x) => x.country === g.country), ...others.filter((x) => x.country !== g.country)].slice(0, 3)
 
   return (

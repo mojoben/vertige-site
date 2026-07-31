@@ -1,8 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { fetchPortalProperties, chaletPath } from '@/lib/portal-client'
 import { COUNTRIES, destinationPath } from '@/lib/destinations'
-import articles from '@/content/journal_articles.json'
-import guides from '@/content/t1_guides_rich.json'
+import { loadArticles, loadResortGuides } from '@/lib/web-content'
 import inspiration from '@/content/inspiration.json'
 
 // sitemap.xml — static pages, the destination tree (countries → resorts),
@@ -28,8 +27,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { properties, live } = await fetchPortalProperties()
   if (live) for (const p of properties) urls.push({ url: `${ORIGIN}${chaletPath(p)}` })
 
-  for (const a of articles as { slug: string }[]) urls.push({ url: `${ORIGIN}/journal/${a.slug}` })
-  for (const g of guides as { slug: string }[]) urls.push({ url: `${ORIGIN}/journal/guide/${g.slug}-guide` })
+  for (const a of await loadArticles()) urls.push({ url: `${ORIGIN}/journal/${a.slug}` })
+  for (const g of await loadResortGuides()) urls.push({ url: `${ORIGIN}/journal/guide/${g.slug}-guide` })
   for (const c of COUNTRIES) urls.push({ url: `${ORIGIN}/journal/guide/${c.slug}-guide` })
   for (const i of inspiration as { slug: string }[]) urls.push({ url: `${ORIGIN}/inspiration/${i.slug}` })
 
